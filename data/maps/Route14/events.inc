@@ -1,0 +1,31 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route14/map.json
+@
+
+	.align 2
+
+Route14_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_BIKER, 7, 37, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 2, Route14_EventScript_Gerald, 0
+	object_event 2, OBJ_EVENT_GFX_ROCKER, 18, 35, 3, MOVEMENT_TYPE_WANDER_AROUND, 2, 2, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Donald, 0
+	object_event 3, OBJ_EVENT_GFX_ROCKER, 10, 14, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 4, Route14_EventScript_Beck, 0
+	object_event 4, OBJ_EVENT_GFX_ROCKER, 16, 16, 3, MOVEMENT_TYPE_FACE_UP, 1, 1, TRAINER_TYPE_NORMAL, 3, Route14_EventScript_Marlon, 0
+	object_event 5, OBJ_EVENT_GFX_BIKER, 7, 31, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 2, Route14_EventScript_Isaac, 0
+	object_event 6, OBJ_EVENT_GFX_BIKER, 7, 34, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 2, Route14_EventScript_Malik, 0
+	object_event 7, OBJ_EVENT_GFX_ROCKER, 8, 9, 3, MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Mitch, 0
+	object_event 8, OBJ_EVENT_GFX_ROCKER, 7, 6, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Carter, 0
+	object_event 9, OBJ_EVENT_GFX_BIKER, 10, 37, 3, MOVEMENT_TYPE_WALK_UP_AND_DOWN, 1, 6, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Lukas, 0
+	object_event 10, OBJ_EVENT_GFX_ROCKER, 18, 47, 3, MOVEMENT_TYPE_WANDER_AROUND, 2, 2, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Benny, 0
+	object_event 11, OBJ_EVENT_GFX_CUT_TREE, 7, 26, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_12
+	object_event 12, OBJ_EVENT_GFX_CUT_TREE, 12, 35, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_13
+	object_event 13, OBJ_EVENT_GFX_CUT_TREE, 1, 47, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_14
+	object_event 14, OBJ_EVENT_GFX_LITTLE_GIRL, 13, 51, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Jan, 0
+	object_event 15, OBJ_EVENT_GFX_LITTLE_GIRL, 12, 51, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route14_EventScript_Kiri, 0
+
+Route14_MapBGEvents:
+	bg_sign_event 17, 12, 0, BG_EVENT_PLAYER_FACING_ANY, Route14_EventScript_RouteSign
+	bg_hidden_item_event 9, 20, 3, ITEM_ZINC, FLAG_HIDDEN_ITEM_ROUTE14_ZINC, 1, FALSE
+	bg_hidden_item_event 19, 53, 3, ITEM_PINAP_BERRY, FLAG_HIDDEN_ITEM_ROUTE14_PINAP_BERRY, 1, FALSE
+
+Route14_MapEvents::
+	map_events Route14_ObjectEvents, NULL, NULL, Route14_MapBGEvents
+

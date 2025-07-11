@@ -1,0 +1,31 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route20/map.json
+@
+
+	.align 2
+
+Route20_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_SWIMMER_F_WATER, 8, 11, 1, MOVEMENT_TYPE_FACE_DOWN_AND_UP, 1, 1, TRAINER_TYPE_NORMAL, 3, Route20_EventScript_Melissa, 0
+	object_event 2, OBJ_EVENT_GFX_PICNICKER, 16, 14, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Missy, 0
+	object_event 3, OBJ_EVENT_GFX_SWIMMER_F_WATER, 34, 7, 1, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 4, Route20_EventScript_Nora, 0
+	object_event 4, OBJ_EVENT_GFX_ROCKER, 43, 9, 3, MOVEMENT_TYPE_WANDER_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Roger, 0
+	object_event 5, OBJ_EVENT_GFX_SWIMMER_M_WATER, 23, 10, 1, MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP, 5, 4, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Dean, 0
+	object_event 6, OBJ_EVENT_GFX_PICNICKER, 73, 16, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 2, Route20_EventScript_Irene, 0
+	object_event 7, OBJ_EVENT_GFX_SWIMMER_M_WATER, 111, 9, 1, MOVEMENT_TYPE_WALK_SEQUENCE_UP_LEFT_DOWN_RIGHT, 5, 3, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Barry, 0
+	object_event 8, OBJ_EVENT_GFX_SWIMMER_M_WATER, 106, 11, 1, MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT, 5, 3, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Darrin, 0
+	object_event 9, OBJ_EVENT_GFX_SWIMMER_F_WATER, 93, 10, 1, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 5, Route20_EventScript_Shirley, 0
+	object_event 10, OBJ_EVENT_GFX_SWIMMER_F_WATER, 54, 11, 1, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route20_EventScript_Tiffany, 0
+	object_event 11, OBJ_EVENT_GFX_CAMPER, 69, 3, 3, MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT, 2, 1, TRAINER_TYPE_NONE, 0, Route20_EventScript_Camper, 0
+
+Route20_MapWarps:
+	warp_def 60, 8, 3, 3, MAP_SEAFOAM_ISLANDS_1F
+	warp_def 72, 14, 3, 4, MAP_SEAFOAM_ISLANDS_1F
+
+Route20_MapBGEvents:
+	bg_sign_event 68, 14, 0, BG_EVENT_PLAYER_FACING_ANY, Route20_EventScript_SeafoamIslandsSign
+	bg_sign_event 64, 8, 0, BG_EVENT_PLAYER_FACING_ANY, Route20_EventScript_SeafoamIslandsSign
+	bg_hidden_item_event 23, 6, 3, ITEM_STARDUST, FLAG_HIDDEN_ITEM_ROUTE20_STARDUST, 1, FALSE
+
+Route20_MapEvents::
+	map_events Route20_ObjectEvents, Route20_MapWarps, NULL, Route20_MapBGEvents
+

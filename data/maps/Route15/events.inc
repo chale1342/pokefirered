@@ -1,0 +1,32 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route15/map.json
+@
+
+	.align 2
+
+Route15_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_PICNICKER, 22, 13, 3, MOVEMENT_TYPE_WANDER_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Yazmin, 0
+	object_event 2, OBJ_EVENT_GFX_ROCKER, 31, 12, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 5, Route15_EventScript_Edwin, 0
+	object_event 3, OBJ_EVENT_GFX_ROCKER, 37, 14, 3, MOVEMENT_TYPE_FACE_UP, 1, 1, TRAINER_TYPE_NORMAL, 2, Route15_EventScript_Chester, 0
+	object_event 4, OBJ_EVENT_GFX_PICNICKER, 44, 13, 3, MOVEMENT_TYPE_WANDER_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Kindra, 0
+	object_event 5, OBJ_EVENT_GFX_BEAUTY, 50, 12, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 2, Route15_EventScript_Olivia, 0
+	object_event 6, OBJ_EVENT_GFX_BIKER, 59, 12, 3, MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 2, Route15_EventScript_Alex, 0
+	object_event 7, OBJ_EVENT_GFX_BIKER, 63, 13, 3, MOVEMENT_TYPE_FACE_DOWN_AND_UP, 1, 1, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Ernest, 0
+	object_event 8, OBJ_EVENT_GFX_PICNICKER, 52, 8, 3, MOVEMENT_TYPE_WANDER_AROUND, 2, 4, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Becky, 0
+	object_event 9, OBJ_EVENT_GFX_BEAUTY, 54, 12, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 2, Route15_EventScript_Grace, 0
+	object_event 10, OBJ_EVENT_GFX_PICNICKER, 28, 6, 3, MOVEMENT_TYPE_WANDER_AROUND, 2, 4, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Celia, 0
+	object_event 11, OBJ_EVENT_GFX_ITEM_BALL, 20, 6, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, Route15_EventScript_ItemTM18, FLAG_HIDE_ROUTE15_TM18
+	object_event 12, OBJ_EVENT_GFX_BLACKBELT, 39, 7, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Ron, 0
+	object_event 13, OBJ_EVENT_GFX_BATTLE_GIRL, 40, 7, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route15_EventScript_Mya, 0
+	clone_event 14, OBJ_EVENT_GFX_CUT_TREE, 73, 7, LOCALID_ROUTE14_BORDER_TREE, MAP_ROUTE14
+
+Route15_MapWarps:
+	warp_def 9, 11, 3, 0, MAP_ROUTE15_WEST_ENTRANCE_1F
+	warp_def 16, 11, 3, 2, MAP_ROUTE15_WEST_ENTRANCE_1F
+
+Route15_MapBGEvents:
+	bg_sign_event 41, 11, 0, BG_EVENT_PLAYER_FACING_ANY, Route15_EventScript_RouteSign
+
+Route15_MapEvents::
+	map_events Route15_ObjectEvents, Route15_MapWarps, NULL, Route15_MapBGEvents
+

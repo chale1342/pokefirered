@@ -1,0 +1,34 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/MtMoon_1F/map.json
+@
+
+	.align 2
+
+MtMoon_1F_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_LASS, 20, 26, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 2, MtMoon_1F_EventScript_Iris, 0
+	object_event 2, OBJ_EVENT_GFX_BUG_CATCHER, 36, 30, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 2, MtMoon_1F_EventScript_Robby, 0
+	object_event 3, OBJ_EVENT_GFX_SCIENTIST, 30, 35, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 4, MtMoon_1F_EventScript_Jovan, 0
+	object_event 4, OBJ_EVENT_GFX_LASS, 33, 4, 3, MOVEMENT_TYPE_WALK_SEQUENCE_LEFT_DOWN_RIGHT_UP, 5, 3, TRAINER_TYPE_NORMAL, 2, MtMoon_1F_EventScript_Miriam, 0
+	object_event 5, OBJ_EVENT_GFX_BUG_CATCHER, 7, 26, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 4, MtMoon_1F_EventScript_Kent, 0
+	object_event 6, OBJ_EVENT_GFX_YOUNGSTER, 13, 17, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 4, MtMoon_1F_EventScript_Josh, 0
+	object_event 7, OBJ_EVENT_GFX_HIKER, 7, 10, 3, MOVEMENT_TYPE_WANDER_AROUND, 2, 2, TRAINER_TYPE_NORMAL, 1, MtMoon_1F_EventScript_Marcos, 0
+	object_event 8, OBJ_EVENT_GFX_ITEM_BALL, 2, 22, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemParalyzeHeal, FLAG_HIDE_MT_MOON_1F_PARALYZE_HEAL
+	object_event 9, OBJ_EVENT_GFX_ITEM_BALL, 11, 35, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemTM09, FLAG_HIDE_MT_MOON_1F_TM09
+	object_event 10, OBJ_EVENT_GFX_ITEM_BALL, 26, 32, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemPotion, FLAG_HIDE_MT_MOON_1F_POTION
+	object_event 11, OBJ_EVENT_GFX_ITEM_BALL, 42, 35, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemRareCandy, FLAG_HIDE_MT_MOON_1F_RARE_CANDY
+	object_event 12, OBJ_EVENT_GFX_ITEM_BALL, 44, 21, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemEscapeRope, FLAG_HIDE_MT_MOON_1F_ESCAPE_ROPE
+	object_event 13, OBJ_EVENT_GFX_ITEM_BALL, 3, 2, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_ItemMoonStone, FLAG_HIDE_MT_MOON_1F_MOON_STONE
+	object_event 14, OBJ_EVENT_GFX_BALDING_MAN, 42, 7, 3, MOVEMENT_TYPE_FACE_DOWN_AND_LEFT, 1, 1, TRAINER_TYPE_NONE, 0, MtMoon_1F_EventScript_BaldingMan, 0
+
+MtMoon_1F_MapWarps:
+	warp_def 5, 6, 3, 0, MAP_MT_MOON_B1F
+	warp_def 19, 14, 3, 1, MAP_MT_MOON_B1F
+	warp_def 31, 16, 3, 2, MAP_MT_MOON_B1F
+	warp_def 18, 37, 3, 0, MAP_ROUTE4
+
+MtMoon_1F_MapBGEvents:
+	bg_sign_event 19, 26, 0, BG_EVENT_PLAYER_FACING_ANY, MtMoon_1F_EventScript_ZubatSign
+
+MtMoon_1F_MapEvents::
+	map_events MtMoon_1F_ObjectEvents, MtMoon_1F_MapWarps, NULL, MtMoon_1F_MapBGEvents
+

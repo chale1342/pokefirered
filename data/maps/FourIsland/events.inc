@@ -1,0 +1,39 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/FourIsland/map.json
+@
+
+	.align 2
+
+FourIsland_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_OLD_MAN_1, 16, 13, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_DaycareMan, 0
+	object_event 2, OBJ_EVENT_GFX_DODUO, 12, 9, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, 0x0, 0
+	object_event 3, OBJ_EVENT_GFX_NIDORAN_F, 13, 7, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NONE, 0, 0x0, 0
+	object_event 4, OBJ_EVENT_GFX_NIDORAN_M, 14, 7, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NONE, 0, 0x0, 0
+	object_event 5, OBJ_EVENT_GFX_PSYDUCK, 17, 9, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, 0x0, 0
+	object_event 6, OBJ_EVENT_GFX_OLD_WOMAN, 26, 19, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_OldWoman, 0
+	object_event 7, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 5, 11, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_12
+	object_event 8, OBJ_EVENT_GFX_ITEM_BALL, 5, 6, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_ItemStarPiece, FLAG_HIDE_FOUR_ISLAND_STAR_PIECE
+	object_event 9, OBJ_EVENT_GFX_ITEM_BALL, 32, 19, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_ItemStardust, FLAG_HIDE_FOUR_ISLAND_STARDUST
+	object_event 10, OBJ_EVENT_GFX_BLUE, 8, 25, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NONE, 0, 0x0, FLAG_HIDE_FOUR_ISLAND_RIVAL
+	object_event 11, OBJ_EVENT_GFX_FAT_MAN, 36, 13, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_FatMan, 0
+	object_event 12, OBJ_EVENT_GFX_LITTLE_GIRL, 31, 21, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NONE, 0, FourIsland_EventScript_LittleGirl, 0
+
+FourIsland_MapWarps:
+	warp_def 18, 20, 0, 0, MAP_FOUR_ISLAND_POKEMON_CENTER_1F
+	warp_def 12, 13, 0, 0, MAP_FOUR_ISLAND_POKEMON_DAY_CARE
+	warp_def 25, 14, 0, 0, MAP_FOUR_ISLAND_HOUSE1
+	warp_def 38, 12, 0, 0, MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE
+	warp_def 33, 23, 0, 0, MAP_FOUR_ISLAND_LORELEIS_HOUSE
+	warp_def 25, 26, 0, 0, MAP_FOUR_ISLAND_HOUSE2
+	warp_def 10, 28, 3, 0, MAP_FOUR_ISLAND_HARBOR
+	warp_def 22, 26, 0, 0, MAP_FOUR_ISLAND_MART
+
+FourIsland_MapBGEvents:
+	bg_sign_event 13, 19, 0, BG_EVENT_PLAYER_FACING_ANY, FourIsland_EventScript_IslandSign
+	bg_hidden_item_event 22, 34, 3, ITEM_PEARL, FLAG_HIDDEN_ITEM_FOUR_ISLAND_PEARL, 1, FALSE
+	bg_hidden_item_event 6, 21, 3, ITEM_ULTRA_BALL, FLAG_HIDDEN_ITEM_FOUR_ISLAND_ULTRA_BALL, 1, FALSE
+	bg_sign_event 31, 23, 0, BG_EVENT_PLAYER_FACING_ANY, FourIsland_EventScript_LoreleisHouseSign
+
+FourIsland_MapEvents::
+	map_events FourIsland_ObjectEvents, FourIsland_MapWarps, NULL, FourIsland_MapBGEvents
+
