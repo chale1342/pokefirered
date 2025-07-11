@@ -1,0 +1,29 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/RocketHideout_B4F/map.json
+@
+
+	.align 2
+
+RocketHideout_B4F_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_GIOVANNI, 19, 4, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_Giovanni, FLAG_HIDE_HIDEOUT_GIOVANNI
+	object_event 2, OBJ_EVENT_GFX_ITEM_BALL, 20, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_SilphScope, FLAG_HIDE_SILPH_SCOPE
+	object_event 3, OBJ_EVENT_GFX_ROCKET_M, 4, 2, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, RocketHideout_B4F_EventScript_Grunt1, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 4, OBJ_EVENT_GFX_ITEM_BALL, 3, 2, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_LiftKey, FLAG_HIDE_LIFT_KEY
+	object_event 5, OBJ_EVENT_GFX_ROCKET_M, 19, 14, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 0, RocketHideout_B4F_EventScript_Grunt3, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 6, OBJ_EVENT_GFX_ROCKET_M, 16, 14, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 0, RocketHideout_B4F_EventScript_Grunt2, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 7, OBJ_EVENT_GFX_ITEM_BALL, 1, 6, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_ItemTM49, FLAG_HIDE_ROCKET_HIDEOUT_B4F_TM49
+	object_event 8, OBJ_EVENT_GFX_ITEM_BALL, 4, 14, 0, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_ItemMaxEther, FLAG_HIDE_ROCKET_HIDEOUT_B4F_MAX_ETHER
+	object_event 9, OBJ_EVENT_GFX_ITEM_BALL, 6, 23, 0, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B4F_EventScript_ItemCalcium, FLAG_HIDE_ROCKET_HIDEOUT_B4F_CALCIUM
+
+RocketHideout_B4F_MapWarps:
+	warp_def 11, 15, 3, 1, MAP_ROCKET_HIDEOUT_B3F
+	warp_def 20, 23, 0, 1, MAP_ROCKET_HIDEOUT_ELEVATOR
+	warp_def 21, 23, 0, 1, MAP_ROCKET_HIDEOUT_ELEVATOR
+
+RocketHideout_B4F_MapBGEvents:
+	bg_hidden_item_event 22, 6, 3, ITEM_NEST_BALL, FLAG_HIDDEN_ITEM_ROCKET_HIDEOUT_B4F_NEST_BALL, 1, FALSE
+	bg_hidden_item_event 16, 6, 3, ITEM_NET_BALL, FLAG_HIDDEN_ITEM_ROCKET_HIDEOUT_B4F_NET_BALL, 1, FALSE
+
+RocketHideout_B4F_MapEvents::
+	map_events RocketHideout_B4F_ObjectEvents, RocketHideout_B4F_MapWarps, NULL, RocketHideout_B4F_MapBGEvents
+

@@ -1,0 +1,36 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route8/map.json
+@
+
+	.align 2
+
+Route8_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_LASS, 62, 14, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 6, Route8_EventScript_Julia, 0
+	object_event 2, OBJ_EVENT_GFX_OLD_MAN_1, 55, 15, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 3, Route8_EventScript_Rich, 0
+	object_event 3, OBJ_EVENT_GFX_SCIENTIST, 51, 6, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 4, Route8_EventScript_Glenn, 0
+	object_event 4, OBJ_EVENT_GFX_LASS, 29, 3, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 3, Route8_EventScript_Paige, 0
+	object_event 5, OBJ_EVENT_GFX_SCIENTIST, 29, 4, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 6, Route8_EventScript_Leslie, 0
+	object_event 6, OBJ_EVENT_GFX_LASS, 29, 5, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 3, Route8_EventScript_Andrea, 0
+	object_event 7, OBJ_EVENT_GFX_LASS, 29, 6, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 6, Route8_EventScript_Megan, 0
+	object_event 8, OBJ_EVENT_GFX_OLD_MAN_1, 21, 3, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route8_EventScript_Stan, 0
+	object_event 9, OBJ_EVENT_GFX_SCIENTIST, 9, 6, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 4, Route8_EventScript_Aidan, 0
+	object_event 10, OBJ_EVENT_GFX_CUT_TREE, 33, 15, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_12
+	object_event 11, OBJ_EVENT_GFX_CUT_TREE, 47, 12, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_13
+	object_event 12, OBJ_EVENT_GFX_LITTLE_GIRL, 40, 3, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route8_EventScript_Eli, 0
+	object_event 13, OBJ_EVENT_GFX_LITTLE_GIRL, 41, 3, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route8_EventScript_Anne, 0
+	object_event 14, OBJ_EVENT_GFX_BIKER, 14, 16, 3, MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP, 5, 2, TRAINER_TYPE_NORMAL, 1, Route8_EventScript_Ricardo, 0
+	object_event 15, OBJ_EVENT_GFX_BIKER, 24, 17, 3, MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_UP_DOWN_LEFT, 5, 5, TRAINER_TYPE_NORMAL, 1, Route8_EventScript_Jaren, 0
+
+Route8_MapWarps:
+	warp_def 13, 4, 0, 1, MAP_UNDERGROUND_PATH_EAST_ENTRANCE
+	warp_def 7, 10, 3, 2, MAP_ROUTE8_WEST_ENTRANCE
+
+Route8_MapBGEvents:
+	bg_sign_event 16, 5, 0, BG_EVENT_PLAYER_FACING_ANY, Route8_EventScript_UndergroundPathSign
+	bg_hidden_item_event 42, 10, 3, ITEM_RAWST_BERRY, FLAG_HIDDEN_ITEM_ROUTE8_RAWST_BERRY, 1, FALSE
+	bg_hidden_item_event 38, 11, 3, ITEM_LUM_BERRY, FLAG_HIDDEN_ITEM_ROUTE8_LUM_BERRY, 1, FALSE
+	bg_hidden_item_event 42, 15, 3, ITEM_LEPPA_BERRY, FLAG_HIDDEN_ITEM_ROUTE8_LEPPA_BERRY, 1, FALSE
+
+Route8_MapEvents::
+	map_events Route8_ObjectEvents, Route8_MapWarps, NULL, Route8_MapBGEvents
+

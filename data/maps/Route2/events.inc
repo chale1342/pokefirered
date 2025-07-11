@@ -1,0 +1,34 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route2/map.json
+@
+
+	.align 2
+
+Route2_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_CUT_TREE, 16, 62, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_14
+	object_event 2, OBJ_EVENT_GFX_CUT_TREE, 15, 69, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_13
+	object_event 3, OBJ_EVENT_GFX_CUT_TREE, 11, 13, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_15
+	object_event 4, OBJ_EVENT_GFX_CUT_TREE, 18, 26, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_16
+	object_event 5, OBJ_EVENT_GFX_ITEM_BALL, 17, 54, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, Route2_EventScript_ItemEther, FLAG_HIDE_ROUTE2_ETHER
+	object_event 6, OBJ_EVENT_GFX_ITEM_BALL, 17, 64, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, Route2_EventScript_ItemParalyzeHeal, FLAG_HIDE_ROUTE2_PARALYZE_HEAL
+	clone_event 7, OBJ_EVENT_GFX_CUT_TREE, 6, 85, LOCALID_VIRIDIAN_BORDER_TREE, MAP_VIRIDIAN_CITY
+
+Route2_MapWarps:
+	warp_def 5, 13, 3, 3, MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE
+	warp_def 6, 13, 3, 3, MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE
+	warp_def 5, 51, 3, 1, MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE
+	warp_def 17, 11, 3, 1, MAP_DIGLETTS_CAVE_NORTH_ENTRANCE
+	warp_def 17, 22, 0, 1, MAP_ROUTE2_HOUSE
+	warp_def 18, 46, 3, 1, MAP_ROUTE2_EAST_BUILDING
+	warp_def 18, 41, 3, 3, MAP_ROUTE2_EAST_BUILDING
+	warp_def 19, 41, 3, 3, MAP_ROUTE2_EAST_BUILDING
+	warp_def 19, 46, 3, 1, MAP_ROUTE2_EAST_BUILDING
+	warp_def 6, 51, 3, 1, MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE
+
+Route2_MapBGEvents:
+	bg_sign_event 14, 12, 0, BG_EVENT_PLAYER_FACING_ANY, Route2_EventScript_DiglettsCaveSign
+	bg_sign_event 7, 73, 0, BG_EVENT_PLAYER_FACING_ANY, Route2_EventScript_RouteSign
+
+Route2_MapEvents::
+	map_events Route2_ObjectEvents, Route2_MapWarps, NULL, Route2_MapBGEvents
+

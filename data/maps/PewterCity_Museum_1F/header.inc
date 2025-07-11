@@ -1,0 +1,19 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/PewterCity_Museum_1F/map.json
+@
+
+PewterCity_Museum_1F:
+	.4byte PewterCity_Museum_1F_Layout
+	.4byte PewterCity_Museum_1F_MapEvents
+	.4byte PewterCity_Museum_1F_MapScripts
+	.4byte NULL
+	.2byte MUS_PEWTER
+	.2byte LAYOUT_PEWTER_CITY_MUSEUM_1F
+	.byte MAPSEC_PEWTER_CITY
+	.byte FALSE
+	.byte WEATHER_NONE
+	.byte MAP_TYPE_INDOOR
+	map_header_flags allow_cycling=FALSE, allow_escaping=FALSE, allow_running=FALSE, show_map_name=FALSE
+	.byte 0
+	.byte MAP_BATTLE_SCENE_NORMAL
+

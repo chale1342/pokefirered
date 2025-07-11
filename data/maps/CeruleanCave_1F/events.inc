@@ -1,0 +1,33 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/CeruleanCave_1F/map.json
+@
+
+	.align 2
+
+CeruleanCave_1F_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_ITEM_BALL, 7, 3, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, CeruleanCave_1F_EventScript_ItemNugget, FLAG_HIDE_CERULEAN_CAVE_1F_NUGGET
+	object_event 2, OBJ_EVENT_GFX_ITEM_BALL, 11, 16, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, CeruleanCave_1F_EventScript_ItemFullRestore, FLAG_HIDE_CERULEAN_CAVE_1F_FULL_RESTORE
+	object_event 3, OBJ_EVENT_GFX_ITEM_BALL, 25, 5, 4, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, CeruleanCave_1F_EventScript_ItemMaxElixir, FLAG_HIDE_CERULEAN_CAVE_1F_MAX_ELIXIR
+	object_event 4, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 7, 21, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_12
+	object_event 5, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 13, 21, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_13
+	object_event 6, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 5, 20, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_14
+	object_event 7, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 14, 20, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_15
+	object_event 8, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 11, 21, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_16
+	object_event 9, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 9, 18, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_17
+
+CeruleanCave_1F_MapWarps:
+	warp_def 33, 21, 3, 7, MAP_CERULEAN_CITY
+	warp_def 34, 2, 3, 0, MAP_CERULEAN_CAVE_2F
+	warp_def 1, 7, 3, 0, MAP_CERULEAN_CAVE_B1F
+	warp_def 10, 2, 3, 1, MAP_CERULEAN_CAVE_2F
+	warp_def 5, 15, 3, 2, MAP_CERULEAN_CAVE_2F
+	warp_def 30, 10, 4, 3, MAP_CERULEAN_CAVE_2F
+	warp_def 24, 11, 3, 4, MAP_CERULEAN_CAVE_2F
+	warp_def 2, 4, 3, 5, MAP_CERULEAN_CAVE_2F
+
+CeruleanCave_1F_MapBGEvents:
+	bg_hidden_item_event 12, 2, 3, ITEM_ULTRA_BALL, FLAG_HIDDEN_ITEM_CERULEAN_CAVE_1F_ULTRA_BALL, 1, FALSE
+
+CeruleanCave_1F_MapEvents::
+	map_events CeruleanCave_1F_ObjectEvents, CeruleanCave_1F_MapWarps, NULL, CeruleanCave_1F_MapBGEvents
+

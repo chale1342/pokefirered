@@ -1,0 +1,29 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/RocketHideout_B1F/map.json
+@
+
+	.align 2
+
+RocketHideout_B1F_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_ROCKET_M, 4, 9, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 5, RocketHideout_B1F_EventScript_Grunt2, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 2, OBJ_EVENT_GFX_ROCKET_M, 24, 12, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 2, RocketHideout_B1F_EventScript_Grunt1, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 3, OBJ_EVENT_GFX_ROCKET_M, 6, 32, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 4, RocketHideout_B1F_EventScript_Grunt4, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 4, OBJ_EVENT_GFX_ROCKET_M, 10, 22, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 3, RocketHideout_B1F_EventScript_Grunt3, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 5, OBJ_EVENT_GFX_ROCKET_M, 21, 27, 3, MOVEMENT_TYPE_FACE_UP_AND_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 3, RocketHideout_B1F_EventScript_Grunt5, FLAG_HIDE_MISC_KANTO_ROCKETS
+	object_event 6, OBJ_EVENT_GFX_ITEM_BALL, 5, 16, 0, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B1F_EventScript_ItemEscapeRope, FLAG_HIDE_ROCKET_HIDEOUT_B1F_ESCAPE_ROPE
+	object_event 7, OBJ_EVENT_GFX_ITEM_BALL, 1, 22, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, RocketHideout_B1F_EventScript_ItemHyperPotion, FLAG_HIDE_ROCKET_HIDEOUT_B1F_HYPER_POTION
+
+RocketHideout_B1F_MapWarps:
+	warp_def 12, 2, 3, 3, MAP_CELADON_CITY_GAME_CORNER
+	warp_def 17, 2, 3, 1, MAP_ROCKET_HIDEOUT_B2F
+	warp_def 15, 30, 3, 2, MAP_ROCKET_HIDEOUT_B2F
+	warp_def 23, 25, 0, 1, MAP_ROCKET_HIDEOUT_ELEVATOR
+	warp_def 24, 25, 0, 1, MAP_ROCKET_HIDEOUT_ELEVATOR
+	warp_def 25, 25, 0, 1, MAP_ROCKET_HIDEOUT_ELEVATOR
+
+RocketHideout_B1F_MapBGEvents:
+	bg_hidden_item_event 16, 17, 0, ITEM_PP_UP, FLAG_HIDDEN_ITEM_ROCKET_HIDEOUT_B1F_PP_UP, 1, FALSE
+
+RocketHideout_B1F_MapEvents::
+	map_events RocketHideout_B1F_ObjectEvents, RocketHideout_B1F_MapWarps, NULL, RocketHideout_B1F_MapBGEvents
+

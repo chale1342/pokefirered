@@ -1,0 +1,22 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/UndergroundPath_EastWestTunnel/map.json
+@
+
+	.align 2
+
+UndergroundPath_EastWestTunnel_MapWarps:
+	warp_def 76, 3, 3, 3, MAP_UNDERGROUND_PATH_EAST_ENTRANCE
+	warp_def 3, 4, 3, 3, MAP_UNDERGROUND_PATH_WEST_ENTRANCE
+
+UndergroundPath_EastWestTunnel_MapBGEvents:
+	bg_hidden_item_event 7, 3, 3, ITEM_POTION, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_POTION, 1, FALSE
+	bg_hidden_item_event 17, 5, 3, ITEM_PARALYZE_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_PARALYZE_HEAL, 1, FALSE
+	bg_hidden_item_event 31, 4, 3, ITEM_AWAKENING, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_AWAKENING, 1, FALSE
+	bg_hidden_item_event 45, 3, 3, ITEM_BURN_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_BURN_HEAL, 1, FALSE
+	bg_hidden_item_event 70, 3, 3, ITEM_ICE_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_ICE_HEAL, 1, FALSE
+	bg_hidden_item_event 55, 2, 3, ITEM_ETHER, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_ETHER, 1, FALSE
+	bg_hidden_item_event 62, 5, 3, ITEM_ANTIDOTE, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_EAST_WEST_TUNNEL_ANTIDOTE, 1, FALSE
+
+UndergroundPath_EastWestTunnel_MapEvents::
+	map_events NULL, UndergroundPath_EastWestTunnel_MapWarps, NULL, UndergroundPath_EastWestTunnel_MapBGEvents
+

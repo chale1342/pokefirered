@@ -1,0 +1,29 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/Route9/map.json
+@
+
+	.align 2
+
+Route9_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_PICNICKER, 14, 10, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 3, Route9_EventScript_Alicia, 0
+	object_event 2, OBJ_EVENT_GFX_HIKER, 20, 17, 3, MOVEMENT_TYPE_FACE_UP_AND_LEFT, 1, 1, TRAINER_TYPE_NORMAL, 4, Route9_EventScript_Jeremy, 0
+	object_event 3, OBJ_EVENT_GFX_HIKER, 61, 16, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 1, Route9_EventScript_Alan, 0
+	object_event 4, OBJ_EVENT_GFX_CAMPER, 26, 7, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 3, Route9_EventScript_Chris, 0
+	object_event 5, OBJ_EVENT_GFX_BUG_CATCHER, 26, 1, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NORMAL, 2, Route9_EventScript_Brent, 0
+	object_event 6, OBJ_EVENT_GFX_BUG_CATCHER, 49, 7, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 3, Route9_EventScript_Conner, 0
+	object_event 7, OBJ_EVENT_GFX_HIKER, 53, 2, 3, MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT, 3, 1, TRAINER_TYPE_NORMAL, 1, Route9_EventScript_Brice, 0
+	object_event 8, OBJ_EVENT_GFX_PICNICKER, 60, 9, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 4, Route9_EventScript_Caitlin, 0
+	object_event 9, OBJ_EVENT_GFX_CAMPER, 36, 6, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 5, Route9_EventScript_Drew, 0
+	object_event 10, OBJ_EVENT_GFX_CUT_TREE, 2, 8, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_12
+	object_event 11, OBJ_EVENT_GFX_ITEM_BALL, 12, 17, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, Route9_EventScript_ItemTM40, FLAG_HIDE_ROUTE9_TM40
+	object_event 12, OBJ_EVENT_GFX_ITEM_BALL, 65, 17, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, Route9_EventScript_ItemBurnHeal, FLAG_HIDE_ROUTE9_BURN_HEAL
+
+Route9_MapBGEvents:
+	bg_sign_event 29, 7, 0, BG_EVENT_PLAYER_FACING_ANY, Route9_EventScript_RouteSign
+	bg_hidden_item_event 15, 7, 0, ITEM_ETHER, FLAG_HIDDEN_ITEM_ROUTE9_ETHER, 1, FALSE
+	bg_hidden_item_event 63, 2, 3, ITEM_RARE_CANDY, FLAG_HIDDEN_ITEM_ROUTE9_RARE_CANDY, 1, FALSE
+	bg_hidden_item_event 48, 2, 3, ITEM_CHESTO_BERRY, FLAG_HIDDEN_ITEM_ROUTE9_CHESTO_BERRY, 1, FALSE
+
+Route9_MapEvents::
+	map_events Route9_ObjectEvents, NULL, NULL, Route9_MapBGEvents
+
