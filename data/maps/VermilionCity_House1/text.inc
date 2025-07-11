@@ -32,3 +32,12 @@ VermilionCity_House1_Text_NoRoomForNiceGift::
     .string "I had a nice gift for you, but you\n"
     .string "have no room for it!$"
 
+VermilionCity_House1_Text_FishingGuruLeft::
+    .string "Oh, you're looking for the FISHING\n"
+    .string "GURU?\p"
+    .string "He's moved to the POKéMON MART in\n"
+    .string "VIRIDIAN CITY.\p"
+    .string "Said he wanted to spread the joy\n"
+    .string "of fishing to new trainers right\l"
+    .string "at the start of their journey!$"
+
