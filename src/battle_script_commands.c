@@ -3144,6 +3144,10 @@ static void Cmd_getexp(void)
         {
             u16 calculatedExp;
             s32 viaSentIn;
+            bool8 expShareAll = FALSE;
+            // Check if Exp. Share option is enabled
+            if (gSaveBlock2Ptr && gSaveBlock2Ptr->optionsExpShare)
+                expShareAll = TRUE;
 
             for (viaSentIn = 0, i = 0; i < PARTY_SIZE; i++)
             {
@@ -3159,13 +3163,23 @@ static void Cmd_getexp(void)
                 else
                     holdEffect = ItemId_GetHoldEffect(item);
 
-                if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+                if (!expShareAll && holdEffect == HOLD_EFFECT_EXP_SHARE)
                     viaExpShare++;
             }
 
             calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
 
-            if (viaExpShare) // at least one mon is getting exp via exp share
+            if (expShareAll)
+            {
+                // Gen 6+ style: all non-fainted, non-egg party Pokémon get exp
+                *exp = SAFE_DIV(calculatedExp, viaSentIn);
+                if (*exp == 0)
+                    *exp = 1;
+                gExpShareExp = calculatedExp / PARTY_SIZE;
+                if (gExpShareExp == 0)
+                    gExpShareExp = 1;
+            }
+            else if (viaExpShare)
             {
                 *exp = SAFE_DIV(calculatedExp / 2, viaSentIn);
                 if (*exp == 0)
