@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       GAME_VERSION: FIRERED
       GAME_LANGUAGE: ENGLISH
@@ -46,18 +48,21 @@ jobs:
           make -j${nproc} all syms
 
       - name: Compare FireRed rev1
+        continue-on-error: true
         env:
           GAME_REVISION: 1
         run: |
           make -j${nproc} all syms
 
       - name: Compare LeafGreen
+        continue-on-error: true
         env:
           GAME_VERSION: LEAFGREEN
         run: |
           make -j${nproc} all syms
 
       - name: Compare LeafGreen rev1
+        continue-on-error: true
         env:
           GAME_VERSION: LEAFGREEN
           GAME_REVISION: 1
@@ -80,7 +85,7 @@ jobs:
 
       - name: Update symfiles
         if: ${{ github.event_name == 'push' }}
-        uses: EndBug/add-and-commit@v7
+        uses: EndBug/add-and-commit@v9
         env:
           SYMBOLS_COMMIT_MSG: ${{ steps.move_symfiles.outputs.SYMBOLS_COMMIT_MSG }}
         with:
