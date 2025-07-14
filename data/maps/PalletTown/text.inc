@@ -76,17 +76,20 @@ PalletTown_Text_Mom_GiveShoes::
 PalletTown_Text_Mom_Repeat::
     .string "MOM: You're always welcome to rest here.$"
 PalletTown_Text_MomBeforeShoes::
-    .string "MOM: {PLAYER}, I packed these for you.\n"
-    .string "They'll help you on your journey!\p"
+    .string "Hey there! I noticed you're just\n"
+    .string "starting your journey.\p"
+    .string "Here, take these! They'll help you\n"
+    .string "move faster!\p"
     .string "You received the RUNNING SHOES!$"
 
 PalletTown_Text_MomAfterShoes::
-    .string "MOM: Now you can run by holding the\n"
-    .string "B button. Stay safe out there!$"
+    .string "Now you can run by holding the\n"
+    .string "B button. Good luck on your journey!$"
 
 PalletTown_Text_MomRepeat::
-    .string "MOM: Remember to hold B to run!\n"
-    .string "And don't forget to call.$"
+    .string "Remember to hold B to run!\n"
+    .string "Stay safe out there!$"
 
 PalletTown_Text_MomGotRunningShoes::
-    .string "Don't run in the house!$"
+    .string "Those shoes should help you on\n"
+    .string "your adventure!$"
