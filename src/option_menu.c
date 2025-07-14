@@ -24,6 +24,7 @@ enum
     MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
+    MENUITEM_BATTLESPEED,
     MENUITEM_CANCEL,
     MENUITEM_COUNT
 };
@@ -132,7 +133,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 };
 
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 3, 0};
 
 static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 {
@@ -143,6 +144,7 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
     [MENUITEM_EXPSHARE]    = gText_ExpShare,
+    [MENUITEM_BATTLESPEED] = gText_BattleSpeed,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
 static const u8 *const sExpShareOptions[] =
@@ -183,6 +185,13 @@ static const u8 *const sButtonTypeOptions[] =
     gText_ButtonTypeLEqualsA
 };
 
+static const u8 *const sBattleSpeedOptions[] =
+{
+    gText_BattleSpeedNormal,
+    gText_BattleSpeedFast,
+    gText_BattleSpeedUltraFast
+};
+
 static const u8 sOptionMenuPickSwitchCancelTextColor[] = {TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 static const u8 sOptionMenuTextColor[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_LIGHT_RED, TEXT_COLOR_RED};
 
@@ -220,6 +229,7 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
     sOptionMenuPtr->option[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
     sOptionMenuPtr->option[MENUITEM_EXPSHARE] = gSaveBlock2Ptr->optionsExpShare;
+    sOptionMenuPtr->option[MENUITEM_BATTLESPEED] = gSaveBlock2Ptr->optionsBattleSpeed;
     
     for (i = 0; i < MENUITEM_COUNT - 1; i++)
     {
@@ -509,6 +519,9 @@ static void BufferOptionMenuString(u8 selection)
     case MENUITEM_EXPSHARE:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[selection]]);
         break;
+    case MENUITEM_BATTLESPEED:
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sBattleSpeedOptions[sOptionMenuPtr->option[selection]]);
+        break;
     default:
         break;
     }
@@ -528,6 +541,7 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = sOptionMenuPtr->option[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
     gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
+    gSaveBlock2Ptr->optionsBattleSpeed = sOptionMenuPtr->option[MENUITEM_BATTLESPEED];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
     FREE_AND_SET_NULL(sOptionMenuPtr);
     DestroyTask(taskId);
