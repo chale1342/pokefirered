@@ -318,8 +318,9 @@ static const struct MenuAction sMultichoiceList_GameCornerPokemonPrizes[] = {
 #if defined(FIRERED)
     { gText_Abra_180Coins },
     { gText_Clefairy_500Coins },
-    { gText_Dratini_2800Coins },
+    { gText_Pinsir_2500Coins },
     { gText_Scyther_5500Coins },
+    { gText_Dratini_4600Coins },
     { gText_Porygon_9999Coins },
 #elif defined(LEAFGREEN)
     { gText_Abra_120Coins },

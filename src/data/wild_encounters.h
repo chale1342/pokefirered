@@ -903,10 +903,10 @@ const struct WildPokemonInfo sSeafoamIslandsB3F_FireRed_LandMonsInfo = { 7, sSea
 const struct WildPokemon sSeafoamIslandsB3F_FireRed_WaterMons[] =
 {
     { 25, 35, SPECIES_SEEL },
-    { 25, 30, SPECIES_HORSEA },
+    { 25, 30, SPECIES_SLOWPOKE }, // Added LeafGreen exclusive
     { 35, 40, SPECIES_DEWGONG },
     { 30, 40, SPECIES_PSYDUCK },
-    { 35, 40, SPECIES_GOLDUCK },
+    { 35, 40, SPECIES_SLOWBRO }, // Added LeafGreen exclusive
 };
 
 const struct WildPokemonInfo sSeafoamIslandsB3F_FireRed_WaterMonsInfo = { 2, sSeafoamIslandsB3F_FireRed_WaterMons };
@@ -1084,7 +1084,7 @@ const struct WildPokemon sPowerPlant_FireRed_LandMons[] =
     { 31, 31, SPECIES_MAGNETON },
     { 34, 34, SPECIES_MAGNETON },
     { 26, 26, SPECIES_PIKACHU },
-    { 32, 32, SPECIES_ELECTABUZZ },
+    { 32, 32, SPECIES_MAGMAR }, // Added LeafGreen exclusive
     { 26, 26, SPECIES_PIKACHU },
     { 35, 35, SPECIES_ELECTABUZZ },
 };
@@ -2527,9 +2527,9 @@ const struct WildPokemon sRoute4_FireRed_LandMons[] =
     { 12, 12, SPECIES_SPEAROW },
     { 12, 12, SPECIES_RATTATA },
     { 10, 10, SPECIES_MANKEY },
-    { 8, 8, SPECIES_EKANS },
+    { 8, 8, SPECIES_SANDSHREW },  // Added LeafGreen exclusive
     { 12, 12, SPECIES_MANKEY },
-    { 12, 12, SPECIES_EKANS },
+    { 12, 12, SPECIES_SANDSHREW }, // Added LeafGreen exclusive
 };
 
 const struct WildPokemonInfo sRoute4_FireRed_LandMonsInfo = { 21, sRoute4_FireRed_LandMons };
@@ -2569,11 +2569,11 @@ const struct WildPokemon sRoute5_FireRed_LandMons[] =
     { 12, 12, SPECIES_MEOWTH },
     { 15, 15, SPECIES_ODDISH },
     { 15, 15, SPECIES_PIDGEY },
-    { 16, 16, SPECIES_ODDISH },
+    { 16, 16, SPECIES_BELLSPROUT }, // Added LeafGreen exclusive
     { 16, 16, SPECIES_PIDGEY },
     { 15, 15, SPECIES_PIDGEY },
     { 14, 14, SPECIES_MEOWTH },
-    { 15, 15, SPECIES_PIDGEY },
+    { 15, 15, SPECIES_BELLSPROUT }, // Added LeafGreen exclusive
     { 16, 16, SPECIES_MEOWTH },
 };
 
@@ -2654,10 +2654,10 @@ const struct WildPokemon sRoute8_FireRed_LandMons[] =
     { 20, 20, SPECIES_PIDGEY },
     { 20, 20, SPECIES_MEOWTH },
     { 17, 17, SPECIES_EKANS },
-    { 17, 17, SPECIES_GROWLITHE },
+    { 17, 17, SPECIES_VULPIX }, // Added LeafGreen exclusive
     { 19, 19, SPECIES_EKANS },
     { 17, 17, SPECIES_EKANS },
-    { 15, 15, SPECIES_GROWLITHE },
+    { 15, 15, SPECIES_VULPIX }, // Added LeafGreen exclusive
     { 17, 17, SPECIES_EKANS },
     { 18, 18, SPECIES_GROWLITHE },
 };
