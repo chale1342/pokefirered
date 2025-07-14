@@ -342,6 +342,7 @@ struct SaveBlock2
               u16 optionsBattleSceneOff:1; // whether battle animations are disabled
               u16 regionMapZoom:1; // whether the map is zoomed in
               u16 optionsExpShare:1; // Exp. Share toggle (0 = off, 1 = on)
+              u16 optionsBattleSpeed:2; // OPTIONS_BATTLE_SPEED_[NORMAL/FAST/ULTRA_FAST]
     /*0x018*/ struct Pokedex pokedex;
     /*0x090*/ u8 filler_90[0x8];
     /*0x098*/ struct Time localTimeOffset;

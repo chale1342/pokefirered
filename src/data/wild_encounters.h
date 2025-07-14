@@ -903,10 +903,10 @@ const struct WildPokemonInfo sSeafoamIslandsB3F_FireRed_LandMonsInfo = { 7, sSea
 const struct WildPokemon sSeafoamIslandsB3F_FireRed_WaterMons[] =
 {
     { 25, 35, SPECIES_SEEL },
-    { 25, 30, SPECIES_SLOWPOKE }, // Added LeafGreen exclusive
+    { 25, 30, SPECIES_HORSEA },
     { 35, 40, SPECIES_DEWGONG },
     { 30, 40, SPECIES_PSYDUCK },
-    { 35, 40, SPECIES_SLOWBRO }, // Added LeafGreen exclusive
+    { 35, 40, SPECIES_GOLDUCK },
 };
 
 const struct WildPokemonInfo sSeafoamIslandsB3F_FireRed_WaterMonsInfo = { 2, sSeafoamIslandsB3F_FireRed_WaterMons };
@@ -1084,7 +1084,7 @@ const struct WildPokemon sPowerPlant_FireRed_LandMons[] =
     { 31, 31, SPECIES_MAGNETON },
     { 34, 34, SPECIES_MAGNETON },
     { 26, 26, SPECIES_PIKACHU },
-    { 32, 32, SPECIES_MAGMAR }, // Added LeafGreen exclusive
+    { 32, 32, SPECIES_ELECTABUZZ },
     { 26, 26, SPECIES_PIKACHU },
     { 35, 35, SPECIES_ELECTABUZZ },
 };
@@ -2527,9 +2527,9 @@ const struct WildPokemon sRoute4_FireRed_LandMons[] =
     { 12, 12, SPECIES_SPEAROW },
     { 12, 12, SPECIES_RATTATA },
     { 10, 10, SPECIES_MANKEY },
-    { 8, 8, SPECIES_SANDSHREW },  // Added LeafGreen exclusive
+    { 8, 8, SPECIES_EKANS },
     { 12, 12, SPECIES_MANKEY },
-    { 12, 12, SPECIES_SANDSHREW }, // Added LeafGreen exclusive
+    { 12, 12, SPECIES_EKANS },
 };
 
 const struct WildPokemonInfo sRoute4_FireRed_LandMonsInfo = { 21, sRoute4_FireRed_LandMons };
@@ -2569,11 +2569,11 @@ const struct WildPokemon sRoute5_FireRed_LandMons[] =
     { 12, 12, SPECIES_MEOWTH },
     { 15, 15, SPECIES_ODDISH },
     { 15, 15, SPECIES_PIDGEY },
-    { 16, 16, SPECIES_BELLSPROUT }, // Added LeafGreen exclusive
+    { 16, 16, SPECIES_ODDISH },
     { 16, 16, SPECIES_PIDGEY },
     { 15, 15, SPECIES_PIDGEY },
     { 14, 14, SPECIES_MEOWTH },
-    { 15, 15, SPECIES_BELLSPROUT }, // Added LeafGreen exclusive
+    { 15, 15, SPECIES_PIDGEY },
     { 16, 16, SPECIES_MEOWTH },
 };
 
@@ -2610,16 +2610,16 @@ const struct WildPokemon sRoute6_FireRed_WaterMons[] =
 const struct WildPokemonInfo sRoute6_FireRed_WaterMonsInfo = { 2, sRoute6_FireRed_WaterMons };
 const struct WildPokemon sRoute6_FireRed_FishingMons[] =
 {
-    { 5, 8, SPECIES_MAGIKARP },
-    { 5, 10, SPECIES_POLIWAG },     // Early Poliwag for Charmander players
-    { 8, 15, SPECIES_POLIWAG },     // More Poliwag encounters
-    { 8, 15, SPECIES_STARYU },      // Added Staryu for Rock-type effectiveness
-    { 10, 18, SPECIES_GOLDEEN },
-    { 12, 20, SPECIES_POLIWAG },    // Mid-level Poliwag
-    { 15, 25, SPECIES_POLIWHIRL },  // Evolution available
-    { 15, 25, SPECIES_STARMIE },    // Added Starmie for strong Water/Psychic option
-    { 20, 30, SPECIES_PSYDUCK },
-    { 20, 30, SPECIES_GYARADOS },   // Late encounter reward
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_POLIWAG },
+    { 5, 15, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_GOLDEEN },
+    { 15, 25, SPECIES_POLIWAG },
+    { 20, 30, SPECIES_POLIWHIRL },
+    { 15, 25, SPECIES_GYARADOS },
+    { 15, 25, SPECIES_PSYDUCK },
+    { 25, 35, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sRoute6_FireRed_FishingMonsInfo = { 20, sRoute6_FireRed_FishingMons };
@@ -2654,10 +2654,10 @@ const struct WildPokemon sRoute8_FireRed_LandMons[] =
     { 20, 20, SPECIES_PIDGEY },
     { 20, 20, SPECIES_MEOWTH },
     { 17, 17, SPECIES_EKANS },
-    { 17, 17, SPECIES_VULPIX }, // Added LeafGreen exclusive
+    { 17, 17, SPECIES_GROWLITHE },
     { 19, 19, SPECIES_EKANS },
     { 17, 17, SPECIES_EKANS },
-    { 15, 15, SPECIES_VULPIX }, // Added LeafGreen exclusive
+    { 15, 15, SPECIES_GROWLITHE },
     { 17, 17, SPECIES_EKANS },
     { 18, 18, SPECIES_GROWLITHE },
 };
@@ -3141,16 +3141,16 @@ const struct WildPokemon sRoute22_FireRed_WaterMons[] =
 const struct WildPokemonInfo sRoute22_FireRed_WaterMonsInfo = { 2, sRoute22_FireRed_WaterMons };
 const struct WildPokemon sRoute22_FireRed_FishingMons[] =
 {
-    { 5, 8, SPECIES_MAGIKARP },
-    { 5, 10, SPECIES_POLIWAG },     // Early Poliwag for Charmander players
-    { 8, 15, SPECIES_POLIWAG },     // More Poliwag encounters  
-    { 8, 15, SPECIES_STARYU },      // Added Staryu for Rock-type effectiveness
-    { 10, 18, SPECIES_GOLDEEN },
-    { 12, 20, SPECIES_POLIWAG },    // Mid-level Poliwag
-    { 15, 25, SPECIES_POLIWHIRL },  // Evolution available
-    { 18, 25, SPECIES_GYARADOS },   // Powerful late encounter
-    { 20, 30, SPECIES_PSYDUCK },
-    { 20, 30, SPECIES_GOLDUCK },    // Added Golduck for variety
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_POLIWAG },
+    { 5, 15, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_GOLDEEN },
+    { 15, 25, SPECIES_POLIWAG },
+    { 20, 30, SPECIES_POLIWHIRL },
+    { 15, 25, SPECIES_GYARADOS },
+    { 15, 25, SPECIES_PSYDUCK },
+    { 25, 35, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sRoute22_FireRed_FishingMonsInfo = { 20, sRoute22_FireRed_FishingMons };
@@ -3305,15 +3305,15 @@ const struct WildPokemonInfo sPalletTown_FireRed_WaterMonsInfo = { 1, sPalletTow
 const struct WildPokemon sPalletTown_FireRed_FishingMons[] =
 {
     { 5, 10, SPECIES_MAGIKARP },
-    { 5, 10, SPECIES_POLIWAG },    // Added early Poliwag for Charmander players
+    { 5, 10, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_HORSEA },
-    { 5, 15, SPECIES_POLIWAG },    // More common Poliwag
+    { 5, 15, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_KRABBY },
-    { 10, 20, SPECIES_POLIWAG },   // Mid-level Poliwag
+    { 15, 25, SPECIES_HORSEA },
     { 15, 25, SPECIES_SHELLDER },
     { 15, 25, SPECIES_GYARADOS },
-    { 20, 30, SPECIES_SEADRA },
-    { 20, 30, SPECIES_PSYDUCK },   // Added Psyduck for variety
+    { 25, 35, SPECIES_SEADRA },
+    { 25, 35, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sPalletTown_FireRed_FishingMonsInfo = { 10, sPalletTown_FireRed_FishingMons };
@@ -3332,16 +3332,16 @@ const struct WildPokemon sViridianCity_FireRed_WaterMons[] =
 const struct WildPokemonInfo sViridianCity_FireRed_WaterMonsInfo = { 1, sViridianCity_FireRed_WaterMons };
 const struct WildPokemon sViridianCity_FireRed_FishingMons[] =
 {
-    { 5, 8, SPECIES_MAGIKARP },     // Lower level for early access
-    { 5, 8, SPECIES_POLIWAG },      // Early Poliwag for Charmander players
-    { 5, 12, SPECIES_POLIWAG },     // More Poliwag encounters
-    { 5, 12, SPECIES_STARYU },      // Added Staryu for variety and effectiveness vs Rock
-    { 8, 15, SPECIES_GOLDEEN },
-    { 10, 18, SPECIES_POLIWAG },    // Mid-level Poliwag
-    { 12, 20, SPECIES_STARYU },     // Mid-level Staryu
-    { 15, 25, SPECIES_POLIWHIRL },  // Higher evolution for late encounters
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_POLIWAG },
+    { 5, 15, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_GOLDEEN },
+    { 15, 25, SPECIES_POLIWAG },
+    { 20, 30, SPECIES_POLIWHIRL },
     { 15, 25, SPECIES_GYARADOS },
-    { 20, 30, SPECIES_PSYDUCK },
+    { 15, 25, SPECIES_PSYDUCK },
+    { 25, 35, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sViridianCity_FireRed_FishingMonsInfo = { 10, sViridianCity_FireRed_FishingMons };
