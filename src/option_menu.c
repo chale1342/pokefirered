@@ -142,13 +142,13 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_SOUND]       = gText_Sound,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
-    [MENUITEM_EXPSHARE]    = (const u8*)"Exp. Share",
+    [MENUITEM_EXPSHARE]    = gText_ExpShare,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
 static const u8 *const sExpShareOptions[] =
 {
-    (const u8*)"Off",
-    (const u8*)"On"
+    gText_ExpShareOff,
+    gText_ExpShareOn
 };
 
 static const u8 *const sTextSpeedOptions[] =
