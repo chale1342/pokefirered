@@ -85,7 +85,7 @@ static const struct WindowTemplate sOptionMenuWinTemplates[] =
         .tilemapLeft = 2,
         .tilemapTop = 7,
         .width = 26,
-        .height = 12,
+        .height = 14,
         .paletteNum = 1,
         .baseBlock = 0x36
     },

@@ -1,4 +1,6 @@
 #include "global.h"
+#include "battle.h"
+#include "constants/global.h"
 #include "gflib.h"
 #include "item.h"
 #include "util.h"
@@ -38,6 +40,21 @@
 #include "constants/maps.h"
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
+
+// Helper function to get battle speed multiplier
+static u16 GetBattleSpeedMultiplier(u16 originalDelay)
+{
+    switch (gSaveBlock2Ptr->optionsBattleSpeed)
+    {
+    case 1: // BATTLESPEED_FAST
+        return originalDelay / 2; // 2x speed
+    case 2: // BATTLESPEED_ULTRA_FAST
+        return originalDelay / 4; // 4x speed  
+    default:
+    case 0: // BATTLESPEED_NORMAL
+        return originalDelay; // Normal speed
+    }
+}
 
 #define DEFENDER_IS_PROTECTED ((gProtectStructs[gBattlerTarget].protected) && (gBattleMoves[gCurrentMove].flags & FLAG_PROTECT_AFFECTED))
 
@@ -2049,6 +2066,7 @@ static void Cmd_waitmessage(void)
         else
         {
             u16 toWait = T2_READ_16(gBattlescriptCurrInstr + 1);
+            toWait = GetBattleSpeedMultiplier(toWait);
             if (++gPauseCounterBattle >= toWait)
             {
                 gPauseCounterBattle = 0;
@@ -3779,6 +3797,7 @@ static void Cmd_pause(void)
     if (gBattleControllerExecFlags == 0)
     {
         u16 value = T2_READ_16(gBattlescriptCurrInstr + 1);
+        value = GetBattleSpeedMultiplier(value);
         if (++gPauseCounterBattle >= value)
         {
             gPauseCounterBattle = 0;
