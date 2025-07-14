@@ -13,7 +13,7 @@ PokemonTower_3F:
 	.byte FALSE
 	.byte WEATHER_FOG_HORIZONTAL
 	.byte MAP_TYPE_INDOOR
-	map_header_flags allow_cycling=FALSE, allow_escaping=TRUE, allow_running=FALSE, show_map_name=TRUE
+	map_header_flags allow_cycling=FALSE, allow_escaping=TRUE, allow_running=TRUE, show_map_name=TRUE
 	.byte 0
 	.byte MAP_BATTLE_SCENE_INDOOR_1
 
