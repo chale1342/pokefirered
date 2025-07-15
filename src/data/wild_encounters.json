@@ -13370,9 +13370,9 @@
                 "species": "SPECIES_ZUBAT"
               },
               {
-                "min_level": 12,
-                "max_level": 12,
-                "species": "SPECIES_CLEFAIRY"
+                "min_level": 15,
+                "max_level": 15,
+                "species": "SPECIES_KABUTO"
               }
             ],
             "encounter_rate": 7
@@ -13597,9 +13597,9 @@
                 "species": "SPECIES_MACHOKE"
               },
               {
-                "min_level": 46,
-                "max_level": 46,
-                "species": "SPECIES_MAROWAK"
+                "min_level": 45,
+                "max_level": 45,
+                "species": "SPECIES_HITMONLEE"
               }
             ],
             "encounter_rate": 7
@@ -13666,9 +13666,9 @@
                 "species": "SPECIES_MACHOKE"
               },
               {
-                "min_level": 48,
-                "max_level": 48,
-                "species": "SPECIES_MAROWAK"
+                "min_level": 45,
+                "max_level": 45,
+                "species": "SPECIES_HITMONCHAN"
               }
             ],
             "encounter_rate": 7
@@ -15232,9 +15232,9 @@
                 "species": "SPECIES_GEODUDE"
               },
               {
-                "min_level": 17,
-                "max_level": 17,
-                "species": "SPECIES_ONIX"
+                "min_level": 25,
+                "max_level": 25,
+                "species": "SPECIES_AERODACTYL"
               }
             ],
             "encounter_rate": 7
@@ -15402,7 +15402,7 @@
               {
                 "min_level": 30,
                 "max_level": 30,
-                "species": "SPECIES_GOLBAT"
+                "species": "SPECIES_JYNX"
               }
             ],
             "encounter_rate": 7
@@ -15777,9 +15777,9 @@
                 "species": "SPECIES_SLOWPOKE"
               },
               {
-                "min_level": 25,
-                "max_level": 35,
-                "species": "SPECIES_GYARADOS"
+                "min_level": 30,
+                "max_level": 30,
+                "species": "SPECIES_OMANYTE"
               }
             ],
             "encounter_rate": 20
@@ -21957,9 +21957,9 @@
                 "species": "SPECIES_PIDGEY"
               },
               {
-                "min_level": 30,
-                "max_level": 30,
-                "species": "SPECIES_WEEPINBELL"
+                "min_level": 25,
+                "max_level": 25,
+                "species": "SPECIES_FARFETCHD"
               }
             ],
             "encounter_rate": 21
