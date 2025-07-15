@@ -3304,9 +3304,9 @@ const struct WildPokemon sPalletTown_FireRed_WaterMons[] =
 const struct WildPokemonInfo sPalletTown_FireRed_WaterMonsInfo = { 1, sPalletTown_FireRed_WaterMons };
 const struct WildPokemon sPalletTown_FireRed_FishingMons[] =
 {
-    { 5, 10, SPECIES_HORSEA },
-    { 6, 12, SPECIES_KRABBY },
-    { 8, 15, SPECIES_MAGIKARP },
+    { 5, 10, SPECIES_MAGIKARP },
+    { 5, 10, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_HORSEA },
     { 5, 15, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_KRABBY },
     { 15, 25, SPECIES_HORSEA },
@@ -3332,9 +3332,9 @@ const struct WildPokemon sViridianCity_FireRed_WaterMons[] =
 const struct WildPokemonInfo sViridianCity_FireRed_WaterMonsInfo = { 1, sViridianCity_FireRed_WaterMons };
 const struct WildPokemon sViridianCity_FireRed_FishingMons[] =
 {
-    { 5, 10, SPECIES_POLIWAG },
-    { 6, 12, SPECIES_POLIWAG },
-    { 8, 15, SPECIES_PSYDUCK },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_POLIWAG },
     { 5, 15, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_GOLDEEN },
     { 15, 25, SPECIES_POLIWAG },
@@ -7011,9 +7011,9 @@ const struct WildPokemon sPalletTown_LeafGreen_WaterMons[] =
 const struct WildPokemonInfo sPalletTown_LeafGreen_WaterMonsInfo = { 1, sPalletTown_LeafGreen_WaterMons };
 const struct WildPokemon sPalletTown_LeafGreen_FishingMons[] =
 {
-    { 5, 10, SPECIES_KRABBY },
-    { 6, 12, SPECIES_HORSEA },
-    { 8, 15, SPECIES_MAGIKARP },
+    { 5, 10, SPECIES_MAGIKARP },
+    { 5, 10, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_KRABBY },
     { 5, 15, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_HORSEA },
     { 15, 25, SPECIES_KRABBY },
@@ -7039,9 +7039,9 @@ const struct WildPokemon sViridianCity_LeafGreen_WaterMons[] =
 const struct WildPokemonInfo sViridianCity_LeafGreen_WaterMonsInfo = { 1, sViridianCity_LeafGreen_WaterMons };
 const struct WildPokemon sViridianCity_LeafGreen_FishingMons[] =
 {
-    { 5, 10, SPECIES_POLIWAG },
-    { 6, 12, SPECIES_POLIWAG },
-    { 8, 15, SPECIES_SLOWPOKE },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 5, SPECIES_MAGIKARP },
+    { 5, 15, SPECIES_POLIWAG },
     { 5, 15, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_GOLDEEN },
     { 15, 25, SPECIES_POLIWAG },

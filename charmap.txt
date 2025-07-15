@@ -152,6 +152,10 @@ SUPER_RE    = A0
 'ö'         = F5
 'ü'         = F6
 @ Arrows at F7-FA are duplicates of 79-7C. Unused?
+@ Nature stat indicators
+ARROW_SPACER = F7
+NATURE_UP_ARROW    = F8
+NATURE_DOWN_ARROW  = F9
 TALL_PLUS   = FC 0C FB
 '$'         = FF
 
