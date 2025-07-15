@@ -13459,9 +13459,9 @@
                 "species": "SPECIES_KRABBY"
               },
               {
-                "min_level": 25,
+                "min_level": 30,
                 "max_level": 35,
-                "species": "SPECIES_SLOWPOKE"
+                "species": "SPECIES_STARMIE"
               }
             ],
             "encounter_rate": 10
@@ -13799,9 +13799,9 @@
                 "species": "SPECIES_RATTATA"
               },
               {
-                "min_level": 32,
-                "max_level": 32,
-                "species": "SPECIES_VULPIX"
+                "min_level": 34,
+                "max_level": 34,
+                "species": "SPECIES_NINETALES"
               },
               {
                 "min_level": 26,
@@ -14696,9 +14696,9 @@
                 "species": "SPECIES_PRIMEAPE"
               },
               {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_DITTO"
+                "min_level": 55,
+                "max_level": 55,
+                "species": "SPECIES_LICKITUNG"
               }
             ],
             "encounter_rate": 7
@@ -17190,9 +17190,9 @@
                 "species": "SPECIES_VENOMOTH"
               },
               {
-                "min_level": 40,
-                "max_level": 40,
-                "species": "SPECIES_HYPNO"
+                "min_level": 38,
+                "max_level": 38,
+                "species": "SPECIES_VICTREEBEL"
               }
             ],
             "encounter_rate": 21
