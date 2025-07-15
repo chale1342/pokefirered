@@ -15,7 +15,7 @@ Route13_ObjectEvents:
 	object_event 8, OBJ_EVENT_GFX_ROCKER, 9, 14, 3, MOVEMENT_TYPE_FACE_UP, 1, 1, TRAINER_TYPE_NORMAL, 3, Route13_EventScript_Robert, 0
 	object_event 9, OBJ_EVENT_GFX_ROCKER, 16, 5, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NORMAL, 3, Route13_EventScript_Perry, 0
 	object_event 10, OBJ_EVENT_GFX_BIKER, 14, 8, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NORMAL, 1, Route13_EventScript_Jared, 0
-	object_event 11, OBJ_EVENT_GFX_CUT_TREE, 44, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_12
+	object_event 11, OBJ_EVENT_GFX_CUT_TREE, 44, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_CUT_TREE_ROUTE13_1
 
 Route13_MapBGEvents:
 	bg_sign_event 41, 12, 0, BG_EVENT_PLAYER_FACING_ANY, Route13_EventScript_RouteSign
