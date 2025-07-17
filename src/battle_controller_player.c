@@ -8,6 +8,7 @@
 #include "party_menu.h"
 #include "pokeball.h"
 #include "strings.h"
+#include "string_util.h"
 #include "pokemon_special_anim.h"
 #include "task.h"
 #include "util.h"
@@ -1454,7 +1455,9 @@ static void MoveSelectionDisplayMoveType(void)
         *txtPtr++ = EXT_CTRL_CODE_BEGIN;
         *txtPtr++ = EXT_CTRL_CODE_COLOR;
         *txtPtr++ = TEXT_COLOR_GREEN;
-        *txtPtr++ = CHAR_SPACE;
+        // Only add space if type name is short enough
+        if (StringLength(gTypeNames[moveType]) <= 5)
+            *txtPtr++ = CHAR_SPACE;
         *txtPtr++ = CHAR_UP_ARROW;
         *txtPtr = EOS;
     }
@@ -1464,7 +1467,9 @@ static void MoveSelectionDisplayMoveType(void)
         *txtPtr++ = EXT_CTRL_CODE_BEGIN;
         *txtPtr++ = EXT_CTRL_CODE_COLOR;
         *txtPtr++ = TEXT_COLOR_RED;
-        *txtPtr++ = CHAR_SPACE;
+        // Only add space if type name is short enough
+        if (StringLength(gTypeNames[moveType]) <= 5)
+            *txtPtr++ = CHAR_SPACE;
         *txtPtr++ = CHAR_DOWN_ARROW;
         *txtPtr = EOS;
     }
