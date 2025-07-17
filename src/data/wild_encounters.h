@@ -3304,16 +3304,16 @@ const struct WildPokemon sPalletTown_FireRed_WaterMons[] =
 const struct WildPokemonInfo sPalletTown_FireRed_WaterMonsInfo = { 1, sPalletTown_FireRed_WaterMons };
 const struct WildPokemon sPalletTown_FireRed_FishingMons[] =
 {
-    { 5, 10, SPECIES_MAGIKARP },
-    { 5, 10, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_HORSEA },
-    { 5, 15, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_KRABBY },
-    { 15, 25, SPECIES_HORSEA },
-    { 15, 25, SPECIES_SHELLDER },
-    { 15, 25, SPECIES_GYARADOS },
-    { 25, 35, SPECIES_SEADRA },
-    { 25, 35, SPECIES_PSYDUCK },
+    { 3, 5, SPECIES_HORSEA },
+    { 3, 6, SPECIES_KRABBY },
+    { 3, 6, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_KRABBY },
+    { 4, 6, SPECIES_HORSEA },
+    { 4, 6, SPECIES_SHELLDER },
+    { 4, 6, SPECIES_GYARADOS },
+    { 5, 6, SPECIES_SEADRA },
+    { 5, 6, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sPalletTown_FireRed_FishingMonsInfo = { 10, sPalletTown_FireRed_FishingMons };
@@ -3332,16 +3332,16 @@ const struct WildPokemon sViridianCity_FireRed_WaterMons[] =
 const struct WildPokemonInfo sViridianCity_FireRed_WaterMonsInfo = { 1, sViridianCity_FireRed_WaterMons };
 const struct WildPokemon sViridianCity_FireRed_FishingMons[] =
 {
-    { 5, 5, SPECIES_MAGIKARP },
-    { 5, 5, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_POLIWAG },
-    { 5, 15, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_GOLDEEN },
-    { 15, 25, SPECIES_POLIWAG },
-    { 20, 30, SPECIES_POLIWHIRL },
-    { 15, 25, SPECIES_GYARADOS },
-    { 15, 25, SPECIES_PSYDUCK },
-    { 25, 35, SPECIES_PSYDUCK },
+    { 3, 5, SPECIES_POLIWAG },
+    { 3, 6, SPECIES_POLIWAG },
+    { 3, 6, SPECIES_PSYDUCK },
+    { 3, 5, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_GOLDEEN },
+    { 4, 6, SPECIES_POLIWAG },
+    { 5, 6, SPECIES_POLIWHIRL },
+    { 4, 6, SPECIES_GYARADOS },
+    { 4, 6, SPECIES_PSYDUCK },
+    { 5, 6, SPECIES_PSYDUCK },
 };
 
 const struct WildPokemonInfo sViridianCity_FireRed_FishingMonsInfo = { 10, sViridianCity_FireRed_FishingMons };
@@ -3965,7 +3965,7 @@ const struct WildPokemon sMtMoonB2F_LeafGreen_LandMons[] =
     { 11, 11, SPECIES_ZUBAT },
     { 11, 11, SPECIES_ZUBAT },
     { 11, 11, SPECIES_ZUBAT },
-    { 12, 12, SPECIES_CLEFAIRY },
+    { 15, 15, SPECIES_KABUTO },
 };
 
 const struct WildPokemonInfo sMtMoonB2F_LeafGreen_LandMonsInfo = { 7, sMtMoonB2F_LeafGreen_LandMons };
@@ -4033,7 +4033,7 @@ const struct WildPokemon sVictoryRoad1F_LeafGreen_LandMons[] =
     { 44, 44, SPECIES_MAROWAK },
     { 44, 44, SPECIES_MACHOKE },
     { 46, 46, SPECIES_MACHOKE },
-    { 46, 46, SPECIES_MAROWAK },
+    { 45, 45, SPECIES_HITMONLEE },
 };
 
 const struct WildPokemonInfo sVictoryRoad1F_LeafGreen_LandMonsInfo = { 7, sVictoryRoad1F_LeafGreen_LandMons };
@@ -4053,7 +4053,7 @@ const struct WildPokemon sVictoryRoad2F_LeafGreen_LandMons[] =
     { 46, 46, SPECIES_MAROWAK },
     { 46, 46, SPECIES_MACHOKE },
     { 48, 48, SPECIES_MACHOKE },
-    { 48, 48, SPECIES_MAROWAK },
+    { 45, 45, SPECIES_HITMONCHAN },
 };
 
 const struct WildPokemonInfo sVictoryRoad2F_LeafGreen_LandMonsInfo = { 7, sVictoryRoad2F_LeafGreen_LandMons };
@@ -4513,7 +4513,7 @@ const struct WildPokemon sRockTunnelB1F_LeafGreen_LandMons[] =
     { 15, 15, SPECIES_GEODUDE },
     { 15, 15, SPECIES_ONIX },
     { 15, 15, SPECIES_GEODUDE },
-    { 17, 17, SPECIES_ONIX },
+    { 25, 25, SPECIES_AERODACTYL },
 };
 
 const struct WildPokemonInfo sRockTunnelB1F_LeafGreen_LandMonsInfo = { 7, sRockTunnelB1F_LeafGreen_LandMons };
@@ -4563,7 +4563,7 @@ const struct WildPokemon sSeafoamIslandsB1F_LeafGreen_LandMons[] =
     { 33, 33, SPECIES_SLOWBRO },
     { 26, 26, SPECIES_ZUBAT },
     { 35, 35, SPECIES_SLOWBRO },
-    { 30, 30, SPECIES_GOLBAT },
+    { 30, 30, SPECIES_JYNX },
 };
 
 const struct WildPokemonInfo sSeafoamIslandsB1F_LeafGreen_LandMonsInfo = { 7, sSeafoamIslandsB1F_LeafGreen_LandMons };
@@ -4673,7 +4673,7 @@ const struct WildPokemon sSeafoamIslandsB4F_LeafGreen_FishingMons[] =
     { 20, 30, SPECIES_KRABBY },
     { 15, 25, SPECIES_GYARADOS },
     { 15, 25, SPECIES_SLOWPOKE },
-    { 25, 35, SPECIES_GYARADOS },
+    { 30, 30, SPECIES_OMANYTE },
 };
 
 const struct WildPokemonInfo sSeafoamIslandsB4F_LeafGreen_FishingMonsInfo = { 20, sSeafoamIslandsB4F_LeafGreen_FishingMons };
@@ -6496,7 +6496,7 @@ const struct WildPokemon sRoute12_LeafGreen_LandMons[] =
     { 23, 23, SPECIES_PIDGEY },
     { 28, 28, SPECIES_WEEPINBELL },
     { 23, 23, SPECIES_PIDGEY },
-    { 30, 30, SPECIES_WEEPINBELL },
+    { 25, 25, SPECIES_FARFETCHD },
 };
 
 const struct WildPokemonInfo sRoute12_LeafGreen_LandMonsInfo = { 21, sRoute12_LeafGreen_LandMons };
@@ -7011,16 +7011,16 @@ const struct WildPokemon sPalletTown_LeafGreen_WaterMons[] =
 const struct WildPokemonInfo sPalletTown_LeafGreen_WaterMonsInfo = { 1, sPalletTown_LeafGreen_WaterMons };
 const struct WildPokemon sPalletTown_LeafGreen_FishingMons[] =
 {
-    { 5, 10, SPECIES_MAGIKARP },
-    { 5, 10, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_KRABBY },
-    { 5, 15, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_HORSEA },
-    { 15, 25, SPECIES_KRABBY },
-    { 15, 25, SPECIES_STARYU },
-    { 15, 25, SPECIES_GYARADOS },
-    { 25, 35, SPECIES_KINGLER },
-    { 25, 35, SPECIES_SLOWPOKE },
+    { 3, 5, SPECIES_KRABBY },
+    { 3, 6, SPECIES_HORSEA },
+    { 3, 6, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_HORSEA },
+    { 4, 6, SPECIES_KRABBY },
+    { 4, 6, SPECIES_STARYU },
+    { 4, 6, SPECIES_GYARADOS },
+    { 5, 6, SPECIES_KINGLER },
+    { 5, 6, SPECIES_SLOWPOKE },
 };
 
 const struct WildPokemonInfo sPalletTown_LeafGreen_FishingMonsInfo = { 10, sPalletTown_LeafGreen_FishingMons };
@@ -7039,16 +7039,16 @@ const struct WildPokemon sViridianCity_LeafGreen_WaterMons[] =
 const struct WildPokemonInfo sViridianCity_LeafGreen_WaterMonsInfo = { 1, sViridianCity_LeafGreen_WaterMons };
 const struct WildPokemon sViridianCity_LeafGreen_FishingMons[] =
 {
-    { 5, 5, SPECIES_MAGIKARP },
-    { 5, 5, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_POLIWAG },
-    { 5, 15, SPECIES_MAGIKARP },
-    { 5, 15, SPECIES_GOLDEEN },
-    { 15, 25, SPECIES_POLIWAG },
-    { 20, 30, SPECIES_POLIWHIRL },
-    { 15, 25, SPECIES_GYARADOS },
-    { 15, 25, SPECIES_SLOWPOKE },
-    { 25, 35, SPECIES_SLOWPOKE },
+    { 3, 5, SPECIES_POLIWAG },
+    { 3, 6, SPECIES_POLIWAG },
+    { 3, 6, SPECIES_SLOWPOKE },
+    { 3, 5, SPECIES_MAGIKARP },
+    { 3, 5, SPECIES_GOLDEEN },
+    { 4, 6, SPECIES_POLIWAG },
+    { 5, 6, SPECIES_POLIWHIRL },
+    { 4, 6, SPECIES_GYARADOS },
+    { 4, 6, SPECIES_SLOWPOKE },
+    { 5, 6, SPECIES_SLOWPOKE },
 };
 
 const struct WildPokemonInfo sViridianCity_LeafGreen_FishingMonsInfo = { 10, sViridianCity_LeafGreen_FishingMons };
