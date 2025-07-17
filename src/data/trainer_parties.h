@@ -5742,7 +5742,7 @@ static const struct TrainerMonItemCustomMoves sParty_LeaderKoga[] = {
         .iv = 31,
         .lvl = 46,
         .species = SPECIES_WEEZING,
-        .heldItem = ITEM_BLACK_SLUDGE,
+        .heldItem = ITEM_POISON_BARB,
         .moves = {MOVE_TOXIC, MOVE_SLUDGE_BOMB, MOVE_EXPLOSION, MOVE_FIRE_BLAST},
     },
 };
@@ -5753,7 +5753,7 @@ static const struct TrainerMonItemCustomMoves sParty_LeaderBlaine[] = {
         .lvl = 45,
         .species = SPECIES_GROWLITHE,
         .heldItem = ITEM_CHARCOAL,
-        .moves = {MOVE_FIRE_BLAST, MOVE_CRUNCH, MOVE_ROAR, MOVE_IRON_HEAD},
+        .moves = {MOVE_FIRE_BLAST, MOVE_CRUNCH, MOVE_ROAR, MOVE_IRON_TAIL},
     },
     {
         .iv = 30,
@@ -5774,7 +5774,7 @@ static const struct TrainerMonItemCustomMoves sParty_LeaderBlaine[] = {
         .lvl = 50,
         .species = SPECIES_ARCANINE,
         .heldItem = ITEM_LEFTOVERS,
-        .moves = {MOVE_FIRE_BLAST, MOVE_EXTREME_SPEED, MOVE_CRUNCH, MOVE_THUNDER_FANG},
+        .moves = {MOVE_FIRE_BLAST, MOVE_EXTREME_SPEED, MOVE_CRUNCH, MOVE_THUNDER_PUNCH},
     },
 };
 
