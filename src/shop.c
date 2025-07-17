@@ -136,6 +136,7 @@ static void Task_ExitBuyMenu(u8 taskId);
 static void DebugFunc_PrintPurchaseDetails(u8 taskId);
 static void DebugFunc_PrintShopMenuHistoryBeforeClearMaybe(void);
 static void RecordTransactionForQuestLog(void);
+static u32 GetDiscountedPrice(u16 itemId);
 
 static const struct MenuAction sShopMenuActions_BuySellQuit[] =
 {
@@ -603,7 +604,7 @@ static void BuyMenuPrintPriceInList(u8 windowId, u32 item, u8 y)
 
     if (item != INDEX_CANCEL)
     {
-        ConvertIntToDecimalStringN(gStringVar1, ItemId_GetPrice(item), 0, 4);
+        ConvertIntToDecimalStringN(gStringVar1, GetDiscountedPrice(item), 0, 4);
         x = 4 - StringLength(gStringVar1);
         loc = gStringVar4;
         while (x-- != 0)
@@ -891,7 +892,7 @@ static void Task_BuyMenu(u8 taskId)
             BuyMenuRemoveScrollIndicatorArrows();
             BuyMenuPrintCursor(tListTaskId, 2);
             RecolorItemDescriptionBox(1);
-            sShopData.itemPrice = ItemId_GetPrice(itemId);
+            sShopData.itemPrice = GetDiscountedPrice(itemId);
             if (!IsEnoughMoney(&gSaveBlock1Ptr->money, sShopData.itemPrice))
             {
                 BuyMenuDisplayMessage(taskId, gText_YouDontHaveMoney, BuyMenuReturnToItemList);
@@ -920,7 +921,7 @@ static void Task_BuyHowManyDialogueInit(u8 taskId)
     BuyMenuQuantityBoxNormalBorder(3, 0);
     BuyMenuPrintItemQuantityAndPrice(taskId);
     ScheduleBgCopyTilemapToVram(0);
-    maxQuantity = GetMoney(&gSaveBlock1Ptr->money) / ItemId_GetPrice(tItemId);
+    maxQuantity = GetMoney(&gSaveBlock1Ptr->money) / GetDiscountedPrice(tItemId);
     if (maxQuantity > 99)
         sShopData.maxQuantity = 99;
     else
@@ -938,7 +939,7 @@ static void Task_BuyHowManyDialogueHandleInput(u8 taskId)
 
     if (AdjustQuantityAccordingToDPadInput(&tItemCount, sShopData.maxQuantity) == TRUE)
     {
-        sShopData.itemPrice = ItemId_GetPrice(tItemId) * tItemCount;
+        sShopData.itemPrice = GetDiscountedPrice(tItemId) * tItemCount;
         BuyMenuPrintItemQuantityAndPrice(taskId);
     }
     else
@@ -978,11 +979,42 @@ static void CreateBuyMenuConfirmPurchaseWindow(u8 taskId)
 static void BuyMenuTryMakePurchase(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
+    bool8 gotBonus = FALSE;
 
     PutWindowTilemap(4);
     if (AddBagItem(tItemId, tItemCount) == TRUE)
     {
-        BuyMenuDisplayMessage(taskId, gText_HereYouGoThankYou, BuyMenuSubtractMoney);
+        // Check for pokeball bonus system - buying 10+ of any pokeball gives Ultra Balls
+        if (tItemCount >= 10)
+        {
+            switch (tItemId)
+            {
+            case ITEM_POKE_BALL:
+            case ITEM_GREAT_BALL:
+            case ITEM_ULTRA_BALL:
+            case ITEM_SAFARI_BALL:
+            case ITEM_NET_BALL:
+            case ITEM_DIVE_BALL:
+            case ITEM_NEST_BALL:
+            case ITEM_REPEAT_BALL:
+            case ITEM_TIMER_BALL:
+            case ITEM_LUXURY_BALL:
+                {
+                    u16 bonusAmount = tItemCount / 10; // 1 bonus Ultra Ball per 10 pokeballs purchased
+                    if (AddBagItem(ITEM_ULTRA_BALL, bonusAmount) == TRUE)
+                    {
+                        gotBonus = TRUE;
+                    }
+                }
+                break;
+            }
+        }
+        
+        if (gotBonus)
+            BuyMenuDisplayMessage(taskId, gText_HereYouGoThankYouWithBonus, BuyMenuSubtractMoney);
+        else
+            BuyMenuDisplayMessage(taskId, gText_HereYouGoThankYou, BuyMenuSubtractMoney);
+            
         DebugFunc_PrintPurchaseDetails(taskId);
         RecordItemTransaction(tItemId, tItemCount, QL_EVENT_BOUGHT_ITEM - QL_EVENT_USED_POKEMART);
     }
@@ -1141,5 +1173,53 @@ void CreateDecorationShop2Menu(const u16 *itemsForSale)
     SetShopItemsForSale(itemsForSale);
     CreateShopMenu(MART_TYPE_DECOR2);
     SetShopMenuCallback(ScriptContext_Enable);
+}
+
+// Helper function to apply discounts to basic items
+static u32 GetDiscountedPrice(u16 itemId)
+{
+    u32 basePrice = ItemId_GetPrice(itemId);
+    
+    // Apply 50% discount to basic healing and status items
+    switch (itemId)
+    {
+    case ITEM_POTION:
+    case ITEM_SUPER_POTION:
+    case ITEM_HYPER_POTION:
+    case ITEM_MAX_POTION:
+    case ITEM_FULL_RESTORE:
+    case ITEM_ANTIDOTE:
+    case ITEM_PARALYZE_HEAL:
+    case ITEM_AWAKENING:
+    case ITEM_BURN_HEAL:
+    case ITEM_ICE_HEAL:
+    case ITEM_FULL_HEAL:
+    case ITEM_REVIVE:
+    case ITEM_MAX_REVIVE:
+    case ITEM_ETHER:
+    case ITEM_MAX_ETHER:
+    case ITEM_ELIXIR:
+    case ITEM_MAX_ELIXIR:
+    case ITEM_REPEL:
+    case ITEM_SUPER_REPEL:
+    case ITEM_MAX_REPEL:
+    case ITEM_ESCAPE_ROPE:
+        return basePrice / 2; // 50% discount
+        
+    // Apply 25% discount to pokeballs
+    case ITEM_POKE_BALL:
+    case ITEM_GREAT_BALL:
+    case ITEM_ULTRA_BALL:
+    case ITEM_NET_BALL:
+    case ITEM_DIVE_BALL:
+    case ITEM_NEST_BALL:
+    case ITEM_REPEAT_BALL:
+    case ITEM_TIMER_BALL:
+    case ITEM_LUXURY_BALL:
+        return (basePrice * 3) / 4; // 25% discount
+        
+    default:
+        return basePrice; // No discount
+    }
 }
 
