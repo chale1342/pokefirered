@@ -216,6 +216,7 @@ static const u8 *const sButtonTypeOptions[] =
 
 static const u8 sOptionMenuPickSwitchCancelTextColor[] = {TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 static const u8 sOptionMenuTextColor[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_LIGHT_RED, TEXT_COLOR_RED};
+static const u8 sOptionMenuHeaderTextColor[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 
 // Functions
 static void CB2_InitOptionMenu(void)
@@ -244,6 +245,7 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->loadPaletteState = 0;
     sOptionMenuPtr->state = 0;
     sOptionMenuPtr->cursorPos = 0;
+    sOptionMenuPtr->currentPage = 0;  // Start on page 1
     sOptionMenuPtr->option[MENUITEM_TEXTSPEED] = gSaveBlock2Ptr->optionsTextSpeed;
     sOptionMenuPtr->option[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
     sOptionMenuPtr->option[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
@@ -301,7 +303,7 @@ static void CB2_OptionMenu(void)
         LoadOptionMenuItemNames();
         break;
     case 7:
-        for (i = 0; i < MENUITEM_COUNT; i++)
+        for (i = 0; i < GetCurrentPageItemCount(); i++)
             BufferOptionMenuString(i);
         break;
     case 8:
@@ -534,37 +536,38 @@ static void BufferOptionMenuString(u8 selection)
     u8 buf[12];
     u8 dst[3];
     u8 x, y;
+    u8 globalIndex = GetGlobalMenuItemIndex(selection);
     
     memcpy(dst, sOptionMenuTextColor, 3);
     x = 0x82;
     y = ((GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT) - 1) * selection) + 2;
     FillWindowPixelRect(1, 1, x, y, 0x46, GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT));
 
-    switch (selection)
+    switch (globalIndex)
     {
     case MENUITEM_TEXTSPEED:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sTextSpeedOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sTextSpeedOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     case MENUITEM_BATTLESCENE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sBattleSceneOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sBattleSceneOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     case MENUITEM_BATTLESTYLE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sBattleStyleOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sBattleStyleOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     case MENUITEM_SOUND:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sSoundOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sSoundOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     case MENUITEM_BUTTONMODE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sButtonTypeOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sButtonTypeOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     case MENUITEM_FRAMETYPE:
         StringCopy(str, gText_FrameType);
-        ConvertIntToDecimalStringN(buf, sOptionMenuPtr->option[selection] + 1, 1, 2);
+        ConvertIntToDecimalStringN(buf, sOptionMenuPtr->option[globalIndex] + 1, 1, 2);
         StringAppendN(str, buf, 3);
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, str);
         break;
     case MENUITEM_EXPSHARE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[selection]]);
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     default:
         break;
@@ -625,11 +628,19 @@ static void DrawOptionMenuBg(void)
 static void LoadOptionMenuItemNames(void)
 {
     u8 i;
+    u8 itemCount = GetCurrentPageItemCount();
+    const u8 *const *currentPageItems;
+    
+    // Get the appropriate item array for current page
+    if (sOptionMenuPtr->currentPage == 0)
+        currentPageItems = sOptionMenuPage1Items;
+    else
+        currentPageItems = sOptionMenuPage2Items;
     
     FillWindowPixelBuffer(1, PIXEL_FILL(1));
-    for (i = 0; i < MENUITEM_COUNT; i++)
+    for (i = 0; i < itemCount; i++)
     {
-        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, sOptionMenuItemsNames[i], 8, (u8)((i * (GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT))) + 2) - i, TEXT_SKIP_DRAW, NULL);    
+        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, currentPageItems[i], 8, (u8)((i * (GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT))) + 2) - i, TEXT_SKIP_DRAW, NULL);    
     }
 }
 
@@ -664,10 +675,14 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
 // Draw page indicator in the header
 static void DrawPageIndicator(void)
 {
-    u8 pageText[20];
+    const u8 pageText1[] = _("Page 1 (L/R)");
+    const u8 pageText2[] = _("Page 2 (L/R)");
+    const u8 *pageText;
     u8 x;
     
-    StringCopy(pageText, sOptionMenuPtr->currentPage == 0 ? gText_Page1LR : gText_Page2LR);
+    // Select appropriate page text
+    pageText = (sOptionMenuPtr->currentPage == 0) ? pageText1 : pageText2;
+    
     x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
     
     FillWindowPixelRect(WIN_TEXT_OPTION, PIXEL_FILL(1), x, 0, 200 - x, 16);
