@@ -14,19 +14,28 @@
 // can't include the one in menu_helpers.h since Task_OptionMenu needs bool32 for matching
 bool32 IsActiveOverworldLinkBusy(void);
 
-// Menu items
+// Menu items - Page 1
 enum
 {
     MENUITEM_TEXTSPEED = 0,
     MENUITEM_BATTLESCENE,
     MENUITEM_BATTLESTYLE,
     MENUITEM_SOUND,
-    MENUITEM_BUTTONMODE,
+    MENUITEM_COUNT_PAGE1
+};
+
+// Menu items - Page 2  
+enum
+{
+    MENUITEM_BUTTONMODE = 0,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
     MENUITEM_CANCEL,
-    MENUITEM_COUNT
+    MENUITEM_COUNT_PAGE2
 };
+
+#define MENUITEM_COUNT 8
+#define MAX_ITEMS_PER_PAGE 4
 
 // Window Ids
 enum
@@ -43,6 +52,7 @@ struct OptionMenu
     /*0x10*/ u8 loadState;
     /*0x11*/ u8 state;
     /*0x12*/ u8 loadPaletteState;
+    /*0x13*/ u8 currentPage;  // 0 = page 1, 1 = page 2
 };
 
 static EWRAM_DATA struct OptionMenu *sOptionMenuPtr = NULL;
@@ -66,6 +76,9 @@ static void PrintOptionMenuHeader(void);
 static void DrawOptionMenuBg(void);
 static void LoadOptionMenuItemNames(void);
 static void UpdateSettingSelectionDisplay(u16 selection);
+static u8 GetCurrentPageItemCount(void);
+static u8 GetGlobalMenuItemIndex(u8 pageItem);
+static void DrawPageIndicator(void);
 
 // Data Definitions
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
@@ -134,16 +147,34 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
 static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 0};
 
+// Page 1 items (indices 0-3 in global array)
+static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
+{
+    gText_TextSpeed,
+    gText_BattleScene,
+    gText_BattleStyle,
+    gText_Sound,
+};
+
+// Page 2 items (indices 4-7 in global array)  
+static const u8 *const sOptionMenuPage2Items[MENUITEM_COUNT_PAGE2] =
+{
+    gText_ButtonMode,
+    gText_Frame,
+    gText_ExpShare,
+    gText_OptionMenuCancel,
+};
+
 static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 {
-    [MENUITEM_TEXTSPEED]   = gText_TextSpeed,
-    [MENUITEM_BATTLESCENE] = gText_BattleScene,
-    [MENUITEM_BATTLESTYLE] = gText_BattleStyle,
-    [MENUITEM_SOUND]       = gText_Sound,
-    [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
-    [MENUITEM_FRAMETYPE]   = gText_Frame,
-    [MENUITEM_EXPSHARE]    = gText_ExpShare,
-    [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
+    [0] = gText_TextSpeed,     // MENUITEM_TEXTSPEED
+    [1] = gText_BattleScene,   // MENUITEM_BATTLESCENE
+    [2] = gText_BattleStyle,   // MENUITEM_BATTLESTYLE
+    [3] = gText_Sound,         // MENUITEM_SOUND
+    [4] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
+    [5] = gText_Frame,         // MENUITEM_FRAMETYPE
+    [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
+    [7] = gText_OptionMenuCancel, // MENUITEM_CANCEL
 };
 static const u8 *const sExpShareOptions[] =
 {
@@ -399,6 +430,14 @@ static void Task_OptionMenu(u8 taskId)
         case 4:
             BufferOptionMenuString(sOptionMenuPtr->cursorPos);
             break;
+        case 5:
+            // Page change - redraw menu items and header
+            LoadOptionMenuItemNames();
+            PrintOptionMenuHeader();
+            DrawPageIndicator();
+            UpdateSettingSelectionDisplay(sOptionMenuPtr->cursorPos);
+            BufferOptionMenuString(sOptionMenuPtr->cursorPos);
+            break;
         }
         break;
     case 3:
@@ -420,43 +459,61 @@ static u8 OptionMenu_ProcessInput(void)
 { 
     u16 current;
     u16 *curr;
-    if (JOY_REPT(DPAD_RIGHT))
+    
+    // Handle L/R buttons for page switching
+    if (JOY_NEW(L_BUTTON))
     {
-        current = sOptionMenuPtr->option[(sOptionMenuPtr->cursorPos)];
-        if (current == (sOptionMenuItemCounts[sOptionMenuPtr->cursorPos] - 1))
-            sOptionMenuPtr->option[sOptionMenuPtr->cursorPos] = 0;
+        sOptionMenuPtr->currentPage = 0; // Switch to page 1
+        sOptionMenuPtr->cursorPos = 0;   // Reset cursor to top
+        return 5; // New return value for page change
+    }
+    else if (JOY_NEW(R_BUTTON))
+    {
+        sOptionMenuPtr->currentPage = 1; // Switch to page 2
+        sOptionMenuPtr->cursorPos = 0;   // Reset cursor to top
+        return 5; // New return value for page change
+    }
+    else if (JOY_REPT(DPAD_RIGHT))
+    {
+        u8 globalIndex = GetGlobalMenuItemIndex(sOptionMenuPtr->cursorPos);
+        current = sOptionMenuPtr->option[globalIndex];
+        if (current == (sOptionMenuItemCounts[globalIndex] - 1))
+            sOptionMenuPtr->option[globalIndex] = 0;
         else
-            sOptionMenuPtr->option[sOptionMenuPtr->cursorPos] = current + 1;
-        if (sOptionMenuPtr->cursorPos == MENUITEM_FRAMETYPE)
+            sOptionMenuPtr->option[globalIndex] = current + 1;
+        if (globalIndex == MENUITEM_FRAMETYPE)
             return 2;
         else
             return 4;
     }
     else if (JOY_REPT(DPAD_LEFT))
     {
-        curr = &sOptionMenuPtr->option[sOptionMenuPtr->cursorPos];
+        u8 globalIndex = GetGlobalMenuItemIndex(sOptionMenuPtr->cursorPos);
+        curr = &sOptionMenuPtr->option[globalIndex];
         if (*curr == 0)
-            *curr = sOptionMenuItemCounts[sOptionMenuPtr->cursorPos] - 1;
+            *curr = sOptionMenuItemCounts[globalIndex] - 1;
         else
             --*curr;
         
-        if (sOptionMenuPtr->cursorPos == MENUITEM_FRAMETYPE)
+        if (globalIndex == MENUITEM_FRAMETYPE)
             return 2;
         else
             return 4;
     }
     else if (JOY_REPT(DPAD_UP))
     {
-        if (sOptionMenuPtr->cursorPos == MENUITEM_TEXTSPEED)
-            sOptionMenuPtr->cursorPos = MENUITEM_CANCEL;
+        u8 itemCount = GetCurrentPageItemCount();
+        if (sOptionMenuPtr->cursorPos == 0)
+            sOptionMenuPtr->cursorPos = itemCount - 1;
         else
             sOptionMenuPtr->cursorPos = sOptionMenuPtr->cursorPos - 1;
         return 3;        
     }
     else if (JOY_REPT(DPAD_DOWN))
     {
-        if (sOptionMenuPtr->cursorPos == MENUITEM_CANCEL)
-            sOptionMenuPtr->cursorPos = MENUITEM_TEXTSPEED;
+        u8 itemCount = GetCurrentPageItemCount();
+        if (sOptionMenuPtr->cursorPos == itemCount - 1)
+            sOptionMenuPtr->cursorPos = 0;
         else
             sOptionMenuPtr->cursorPos = sOptionMenuPtr->cursorPos + 1;
         return 3;
@@ -584,4 +641,35 @@ static void UpdateSettingSelectionDisplay(u16 selection)
     y = selection * (maxLetterHeight - 1) + 0x3A;
     SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(y, y + maxLetterHeight));
     SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(0x10, 0xE0));
+}
+
+// Helper function to get the number of items on the current page
+static u8 GetCurrentPageItemCount(void)
+{
+    if (sOptionMenuPtr->currentPage == 0)
+        return MENUITEM_COUNT_PAGE1;
+    else
+        return MENUITEM_COUNT_PAGE2;
+}
+
+// Helper function to convert page-relative item index to global item index
+static u8 GetGlobalMenuItemIndex(u8 pageItem)
+{
+    if (sOptionMenuPtr->currentPage == 0)
+        return pageItem; // Page 1: items 0-3
+    else
+        return pageItem + 4; // Page 2: items 4-7 (offset by 4)
+}
+
+// Draw page indicator in the header
+static void DrawPageIndicator(void)
+{
+    u8 pageText[20];
+    u8 x;
+    
+    StringCopy(pageText, sOptionMenuPtr->currentPage == 0 ? gText_Page1LR : gText_Page2LR);
+    x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
+    
+    FillWindowPixelRect(WIN_TEXT_OPTION, PIXEL_FILL(1), x, 0, 200 - x, 16);
+    AddTextPrinterParameterized3(WIN_TEXT_OPTION, FONT_NORMAL, x, 1, sOptionMenuHeaderTextColor, 0, pageText);
 }
