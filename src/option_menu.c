@@ -260,7 +260,7 @@ void CB2_OptionsMenuFromStartMenu(void)
         if (sOptionMenuPtr->option[i] > (sOptionMenuItemCounts[i]) - 1)
             sOptionMenuPtr->option[i] = 0;
     }
-    SetHelpContext(HELPCONTEXT_OPTIONS);
+    SetHelpContext(HELPCONTEXT_NONE);  // Disable help system for L/R page switching
     SetMainCallback2(CB2_OptionMenu);
 }
 
@@ -580,6 +580,7 @@ static void BufferOptionMenuString(u8 selection)
 static void CloseAndSaveOptionMenu(u8 taskId)
 {
     gFieldCallback = FieldCB_DefaultWarpExit;
+    SetHelpContext(HELPCONTEXT_OPTIONS);  // Restore help system
     SetMainCallback2(gMain.savedCallback);
     FreeAllWindowBuffers();
     gSaveBlock2Ptr->optionsTextSpeed = sOptionMenuPtr->option[MENUITEM_TEXTSPEED];
