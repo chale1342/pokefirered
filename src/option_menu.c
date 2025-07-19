@@ -27,7 +27,7 @@ enum
 // Menu items - Page 2  
 enum
 {
-    MENUITEM_BUTTONMODE = 0,
+    MENUITEM_BUTTONMODE = 4,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
     MENUITEM_CANCEL,
@@ -36,6 +36,7 @@ enum
 
 #define MENUITEM_COUNT 8
 #define MAX_ITEMS_PER_PAGE 4
+#define ITEMS_ON_PAGE2 4
 
 // Window Ids
 enum
@@ -157,7 +158,7 @@ static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
 };
 
 // Page 2 items (indices 4-7 in global array)  
-static const u8 *const sOptionMenuPage2Items[MENUITEM_COUNT_PAGE2] =
+static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
 {
     gText_ButtonMode,
     gText_Frame,
@@ -660,7 +661,7 @@ static u8 GetCurrentPageItemCount(void)
     if (sOptionMenuPtr->currentPage == 0)
         return MENUITEM_COUNT_PAGE1;
     else
-        return MENUITEM_COUNT_PAGE2;
+        return ITEMS_ON_PAGE2;
 }
 
 // Helper function to convert page-relative item index to global item index
