@@ -2967,7 +2967,10 @@ u32 GetMonData3(struct Pokemon *mon, s32 field, u8 *data)
     return ret;
 }
 
-u32 GetMonData2(struct Pokemon *mon, s32 field) __attribute__((alias("GetMonData3")));
+u32 GetMonData2(struct Pokemon *mon, s32 field)
+{
+    return GetMonData3(mon, field, NULL);
+}
 
 /* GameFreak called GetBoxMonData with either 2 or 3 arguments, for type
  * safety we have a GetBoxMonData macro (in include/pokemon.h) which
@@ -3329,7 +3332,10 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
     return retVal;
 }
 
-u32 GetBoxMonData2(struct BoxPokemon *boxMon, s32 field) __attribute__((alias("GetBoxMonData3")));
+u32 GetBoxMonData2(struct BoxPokemon *boxMon, s32 field)
+{
+    return GetBoxMonData3(boxMon, field, NULL);
+}
 
 #define SET8(lhs) (lhs) = *data
 #define SET16(lhs) (lhs) = data[0] + (data[1] << 8)
@@ -3505,7 +3511,8 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_PP2:
     case MON_DATA_PP3:
     case MON_DATA_PP4:
-        SET8(substruct1->pp[field - MON_DATA_PP1]);
+        if (field - MON_DATA_PP1 < MAX_MON_MOVES)
+            SET8(substruct1->pp[field - MON_DATA_PP1]);
         break;
     case MON_DATA_HP_EV:
         SET8(substruct2->hpEV);

@@ -6,13 +6,13 @@
 
 ViridianCity_ObjectEvents:
 	object_event 1, OBJ_EVENT_GFX_FAT_MAN, 8, 26, 3, MOVEMENT_TYPE_FACE_DOWN, 0, 0, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_DreamEaterTutor, 0
-	object_event 2, OBJ_EVENT_GFX_CUT_TREE, 11, 24, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_CUT_TREE_VIRIDIAN_CITY_1
+	object_event 2, OBJ_EVENT_GFX_CUT_TREE, 11, 24, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_11
 	object_event 3, OBJ_EVENT_GFX_OLD_MAN_1, 34, 11, 3, MOVEMENT_TYPE_FACE_UP, 0, 0, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_OldMan, 0
 	object_event 4, OBJ_EVENT_GFX_VAR_0, 21, 6, 3, MOVEMENT_TYPE_LOOK_AROUND, 2, 3, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_TutorialOldMan, 0
 	object_event 5, OBJ_EVENT_GFX_WOMAN_3, 20, 12, 3, MOVEMENT_TYPE_FACE_UP, 1, 3, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_Woman, 0
 	object_event 6, OBJ_EVENT_GFX_YOUNGSTER, 33, 26, 3, MOVEMENT_TYPE_WANDER_UP_AND_DOWN, 0, 2, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_Youngster, 0
 	object_event 7, OBJ_EVENT_GFX_BOY, 16, 22, 3, MOVEMENT_TYPE_WANDER_AROUND, 1, 2, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_Boy, 0
-	object_event 8, OBJ_EVENT_GFX_CUT_TREE, 18, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_CUT_TREE_VIRIDIAN_CITY_2
+	object_event 8, OBJ_EVENT_GFX_CUT_TREE, 18, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_CutTree, FLAG_TEMP_12
 	object_event 9, OBJ_EVENT_GFX_ITEM_BALL, 17, 5, 3, MOVEMENT_TYPE_FACE_DOWN, 1, 1, TRAINER_TYPE_NONE, 0, ViridianCity_EventScript_ItemPotion, FLAG_HIDE_VIRIDIAN_CITY_POTION
 
 ViridianCity_MapWarps:
