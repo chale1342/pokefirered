@@ -76,20 +76,25 @@ PalletTown_Text_Mom_GiveShoes::
 PalletTown_Text_Mom_Repeat::
     .string "MOM: You're always welcome to rest here.$"
 PalletTown_Text_MomBeforeShoes::
-    .string "Hey there! I noticed you're just\n"
-    .string "starting your journey.\p"
-    .string "Here, take these! They'll help you\n"
-    .string "move faster!\p"
-    .string "You received the RUNNING SHOES!$"
+    .string "Hey there, young trainer!\n"
+    .string "You look like you're just getting\l"
+    .string "started on your POKéMON journey.\p"
+    .string "Here, I have something that might\n"
+    .string "help you! Take these RUNNING SHOES!\p"
+    .string "They'll help you travel much faster\n"
+    .string "around the world!$"
 
 PalletTown_Text_MomAfterShoes::
-    .string "Now you can run by holding the\n"
-    .string "B button. Good luck on your journey!$"
+    .string "Remember, you can run by holding\n"
+    .string "the B button while you walk!\p"
+    .string "It'll save you so much time when\n"
+    .string "exploring the world. Good luck!$"
 
 PalletTown_Text_MomRepeat::
-    .string "Remember to hold B to run!\n"
-    .string "Stay safe out there!$"
+    .string "Don't forget - hold B to run!\n"
+    .string "It makes traveling so much easier.$"
 
 PalletTown_Text_MomGotRunningShoes::
-    .string "Those shoes should help you on\n"
-    .string "your adventure!$"
+    .string "Those RUNNING SHOES will be\n"
+    .string "invaluable on your adventure!\p"
+    .string "Every trainer should have a pair.$"
