@@ -86,12 +86,14 @@ BattleScript_CaughtPokemonSkipNewDex::
 	setbyte gBattleCommunication, 0
 	trygivecaughtmonnick BattleScript_CaughtPokemonSkipNickname
 	givecaughtmon
+	givecaptureexp
 	printfromtable gCaughtMonStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_CaughtPokemonDone
 
 BattleScript_CaughtPokemonSkipNickname::
 	givecaughtmon
+	givecaptureexp
 BattleScript_CaughtPokemonDone::
 	setbyte gBattleOutcome, B_OUTCOME_CAUGHT
 	finishturn
