@@ -231,6 +231,7 @@ static s8 *GetCurrentPartySlotPtr(void);
 static u16 PartyMenuButtonHandler(s8 *slotPtr);
 static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr);
 static void HandleChooseMonCancel(u8 taskId, s8 *slotPtr);
+static void HandleChooseMonSelectButton(u8 taskId, s8 *slotPtr);
 static void MoveCursorToConfirm(void);
 static bool8 IsSelectedMonNotEgg(u8 *slotPtr);
 static void TryTutorSelectedMon(u8 taskId);
@@ -1130,6 +1131,9 @@ void Task_HandleChooseMonInput(u8 taskId)
         case B_BUTTON: // also handles pressing A_BUTTON on Cancel
             HandleChooseMonCancel(taskId, slotPtr);
             break;
+        case SELECT_BUTTON:
+            HandleChooseMonSelectButton(taskId, slotPtr);
+            break;
         case START_BUTTON:
             if (sPartyMenuInternal->chooseMultiple)
             {
@@ -1258,6 +1262,38 @@ static void HandleChooseMonCancel(u8 taskId, s8 *slotPtr)
     }
 }
 
+static void HandleChooseMonSelectButton(u8 taskId, s8 *slotPtr)
+{
+    // Only allow SELECT button for switching in normal party menu contexts
+    if (*slotPtr == SLOT_CANCEL || *slotPtr == SLOT_CONFIRM)
+        return;
+        
+    // Check if we're in a context that allows switching
+    switch (gPartyMenu.action)
+    {
+    case PARTY_ACTION_CHOOSE_MON:
+    case PARTY_ACTION_CHOOSE_AND_CLOSE:
+        // Check if the selected slot has a Pokémon (not an egg)
+        if (IsSelectedMonNotEgg((u8 *)slotPtr))
+        {
+            PlaySE(SE_SELECT);
+            gPartyMenu.action = PARTY_ACTION_SWITCH;
+            DisplayPartyMenuStdMessage(PARTY_MSG_MOVE_TO_WHERE);
+            AnimatePartySlot(gPartyMenu.slotId, 1);
+            gPartyMenu.slotId2 = gPartyMenu.slotId;
+        }
+        break;
+    case PARTY_ACTION_SWITCH:
+        // If already in switch mode, complete the switch
+        PlaySE(SE_SELECT);
+        SwitchSelectedMons(taskId);
+        break;
+    default:
+        // Don't allow SELECT in other contexts (battle, item use, etc.)
+        break;
+    }
+}
+
 static void DisplayCancelChooseMonYesNo(u8 taskId)
 {
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
@@ -1329,6 +1365,8 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
     }
     if (JOY_NEW(START_BUTTON))
         return START_BUTTON;
+    if (JOY_NEW(SELECT_BUTTON))
+        return SELECT_BUTTON;
     if (movementDir)
     {
         UpdateCurrentPartySelection(slotPtr, movementDir);

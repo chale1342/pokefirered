@@ -18,6 +18,12 @@ ViridianCity_PokemonCenter_1F_Text_PokeCentersHealMons::
 
 ViridianCity_PokemonCenter_1F_Text_ImFishingGuruDoYouLikeToFish::
     .string "I'm the FISHING GURU!\p"
+    .string "I moved here from the MART\n"
+    .string "because POKéMON CENTERS are\l"
+    .string "much more peaceful.\p"
+    .string "Plus, trainers here understand\n"
+    .string "the bond between people and\l"
+    .string "POKéMON, just like fishing!\p"
     .string "I simply looove fishing!\n"
     .string "I can't bear to go without.\p"
     .string "Tell me, do you like to fish?$"
@@ -43,6 +49,8 @@ ViridianCity_PokemonCenter_1F_Text_OhThatsSoDisappointing::
 
 ViridianCity_PokemonCenter_1F_Text_HowAreTheFishBiting::
     .string "Hello there, {PLAYER}!\p"
+    .string "I'm so glad I moved here from\n"
+    .string "the MART. Much quieter!\p"
     .string "How are the fish biting?$"
 
 ViridianCity_PokemonCenter_1F_Text_NoRoomForNiceGift::
