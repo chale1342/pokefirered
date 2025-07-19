@@ -1219,34 +1219,38 @@
 	.byte 0xf0
 	.endm
 
-	.macro trysetcaughtmondexflags param0:req
+	.macro givecaptureexp
 	.byte 0xf1
+	.endm
+
+	.macro trysetcaughtmondexflags param0:req
+	.byte 0xf2
 	.4byte \param0
 	.endm
 
 	.macro displaydexinfo
-	.byte 0xf2
+	.byte 0xf3
 	.endm
 
 	.macro trygivecaughtmonnick param0:req
-	.byte 0xf3
+	.byte 0xf4
 	.4byte \param0
 	.endm
 
 	.macro subattackerhpbydmg
-	.byte 0xf4
-	.endm
-
-	.macro removeattackerstatus1
 	.byte 0xf5
 	.endm
 
-	.macro finishaction
+	.macro removeattackerstatus1
 	.byte 0xf6
 	.endm
 
-	.macro finishturn
+	.macro finishaction
 	.byte 0xf7
+	.endm
+
+	.macro finishturn
+	.byte 0xf8
 	.endm
 
 @ various command changed to more readable macros
