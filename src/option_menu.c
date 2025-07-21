@@ -27,16 +27,17 @@ enum
 // Menu items - Page 2  
 enum
 {
-    MENUITEM_BUTTONMODE = 4,
+    MENUITEM_BUTTONMODE = 5,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
+    MENUITEM_AUTORUN,
     MENUITEM_CANCEL,
-    MENUITEM_COUNT_PAGE2
 };
 
-#define MENUITEM_COUNT 8
+#define MENUITEM_COUNT_PAGE2 5
+
+#define MENUITEM_COUNT 10
 #define MAX_ITEMS_PER_PAGE 4
-#define ITEMS_ON_PAGE2 4
 
 // Window Ids
 enum
@@ -145,7 +146,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 };
 
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 0, 3, 10, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -157,11 +158,12 @@ static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
 };
 
 // Page 2 items (indices 4-7 in global array)  
-static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
+static const u8 *const sOptionMenuPage2Items[MENUITEM_COUNT_PAGE2] =
 {
     gText_ButtonMode,
     gText_Frame,
     gText_ExpShare,
+    gText_AutoRun,
     gText_OptionMenuCancel,
 };
 
@@ -171,15 +173,23 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [1] = gText_BattleScene,   // MENUITEM_BATTLESCENE
     [2] = gText_BattleStyle,   // MENUITEM_BATTLESTYLE
     [3] = gText_Sound,         // MENUITEM_SOUND
-    [4] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
-    [5] = gText_Frame,         // MENUITEM_FRAMETYPE
-    [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
-    [7] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+    [4] = NULL,                // MENUITEM_COUNT_PAGE1 (not used)
+    [5] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
+    [6] = gText_Frame,         // MENUITEM_FRAMETYPE
+    [7] = gText_ExpShare,      // MENUITEM_EXPSHARE
+    [8] = gText_AutoRun,       // MENUITEM_AUTORUN
+    [9] = gText_OptionMenuCancel, // MENUITEM_CANCEL
 };
 static const u8 *const sExpShareOptions[] =
 {
     gText_ExpShareOff,
     gText_ExpShareOn
+};
+
+static const u8 *const sAutoRunOptions[] =
+{
+    gText_AutoRunOff,
+    gText_AutoRunOn
 };
 
 static const u8 *const sTextSpeedOptions[] =
@@ -253,13 +263,14 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
     sOptionMenuPtr->option[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
     sOptionMenuPtr->option[MENUITEM_EXPSHARE] = gSaveBlock2Ptr->optionsExpShare;
+    sOptionMenuPtr->option[MENUITEM_AUTORUN] = gSaveBlock2Ptr->optionsAutoRun;
     
     for (i = 0; i < MENUITEM_COUNT - 1; i++)
     {
         if (sOptionMenuPtr->option[i] > (sOptionMenuItemCounts[i]) - 1)
             sOptionMenuPtr->option[i] = 0;
     }
-    gHelpSystemEnabled = FALSE;  // Completely disable help system for L/R page switching
+    SetHelpContext(HELPCONTEXT_OPTIONS);
     SetMainCallback2(CB2_OptionMenu);
 }
 
@@ -399,7 +410,6 @@ static bool8 LoadOptionMenuPalette(void)
 
 static void Task_OptionMenu(u8 taskId)
 {
-    u8 i;
     switch (sOptionMenuPtr->loadState)
     {
     case 0:
@@ -438,8 +448,12 @@ static void Task_OptionMenu(u8 taskId)
             LoadOptionMenuItemNames();
             PrintOptionMenuHeader();
             // Redraw all option strings for the new page
-            for (i = 0; i < GetCurrentPageItemCount(); i++)
-                BufferOptionMenuString(i);
+            {
+                u8 i;
+                u8 itemCount = GetCurrentPageItemCount();
+                for (i = 0; i < itemCount; i++)
+                    BufferOptionMenuString(i);
+            }
             UpdateSettingSelectionDisplay(sOptionMenuPtr->cursorPos);
             break;
         }
@@ -571,6 +585,9 @@ static void BufferOptionMenuString(u8 selection)
     case MENUITEM_EXPSHARE:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
+    case MENUITEM_AUTORUN:
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sAutoRunOptions[sOptionMenuPtr->option[globalIndex]]);
+        break;
     default:
         break;
     }
@@ -581,7 +598,6 @@ static void BufferOptionMenuString(u8 selection)
 static void CloseAndSaveOptionMenu(u8 taskId)
 {
     gFieldCallback = FieldCB_DefaultWarpExit;
-    gHelpSystemEnabled = TRUE;  // Re-enable help system
     SetMainCallback2(gMain.savedCallback);
     FreeAllWindowBuffers();
     gSaveBlock2Ptr->optionsTextSpeed = sOptionMenuPtr->option[MENUITEM_TEXTSPEED];
@@ -591,6 +607,7 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = sOptionMenuPtr->option[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
     gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
+    gSaveBlock2Ptr->optionsAutoRun = sOptionMenuPtr->option[MENUITEM_AUTORUN];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
     FREE_AND_SET_NULL(sOptionMenuPtr);
     DestroyTask(taskId);
@@ -676,7 +693,7 @@ static u8 GetCurrentPageItemCount(void)
     if (sOptionMenuPtr->currentPage == 0)
         return MENUITEM_COUNT_PAGE1;
     else
-        return ITEMS_ON_PAGE2;
+        return MENUITEM_COUNT_PAGE2;
 }
 
 // Helper function to convert page-relative item index to global item index
@@ -685,5 +702,5 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
     if (sOptionMenuPtr->currentPage == 0)
         return pageItem; // Page 1: items 0-3
     else
-        return pageItem + 4; // Page 2: items 4-7 (offset by 4)
+        return pageItem + 5; // Page 2: items 5-9 (offset by 5)
 }

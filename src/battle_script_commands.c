@@ -304,7 +304,6 @@ static void Cmd_snatchsetbattlers(void);
 static void Cmd_removelightscreenreflect(void);
 static void Cmd_handleballthrow(void);
 static void Cmd_givecaughtmon(void);
-static void Cmd_givecaptureexp(void);
 static void Cmd_trysetcaughtmondexflags(void);
 static void Cmd_displaydexinfo(void);
 static void Cmd_trygivecaughtmonnick(void);
@@ -556,14 +555,13 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removelightscreenreflect,                //0xEE
     Cmd_handleballthrow,                         //0xEF
     Cmd_givecaughtmon,                           //0xF0
-    Cmd_givecaptureexp,                          //0xF1
-    Cmd_trysetcaughtmondexflags,                 //0xF2
-    Cmd_displaydexinfo,                          //0xF3
-    Cmd_trygivecaughtmonnick,                    //0xF4
-    Cmd_subattackerhpbydmg,                      //0xF5
-    Cmd_removeattackerstatus1,                   //0xF6
-    Cmd_finishaction,                            //0xF7
-    Cmd_finishturn,                              //0xF8
+    Cmd_trysetcaughtmondexflags,                 //0xF1
+    Cmd_displaydexinfo,                          //0xF2
+    Cmd_trygivecaughtmonnick,                    //0xF3
+    Cmd_subattackerhpbydmg,                      //0xF4
+    Cmd_removeattackerstatus1,                   //0xF5
+    Cmd_finishaction,                            //0xF6
+    Cmd_finishturn,                              //0xF7
 };
 
 struct StatFractions
@@ -9660,59 +9658,6 @@ static void Cmd_givecaughtmon(void)
     gBattleResults.caughtMonSpecies = gBattleMons[gBattlerAttacker ^ BIT_SIDE].species;
     GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerAttacker ^ BIT_SIDE]], MON_DATA_NICKNAME, gBattleResults.caughtMonNick);
 
-    gBattlescriptCurrInstr++;
-}
-
-static void Cmd_givecaptureexp(void)
-{
-    // Give 1/3 experience when capturing Pokemon
-    u16 *exp = &gBattleStruct->expValue;
-    u16 calculatedExp;
-    s32 i;
-    u8 gBattlerFainted = gBattlerAttacker ^ BIT_SIDE; // The captured Pokemon
-    s32 sentIn = gSentPokesToOpponent[(gBattlerFainted & 2) >> 1];
-    s32 viaSentIn = 0;
-    
-    // Calculate base experience (same as normal, but divided by 3 for capture)
-    calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
-    calculatedExp = calculatedExp / 3; // Give 1/3 experience for capture
-    
-    if (calculatedExp == 0)
-        calculatedExp = 1; // Minimum 1 exp
-    
-    // Count Pokemon that were sent in
-    for (i = 0; i < PARTY_SIZE; i++)
-    {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) == SPECIES_NONE || GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0)
-            continue;
-        if (gBitTable[i] & sentIn)
-            viaSentIn++;
-    }
-    
-    if (viaSentIn > 0)
-    {
-        *exp = SAFE_DIV(calculatedExp, viaSentIn);
-        if (*exp == 0)
-            *exp = 1;
-    }
-    else
-    {
-        *exp = 0;
-    }
-    
-    // Now distribute the experience to participating Pokemon
-    for (i = 0; i < PARTY_SIZE; i++)
-    {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) == SPECIES_NONE || GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0)
-            continue;
-        if (gBitTable[i] & sentIn)
-        {
-            u32 currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
-            currExp += *exp;
-            SetMonData(&gPlayerParty[i], MON_DATA_EXP, &currExp);
-        }
-    }
-    
     gBattlescriptCurrInstr++;
 }
 
