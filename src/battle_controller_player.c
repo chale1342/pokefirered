@@ -218,35 +218,6 @@ static void CompleteOnBattlerSpritePosX_0(void)
         PlayerBufferExecCompleted();
 }
 
-// Quick Pokeball Feature: Find the best available pokeball (lowest tier first)
-static u16 GetBestAvailablePokeball(void)
-{
-    // Pokeball priority order (lowest to highest tier)
-    static const u16 pokeballPriority[] = {
-        ITEM_POKE_BALL,
-        ITEM_GREAT_BALL,
-        ITEM_ULTRA_BALL,
-        ITEM_SAFARI_BALL,
-        ITEM_NET_BALL,
-        ITEM_DIVE_BALL,
-        ITEM_NEST_BALL,
-        ITEM_REPEAT_BALL,
-        ITEM_TIMER_BALL,
-        ITEM_LUXURY_BALL,
-        ITEM_PREMIER_BALL,
-        ITEM_MASTER_BALL
-    };
-    
-    u32 i;
-    for (i = 0; i < NELEMS(pokeballPriority); i++)
-    {
-        if (CheckBagHasItem(pokeballPriority[i], 1))
-            return pokeballPriority[i];
-    }
-    
-    return ITEM_NONE; // No pokeballs available
-}
-
 static void HandleInputChooseAction(void)
 {
     u16 itemId = gBattleBufferA[gActiveBattler][2] | (gBattleBufferA[gActiveBattler][3] << 8);
@@ -337,36 +308,6 @@ static void HandleInputChooseAction(void)
     else if (JOY_NEW(START_BUTTON))
     {
         SwapHpBarsWithHpText();
-    }
-    else if (JOY_NEW(R_BUTTON))
-    {
-        // Quick Pokeball Feature: Throw best available pokeball (only in wild battles)
-        if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
-        {
-            u16 bestPokeball = GetBestAvailablePokeball();
-            if (bestPokeball != ITEM_NONE)
-            {
-                PlaySE(SE_SELECT);
-                gBattleBufferB[gActiveBattler][0] = bestPokeball;
-                gBattleBufferB[gActiveBattler][1] = bestPokeball >> 8;
-                BtlController_EmitTwoReturnValues(1, B_ACTION_USE_ITEM, 0);
-                PlayerBufferExecCompleted();
-                return; // Early return to prevent normal R button behavior
-            }
-        }
-        
-        // If not in wild battle or no pokeballs, fall through to normal R button behavior
-        // In LR mode, this will normally move cursor right to bag
-        if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR)
-        {
-            if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is B_ACTION_USE_MOVE or B_ACTION_SWITCH
-            {
-                PlaySE(SE_SELECT);
-                ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
-                gActionSelectionCursor[gActiveBattler] ^= 1;
-                ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
-            }
-        }
     }
 }
 

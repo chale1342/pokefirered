@@ -12,6 +12,7 @@
 // todo: make some of those names less vague: attacker/target vs pkmn, etc.
 #define STRINGID_TRAINER1LOSETEXT 12
 #define STRINGID_PKMNGAINEDEXP 13
+#define STRINGID_PKMNINCAPTUREEXP 386
 #define STRINGID_PKMNGREWTOLV 14
 #define STRINGID_PKMNLEARNEDMOVE 15
 #define STRINGID_TRYTOLEARNMOVE1 16
@@ -385,7 +386,7 @@
 #define STRINGID_TRAINER1MON2COMEBACK 384
 #define STRINGID_TRAINER1MON1AND2COMEBACK 385
 
-#define BATTLESTRINGS_COUNT     386
+#define BATTLESTRINGS_COUNT     387
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

@@ -27,7 +27,7 @@ enum
 // Menu items - Page 2  
 enum
 {
-    MENUITEM_BUTTONMODE = 4,
+    MENUITEM_BUTTONMODE = 0,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
     MENUITEM_CANCEL,
@@ -36,7 +36,6 @@ enum
 
 #define MENUITEM_COUNT 8
 #define MAX_ITEMS_PER_PAGE 4
-#define ITEMS_ON_PAGE2 4
 
 // Window Ids
 enum
@@ -79,6 +78,7 @@ static void LoadOptionMenuItemNames(void);
 static void UpdateSettingSelectionDisplay(u16 selection);
 static u8 GetCurrentPageItemCount(void);
 static u8 GetGlobalMenuItemIndex(u8 pageItem);
+static void DrawPageIndicator(void);
 
 // Data Definitions
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
@@ -97,7 +97,7 @@ static const struct WindowTemplate sOptionMenuWinTemplates[] =
         .tilemapLeft = 2,
         .tilemapTop = 7,
         .width = 26,
-        .height = 12,
+        .height = 14,
         .paletteNum = 1,
         .baseBlock = 0x36
     },
@@ -157,7 +157,7 @@ static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
 };
 
 // Page 2 items (indices 4-7 in global array)  
-static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
+static const u8 *const sOptionMenuPage2Items[MENUITEM_COUNT_PAGE2] =
 {
     gText_ButtonMode,
     gText_Frame,
@@ -259,7 +259,7 @@ void CB2_OptionsMenuFromStartMenu(void)
         if (sOptionMenuPtr->option[i] > (sOptionMenuItemCounts[i]) - 1)
             sOptionMenuPtr->option[i] = 0;
     }
-    gHelpSystemEnabled = FALSE;  // Completely disable help system for L/R page switching
+    SetHelpContext(HELPCONTEXT_OPTIONS);
     SetMainCallback2(CB2_OptionMenu);
 }
 
@@ -399,7 +399,6 @@ static bool8 LoadOptionMenuPalette(void)
 
 static void Task_OptionMenu(u8 taskId)
 {
-    u8 i;
     switch (sOptionMenuPtr->loadState)
     {
     case 0:
@@ -437,10 +436,9 @@ static void Task_OptionMenu(u8 taskId)
             // Page change - redraw menu items and header
             LoadOptionMenuItemNames();
             PrintOptionMenuHeader();
-            // Redraw all option strings for the new page
-            for (i = 0; i < GetCurrentPageItemCount(); i++)
-                BufferOptionMenuString(i);
+            DrawPageIndicator();
             UpdateSettingSelectionDisplay(sOptionMenuPtr->cursorPos);
+            BufferOptionMenuString(sOptionMenuPtr->cursorPos);
             break;
         }
         break;
@@ -581,7 +579,6 @@ static void BufferOptionMenuString(u8 selection)
 static void CloseAndSaveOptionMenu(u8 taskId)
 {
     gFieldCallback = FieldCB_DefaultWarpExit;
-    gHelpSystemEnabled = TRUE;  // Re-enable help system
     SetMainCallback2(gMain.savedCallback);
     FreeAllWindowBuffers();
     gSaveBlock2Ptr->optionsTextSpeed = sOptionMenuPtr->option[MENUITEM_TEXTSPEED];
@@ -598,19 +595,8 @@ static void CloseAndSaveOptionMenu(u8 taskId)
 
 static void PrintOptionMenuHeader(void)
 {
-    const u8 pageText1[] = _("Page 1 (L/R)");
-    const u8 pageText2[] = _("Page 2 (L/R)");
-    const u8 *pageText;
-    u8 x;
-    
     FillWindowPixelBuffer(0, PIXEL_FILL(1));
     AddTextPrinterParameterized(WIN_TEXT_OPTION, FONT_NORMAL, gText_Option, 8, 1, TEXT_SKIP_DRAW, NULL);
-    
-    // Add page indicator with same font and style as main text
-    pageText = (sOptionMenuPtr->currentPage == 0) ? pageText1 : pageText2;
-    x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
-    AddTextPrinterParameterized(WIN_TEXT_OPTION, FONT_NORMAL, pageText, x, 1, TEXT_SKIP_DRAW, NULL);
-    
     PutWindowTilemap(0);
     CopyWindowToVram(0, COPYWIN_FULL);
 }
@@ -656,8 +642,6 @@ static void LoadOptionMenuItemNames(void)
     {
         AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, currentPageItems[i], 8, (u8)((i * (GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT))) + 2) - i, TEXT_SKIP_DRAW, NULL);    
     }
-    PutWindowTilemap(1);
-    CopyWindowToVram(1, COPYWIN_FULL);
 }
 
 static void UpdateSettingSelectionDisplay(u16 selection)
@@ -676,7 +660,7 @@ static u8 GetCurrentPageItemCount(void)
     if (sOptionMenuPtr->currentPage == 0)
         return MENUITEM_COUNT_PAGE1;
     else
-        return ITEMS_ON_PAGE2;
+        return MENUITEM_COUNT_PAGE2;
 }
 
 // Helper function to convert page-relative item index to global item index
@@ -686,4 +670,21 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
         return pageItem; // Page 1: items 0-3
     else
         return pageItem + 4; // Page 2: items 4-7 (offset by 4)
+}
+
+// Draw page indicator in the header
+static void DrawPageIndicator(void)
+{
+    const u8 pageText1[] = _("Page 1 (L/R)");
+    const u8 pageText2[] = _("Page 2 (L/R)");
+    const u8 *pageText;
+    u8 x;
+    
+    // Select appropriate page text
+    pageText = (sOptionMenuPtr->currentPage == 0) ? pageText1 : pageText2;
+    
+    x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
+    
+    FillWindowPixelRect(WIN_TEXT_OPTION, PIXEL_FILL(1), x, 0, 200 - x, 16);
+    AddTextPrinterParameterized3(WIN_TEXT_OPTION, FONT_NORMAL, x, 1, sOptionMenuHeaderTextColor, 0, pageText);
 }
