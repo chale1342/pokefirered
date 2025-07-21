@@ -27,14 +27,16 @@ enum
 // Menu items - Page 2  
 enum
 {
-    MENUITEM_BUTTONMODE = 0,
+    MENUITEM_BUTTONMODE = 5,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
+    MENUITEM_AUTORUN,
     MENUITEM_CANCEL,
-    MENUITEM_COUNT_PAGE2
 };
 
-#define MENUITEM_COUNT 8
+#define MENUITEM_COUNT_PAGE2 5
+
+#define MENUITEM_COUNT 10
 #define MAX_ITEMS_PER_PAGE 4
 
 // Window Ids
@@ -78,7 +80,6 @@ static void LoadOptionMenuItemNames(void);
 static void UpdateSettingSelectionDisplay(u16 selection);
 static u8 GetCurrentPageItemCount(void);
 static u8 GetGlobalMenuItemIndex(u8 pageItem);
-static void DrawPageIndicator(void);
 
 // Data Definitions
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
@@ -97,7 +98,7 @@ static const struct WindowTemplate sOptionMenuWinTemplates[] =
         .tilemapLeft = 2,
         .tilemapTop = 7,
         .width = 26,
-        .height = 14,
+        .height = 12,
         .paletteNum = 1,
         .baseBlock = 0x36
     },
@@ -145,7 +146,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 };
 
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 0, 3, 10, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -162,6 +163,7 @@ static const u8 *const sOptionMenuPage2Items[MENUITEM_COUNT_PAGE2] =
     gText_ButtonMode,
     gText_Frame,
     gText_ExpShare,
+    gText_AutoRun,
     gText_OptionMenuCancel,
 };
 
@@ -171,15 +173,23 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [1] = gText_BattleScene,   // MENUITEM_BATTLESCENE
     [2] = gText_BattleStyle,   // MENUITEM_BATTLESTYLE
     [3] = gText_Sound,         // MENUITEM_SOUND
-    [4] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
-    [5] = gText_Frame,         // MENUITEM_FRAMETYPE
-    [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
-    [7] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+    [4] = NULL,                // MENUITEM_COUNT_PAGE1 (not used)
+    [5] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
+    [6] = gText_Frame,         // MENUITEM_FRAMETYPE
+    [7] = gText_ExpShare,      // MENUITEM_EXPSHARE
+    [8] = gText_AutoRun,       // MENUITEM_AUTORUN
+    [9] = gText_OptionMenuCancel, // MENUITEM_CANCEL
 };
 static const u8 *const sExpShareOptions[] =
 {
     gText_ExpShareOff,
     gText_ExpShareOn
+};
+
+static const u8 *const sAutoRunOptions[] =
+{
+    gText_AutoRunOff,
+    gText_AutoRunOn
 };
 
 static const u8 *const sTextSpeedOptions[] =
@@ -253,6 +263,7 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
     sOptionMenuPtr->option[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
     sOptionMenuPtr->option[MENUITEM_EXPSHARE] = gSaveBlock2Ptr->optionsExpShare;
+    sOptionMenuPtr->option[MENUITEM_AUTORUN] = gSaveBlock2Ptr->optionsAutoRun;
     
     for (i = 0; i < MENUITEM_COUNT - 1; i++)
     {
@@ -436,9 +447,14 @@ static void Task_OptionMenu(u8 taskId)
             // Page change - redraw menu items and header
             LoadOptionMenuItemNames();
             PrintOptionMenuHeader();
-            DrawPageIndicator();
+            // Redraw all option strings for the new page
+            {
+                u8 i;
+                u8 itemCount = GetCurrentPageItemCount();
+                for (i = 0; i < itemCount; i++)
+                    BufferOptionMenuString(i);
+            }
             UpdateSettingSelectionDisplay(sOptionMenuPtr->cursorPos);
-            BufferOptionMenuString(sOptionMenuPtr->cursorPos);
             break;
         }
         break;
@@ -569,6 +585,9 @@ static void BufferOptionMenuString(u8 selection)
     case MENUITEM_EXPSHARE:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
+    case MENUITEM_AUTORUN:
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sAutoRunOptions[sOptionMenuPtr->option[globalIndex]]);
+        break;
     default:
         break;
     }
@@ -588,6 +607,7 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = sOptionMenuPtr->option[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
     gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
+    gSaveBlock2Ptr->optionsAutoRun = sOptionMenuPtr->option[MENUITEM_AUTORUN];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
     FREE_AND_SET_NULL(sOptionMenuPtr);
     DestroyTask(taskId);
@@ -595,8 +615,19 @@ static void CloseAndSaveOptionMenu(u8 taskId)
 
 static void PrintOptionMenuHeader(void)
 {
+    const u8 pageText1[] = _("Page 1 (L/R)");
+    const u8 pageText2[] = _("Page 2 (L/R)");
+    const u8 *pageText;
+    u8 x;
+    
     FillWindowPixelBuffer(0, PIXEL_FILL(1));
     AddTextPrinterParameterized(WIN_TEXT_OPTION, FONT_NORMAL, gText_Option, 8, 1, TEXT_SKIP_DRAW, NULL);
+    
+    // Add page indicator with same font and style as main text
+    pageText = (sOptionMenuPtr->currentPage == 0) ? pageText1 : pageText2;
+    x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
+    AddTextPrinterParameterized(WIN_TEXT_OPTION, FONT_NORMAL, pageText, x, 1, TEXT_SKIP_DRAW, NULL);
+    
     PutWindowTilemap(0);
     CopyWindowToVram(0, COPYWIN_FULL);
 }
@@ -642,6 +673,8 @@ static void LoadOptionMenuItemNames(void)
     {
         AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, currentPageItems[i], 8, (u8)((i * (GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT))) + 2) - i, TEXT_SKIP_DRAW, NULL);    
     }
+    PutWindowTilemap(1);
+    CopyWindowToVram(1, COPYWIN_FULL);
 }
 
 static void UpdateSettingSelectionDisplay(u16 selection)
@@ -669,22 +702,5 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
     if (sOptionMenuPtr->currentPage == 0)
         return pageItem; // Page 1: items 0-3
     else
-        return pageItem + 4; // Page 2: items 4-7 (offset by 4)
-}
-
-// Draw page indicator in the header
-static void DrawPageIndicator(void)
-{
-    const u8 pageText1[] = _("Page 1 (L/R)");
-    const u8 pageText2[] = _("Page 2 (L/R)");
-    const u8 *pageText;
-    u8 x;
-    
-    // Select appropriate page text
-    pageText = (sOptionMenuPtr->currentPage == 0) ? pageText1 : pageText2;
-    
-    x = 200 - GetStringWidth(FONT_NORMAL, pageText, 0);
-    
-    FillWindowPixelRect(WIN_TEXT_OPTION, PIXEL_FILL(1), x, 0, 200 - x, 16);
-    AddTextPrinterParameterized3(WIN_TEXT_OPTION, FONT_NORMAL, x, 1, sOptionMenuHeaderTextColor, 0, pageText);
+        return pageItem + 5; // Page 2: items 5-9 (offset by 5)
 }
