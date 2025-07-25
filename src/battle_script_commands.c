@@ -38,6 +38,7 @@
 #include "constants/abilities.h"
 #include "constants/pokemon.h"
 #include "constants/maps.h"
+#include "constants/battle_config.h"
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
@@ -304,6 +305,7 @@ static void Cmd_snatchsetbattlers(void);
 static void Cmd_removelightscreenreflect(void);
 static void Cmd_handleballthrow(void);
 static void Cmd_givecaughtmon(void);
+static void Cmd_givecaptureexp(void);
 static void Cmd_trysetcaughtmondexflags(void);
 static void Cmd_displaydexinfo(void);
 static void Cmd_trygivecaughtmonnick(void);
@@ -555,13 +557,14 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removelightscreenreflect,                //0xEE
     Cmd_handleballthrow,                         //0xEF
     Cmd_givecaughtmon,                           //0xF0
-    Cmd_trysetcaughtmondexflags,                 //0xF1
-    Cmd_displaydexinfo,                          //0xF2
-    Cmd_trygivecaughtmonnick,                    //0xF3
-    Cmd_subattackerhpbydmg,                      //0xF4
-    Cmd_removeattackerstatus1,                   //0xF5
-    Cmd_finishaction,                            //0xF6
-    Cmd_finishturn,                              //0xF7
+    Cmd_givecaptureexp,                          //0xF1
+    Cmd_trysetcaughtmondexflags,                 //0xF2
+    Cmd_displaydexinfo,                          //0xF3
+    Cmd_trygivecaughtmonnick,                    //0xF4
+    Cmd_subattackerhpbydmg,                      //0xF5
+    Cmd_removeattackerstatus1,                   //0xF6
+    Cmd_finishaction,                            //0xF7
+    Cmd_finishturn,                              //0xF8
 };
 
 struct StatFractions
@@ -9658,6 +9661,21 @@ static void Cmd_givecaughtmon(void)
     gBattleResults.caughtMonSpecies = gBattleMons[gBattlerAttacker ^ BIT_SIDE].species;
     GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerAttacker ^ BIT_SIDE]], MON_DATA_NICKNAME, gBattleResults.caughtMonNick);
 
+    gBattlescriptCurrInstr++;
+}
+
+static void Cmd_givecaptureexp(void)
+{
+#if B_EXP_CATCH == TRUE
+    // Only give capture experience in wild battles
+    if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_POKEDUDE | BATTLE_TYPE_OLD_MAN_TUTORIAL)))
+    {
+        gBattlerFainted = gBattlerAttacker ^ BIT_SIDE; // The caught Pokémon
+        BattleScriptPushCursor();
+        gBattlescriptCurrInstr = BattleScript_GiveExp;
+        return;
+    }
+#endif
     gBattlescriptCurrInstr++;
 }
 
