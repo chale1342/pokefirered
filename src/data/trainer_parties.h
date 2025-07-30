@@ -303,9 +303,9 @@ static const struct TrainerMonNoItemDefaultMoves sParty_BugCatcherDoug[] = {
 
 static const struct TrainerMonNoItemDefaultMoves sParty_BugCatcherSammy[] = {
     {
-        .iv = 0,
-        .lvl = 9,
-        .species = SPECIES_WEEDLE,
+        .iv = 20,
+        .lvl = 10,
+        .species = SPECIES_SCYTHER,
     },
 };
 

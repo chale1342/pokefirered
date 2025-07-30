@@ -30,18 +30,18 @@ ViridianForest_Text_DougPostBattle::
     .string "catch some stronger ones!$"
 
 ViridianForest_Text_SammyIntro::
-    .string "Hey, wait up!\n"
-    .string "What's the hurry? Why the rush?$"
+    .string "You've made it through the forest,\n"
+    .string "but the real journey is just starting!\p"
+    .string "If you want to be a strong trainer,\n"
+    .string "you'll need to prove it before facing BROCK!$"
 
 ViridianForest_Text_SammyDefeat::
-    .string "I give!\n"
-    .string "You're good at this!$"
+    .string "Incredible...\n"
+    .string "You truly have the heart of a trainer!$"
 
 ViridianForest_Text_SammyPostBattle::
-    .string "Sometimes, you can find stuff on\n"
-    .string "the ground.\p"
-    .string "I'm looking for the stuff I\n"
-    .string "dropped. Can you help me?$"
+    .string "The forest is full of surprises.\n"
+    .string "Take care on your journey ahead!$"
 
 ViridianForest_Text_AnthonyIntro::
     .string "I might be little, but I won't like\n"

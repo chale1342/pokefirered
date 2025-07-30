@@ -11467,6 +11467,16 @@
         {
           "map": "MAP_CELADON_CITY",
           "base_label": "sCeladonCity_FireRed",
+          "land_mons": {
+            "encounter_rate": 5,
+            "mons": [
+              {
+                "min_level": 25,
+                "max_level": 25,
+                "species": "SPECIES_EEVEE"
+              }
+            ]
+          },
           "water_mons": {
             "encounter_rate": 1,
             "mons": [

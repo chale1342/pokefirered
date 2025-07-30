@@ -3404,6 +3404,12 @@ const struct WildPokemonInfo sVermilionCity_FireRed_FishingMonsInfo = { 10, sVer
 #endif
 
 #ifdef FIRERED
+const struct WildPokemon sCeladonCity_FireRed_LandMons[] =
+{
+    { 25, 25, SPECIES_EEVEE },
+};
+
+const struct WildPokemonInfo sCeladonCity_FireRed_LandMonsInfo = { 5, sCeladonCity_FireRed_LandMons };
 const struct WildPokemon sCeladonCity_FireRed_WaterMons[] =
 {
     { 5, 10, SPECIES_PSYDUCK },
@@ -8635,7 +8641,7 @@ const struct WildPokemonHeader gWildMonHeaders[] =
     {
         .mapGroup = MAP_GROUP(MAP_CELADON_CITY),
         .mapNum = MAP_NUM(MAP_CELADON_CITY),
-        .landMonsInfo = NULL,
+        .landMonsInfo = &sCeladonCity_FireRed_LandMonsInfo,
         .waterMonsInfo = &sCeladonCity_FireRed_WaterMonsInfo,
         .rockSmashMonsInfo = NULL,
         .fishingMonsInfo = &sCeladonCity_FireRed_FishingMonsInfo,
