@@ -1,0 +1,45 @@
+const SIGN_LADY_READY = VAR_TEMP_2
+
+mapscripts PalletTown_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION: PalletTown_OnTransition
+    MAP_SCRIPT_ON_FRAME_TABLE: PalletTown_OnFrame
+}
+
+script PalletTown_OnTransition {
+    setworldmapflag(FLAG_WORLD_MAP_PALLET_TOWN)
+    
+    if (flag(FLAG_PALLET_LADY_NOT_BLOCKING_SIGN)) {
+        call(PalletTown_EventScript_TryReadySignLady)
+    }
+    
+    if (var(VAR_MAP_SCENE_PALLET_TOWN_SIGN_LADY) == 0) {
+        call(PalletTown_EventScript_SetSignLadyPos)
+    }
+    
+    if (var(VAR_MAP_SCENE_PALLET_TOWN_SIGN_LADY) == 1) {
+        call(PalletTown_EventScript_SetSignLadyDone)
+    }
+}
+
+script PalletTown_EventScript_TryReadySignLady {
+    if (!flag(FLAG_OPENED_START_MENU)) {
+        return
+    }
+    if (var(VAR_MAP_SCENE_PALLET_TOWN_SIGN_LADY) >= 1) {
+        return
+    }
+    setvar(VAR_MAP_SCENE_PALLET_TOWN_SIGN_LADY, 1)
+}
+
+script PalletTown_EventScript_SetSignLadyDone {
+    setvar(VAR_MAP_SCENE_PALLET_TOWN_SIGN_LADY, 2)
+}
+
+script PalletTown_EventScript_SetSignLadyPos {
+    if (flag(FLAG_PALLET_LADY_NOT_BLOCKING_SIGN)) {
+        call(PalletTown_EventScript_MoveSignLadyToRouteEntrance)
+        return
+    }
+    setobjectxyperm(LOCALID_PALLET_SIGN_LADY, 5, 15)
+    setobjectmovementtype(LOCALID_PALLET_SIGN_LADY, MOVEMENT_TYPE_FACE_UP)
+}

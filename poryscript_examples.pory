@@ -1,0 +1,129 @@
+// Example Poryscript file showing various features
+// This demonstrates the syntax and capabilities of Poryscript
+
+// Text strings
+text ExampleText_Hello {
+    "Hello! This is an example\n"
+    "of Poryscript text!"
+}
+
+text ExampleText_GivePokemon {
+    "Would you like a POKéMON?"
+}
+
+text ExampleText_ReceivedPokemon {
+    "You received a {STR_VAR_1}!"
+}
+
+// Simple NPC script
+script ExampleNPC_BasicGreeting {
+    msgbox(ExampleText_Hello, MSGBOX_NPC)
+}
+
+// More complex script with choices and conditions
+script ExampleNPC_GivePokemon {
+    lock
+    faceplayer
+    
+    if (flag(FLAG_RECEIVED_STARTER_DEX)) {
+        msgbox("You already have a POKéDEX!", MSGBOX_NPC)
+        release
+        return
+    }
+    
+    msgbox(ExampleText_GivePokemon, MSGBOX_YESNO)
+    
+    if (var(VAR_RESULT) == NO) {
+        msgbox("Come back anytime!", MSGBOX_NPC)
+        release
+        return
+    }
+    
+    // Give the player a Bulbasaur
+    bufferspeciesname(STR_VAR_1, SPECIES_BULBASAUR)
+    msgbox(ExampleText_ReceivedPokemon, MSGBOX_DEFAULT)
+    
+    givemon(SPECIES_BULBASAUR, 5, ITEM_NONE)
+    
+    switch (var(VAR_RESULT)) {
+        case MON_GIVEN_TO_PARTY:
+            playfanfare(MUS_OBTAIN_ITEM)
+            message("Bulbasaur was added to your party!")
+            waitmessage
+            waitfanfare
+            
+        case MON_GIVEN_TO_PC:
+            playfanfare(MUS_OBTAIN_ITEM)
+            message("Bulbasaur was sent to your PC!")
+            waitmessage
+            waitfanfare
+            
+        case MON_CANT_GIVE:
+            message("You have no room for this POKéMON!")
+            waitmessage
+            release
+            return
+    }
+    
+    setflag(FLAG_RECEIVED_STARTER_DEX)
+    release
+}
+
+// Movement script example
+movement PlayerWalkUp {
+    walk_up * 3
+    face_down
+}
+
+movement NPCApproach {
+    walk_down
+    walk_right * 2
+    walk_down
+    face_left
+}
+
+// Script with movement and more complex logic
+script ExampleCutscene {
+    lock
+    
+    // Check if we've seen this cutscene before
+    if (flag(FLAG_EXAMPLE_CUTSCENE_SEEN)) {
+        release
+        return
+    }
+    
+    // Play the cutscene
+    applymovement(OBJ_EVENT_ID_PLAYER, PlayerWalkUp)
+    applymovement(1, NPCApproach)  // NPC with local ID 1
+    waitmovement(0)  // Wait for all movements
+    
+    msgbox("This is an example cutscene!\nPretty cool, right?", MSGBOX_DEFAULT)
+    
+    setflag(FLAG_EXAMPLE_CUTSCENE_SEEN)
+    release
+}
+
+// Item giving script
+script ExampleItemGiver {
+    lock
+    faceplayer
+    
+    checkitem(ITEM_POTION, 1)
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox("You already have a Potion!", MSGBOX_NPC)
+        release
+        return
+    }
+    
+    msgbox("Here, take this Potion!", MSGBOX_DEFAULT)
+    giveitem(ITEM_POTION, 1)
+    
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox("Your bag is full!", MSGBOX_NPC)
+        release
+        return
+    }
+    
+    msgbox("Use it when your POKéMON are hurt!", MSGBOX_NPC)
+    release
+}

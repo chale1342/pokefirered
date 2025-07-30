@@ -30,13 +30,14 @@ enum
     MENUITEM_BUTTONMODE = 4,
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
+    MENUITEM_AUTORUN,
     MENUITEM_CANCEL,
     MENUITEM_COUNT_PAGE2
 };
 
-#define MENUITEM_COUNT 8
-#define MAX_ITEMS_PER_PAGE 4
-#define ITEMS_ON_PAGE2 4
+#define MENUITEM_COUNT 9
+#define MAX_ITEMS_PER_PAGE 5
+#define ITEMS_ON_PAGE2 5
 
 // Window Ids
 enum
@@ -145,7 +146,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 };
 
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -162,6 +163,7 @@ static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
     gText_ButtonMode,
     gText_Frame,
     gText_ExpShare,
+    gText_AutoRun,
     gText_OptionMenuCancel,
 };
 
@@ -174,7 +176,13 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [4] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
     [5] = gText_Frame,         // MENUITEM_FRAMETYPE
     [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
-    [7] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+    [7] = gText_AutoRun,       // MENUITEM_AUTORUN
+    [8] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+};
+static const u8 *const sAutoRunOptions[] =
+{
+    gText_AutoRunOff,
+    gText_AutoRunOn
 };
 static const u8 *const sExpShareOptions[] =
 {
@@ -571,6 +579,9 @@ static void BufferOptionMenuString(u8 selection)
     case MENUITEM_EXPSHARE:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
+    case MENUITEM_AUTORUN:
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sAutoRunOptions[sOptionMenuPtr->option[globalIndex]]);
+        break;
     default:
         break;
     }
@@ -591,6 +602,7 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = sOptionMenuPtr->option[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
     gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
+    gSaveBlock2Ptr->optionsAutoRun = sOptionMenuPtr->option[MENUITEM_AUTORUN];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
     FREE_AND_SET_NULL(sOptionMenuPtr);
     DestroyTask(taskId);

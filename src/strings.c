@@ -1,5 +1,10 @@
+
 #include "global.h"
 #include "strings.h"
+
+ALIGNED(4) const u8 gText_AutoRun[] = _("AUTO RUN");
+ALIGNED(4) const u8 gText_AutoRunOn[] = _("ON");
+ALIGNED(4) const u8 gText_AutoRunOff[] = _("OFF");
 
 const u8 gExpandedPlaceholder_Empty[] = _("");
 const u8 gExpandedPlaceholder_Kun[] = _("");
