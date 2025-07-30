@@ -447,3 +447,40 @@ PalletTown_EventScript_SignLadyStartShowSign::
 	call PalletTown_EventScript_SignLadyShowSign
 	release
 	end
+PalletTown_EventScript_MomGiveRunningShoes::
+    lock
+    faceplayer
+    checkflag FLAG_GOT_RUNNING_SHOES
+    goto_if_set FLAG_GOT_RUNNING_SHOES, PalletTown_EventScript_MomRepeat
+    msgbox PalletTown_Text_MomBeforeShoes, MSGBOX_SIGN
+    playfanfare MUS_OBTAIN_KEY_ITEM
+    message PalletTown_Text_MomGotRunningShoes
+    waitmessage
+    waitfanfare
+    setflag FLAG_GOT_RUNNING_SHOES
+    setflag FLAG_SYS_B_DASH
+    msgbox PalletTown_Text_MomAfterShoes, MSGBOX_SIGN
+    release
+    end
+
+PalletTown_EventScript_MomRepeat::
+    msgbox PalletTown_Text_MomRepeat, MSGBOX_SIGN
+    release
+    end
+
+.global PalletTown_EventScript_Mom
+.global PalletTown_EventScript_MomAfter
+
+PalletTown_EventScript_Mom:
+    lock
+    faceplayer
+    checkflag FLAG_GOT_RUNNING_SHOES
+    goto_if_set FLAG_GOT_RUNNING_SHOES, PalletTown_EventScript_MomAfter
+    call PalletTown_EventScript_MomGiveRunningShoes
+    release
+    end
+
+PalletTown_EventScript_MomAfter:
+    msgbox PalletTown_Text_MomGotRunningShoes
+    release
+    end

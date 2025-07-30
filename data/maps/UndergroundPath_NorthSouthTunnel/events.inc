@@ -1,0 +1,22 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/UndergroundPath_NorthSouthTunnel/map.json
+@
+
+	.align 2
+
+UndergroundPath_NorthSouthTunnel_MapWarps:
+	warp_def 4, 3, 3, 3, MAP_UNDERGROUND_PATH_NORTH_ENTRANCE
+	warp_def 3, 60, 3, 3, MAP_UNDERGROUND_PATH_SOUTH_ENTRANCE
+
+UndergroundPath_NorthSouthTunnel_MapBGEvents:
+	bg_hidden_item_event 5, 30, 3, ITEM_POTION, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_POTION, 1, FALSE
+	bg_hidden_item_event 5, 6, 3, ITEM_ANTIDOTE, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_ANTIDOTE, 1, FALSE
+	bg_hidden_item_event 2, 57, 3, ITEM_BURN_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_BURN_HEAL, 1, FALSE
+	bg_hidden_item_event 1, 24, 3, ITEM_AWAKENING, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_AWAKENING, 1, FALSE
+	bg_hidden_item_event 6, 53, 3, ITEM_ICE_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_ICE_HEAL, 1, FALSE
+	bg_hidden_item_event 3, 15, 3, ITEM_PARALYZE_HEAL, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_PARALYZE_HEAL, 1, FALSE
+	bg_hidden_item_event 3, 39, 3, ITEM_ETHER, FLAG_HIDDEN_ITEM_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL_ETHER, 1, FALSE
+
+UndergroundPath_NorthSouthTunnel_MapEvents::
+	map_events NULL, UndergroundPath_NorthSouthTunnel_MapWarps, NULL, UndergroundPath_NorthSouthTunnel_MapBGEvents
+

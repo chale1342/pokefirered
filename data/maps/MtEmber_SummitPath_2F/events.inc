@@ -1,0 +1,24 @@
+@
+@ DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/MtEmber_SummitPath_2F/map.json
+@
+
+	.align 2
+
+MtEmber_SummitPath_2F_ObjectEvents:
+	object_event 1, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 40, 7, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_12
+	object_event 2, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 33, 5, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_13
+	object_event 3, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 15, 19, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_14
+	object_event 4, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 13, 23, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_15
+	object_event 5, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 13, 21, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_16
+	object_event 6, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 7, 38, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_17
+	object_event 7, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 9, 35, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_18
+	object_event 8, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 7, 34, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_19
+	object_event 9, OBJ_EVENT_GFX_ROCK_SMASH_ROCK, 15, 26, 3, MOVEMENT_TYPE_LOOK_AROUND, 1, 1, TRAINER_TYPE_NONE, 0, EventScript_RockSmash, FLAG_TEMP_1A
+
+MtEmber_SummitPath_2F_MapWarps:
+	warp_def 8, 39, 0, 1, MAP_MT_EMBER_SUMMIT_PATH_1F
+	warp_def 39, 6, 3, 0, MAP_MT_EMBER_SUMMIT_PATH_3F
+
+MtEmber_SummitPath_2F_MapEvents::
+	map_events MtEmber_SummitPath_2F_ObjectEvents, MtEmber_SummitPath_2F_MapWarps, NULL, NULL
+

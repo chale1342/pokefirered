@@ -1,5 +1,10 @@
+
 #include "global.h"
 #include "strings.h"
+
+ALIGNED(4) const u8 gText_AutoRun[] = _("AUTO RUN");
+ALIGNED(4) const u8 gText_AutoRunOn[] = _("ON");
+ALIGNED(4) const u8 gText_AutoRunOff[] = _("OFF");
 
 const u8 gExpandedPlaceholder_Empty[] = _("");
 const u8 gExpandedPlaceholder_Kun[] = _("");
@@ -222,6 +227,7 @@ const u8 gText_Var1AndYouWantedVar2[] = _("{STR_VAR_1}, and you want {STR_VAR_2}
 const u8 gText_Var1IsItThatllBeVar2[] = _("{STR_VAR_1} だね!\n{STR_VAR_2}¥ だけど かうかい?");
 const u8 gText_YouWantedVar1ThatllBeVar2[] = _("{STR_VAR_1} ですね!\n{STR_VAR_2}¥ だけど かいますか?");
 const u8 gText_HereYouGoThankYou[] = _("Here you are!\nThank you!");
+const u8 gText_HereYouGoThankYouWithBonus[] = _("Here you are!\nBonus Ultra Balls included!\nThank you!");
 const u8 gText_ThankYouIllSendItHome[] = _("どうも ありがとう!\nじたくの パソコンに おくって おきますね!");
 const u8 gText_ThanksIllSendItHome[] = _("どうも ありがとう!\nじたくの パソコンに おくって おくね!");
 const u8 gText_YouDontHaveMoney[] = _("You don't have enough money.{PAUSE_UNTIL_PRESS}");
@@ -868,6 +874,7 @@ const u8 gText_BattleStyle[] = _("BATTLE STYLE");
 const u8 gText_Sound[] = _("SOUND");
 const u8 gText_ButtonMode[] = _("BUTTON MODE");
 const u8 gText_Frame[] = _("FRAME");
+const u8 gText_ExpShare[] = _("EXP. SHARE");
 const u8 gText_OptionMenuCancel[] = _("CANCEL");
 const u8 gText_TextSpeedSlow[] = _("SLOW");
 const u8 gText_TextSpeedMid[] = _("MID");
@@ -883,6 +890,8 @@ const u8 gText_ButtonTypeHelp[] = _("HELP");
 const u8 gText_ButtonTypeLEqualsA[] = _("L=A");
 const u8 gText_ButtonTypeLR[] = _("LR");
 const u8 gText_FrameType[] = _("TYPE");
+const u8 gText_ExpShareOff[] = _("OFF");
+const u8 gText_ExpShareOn[] = _("ON");
 const u8 gText_PickSwitchCancel[] = _("{DPAD_UPDOWN}PICK {DPAD_LEFTRIGHT}SWITCH {A_BUTTON}{B_BUTTON}CANCEL");
 const u8 gText_ResetRTCConfirmCancel[] = _("RTCを リセットします\nAで けってい Bで キャンセル");
 const u8 gText_PresentTime[] = _("げんざいの ゲ-ムない じかん");

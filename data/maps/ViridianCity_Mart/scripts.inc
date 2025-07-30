@@ -83,3 +83,34 @@ ViridianCity_Mart_EventScript_Woman::
 ViridianCity_Mart_EventScript_Youngster::
 	msgbox ViridianCity_Mart_Text_GotToBuySomePotions, MSGBOX_NPC
 	end
+
+ViridianCity_Mart_EventScript_FishingGuru::
+	lock
+	faceplayer
+	goto_if_set FLAG_GOT_OLD_ROD, ViridianCity_Mart_EventScript_AlreadyGotOldRod
+	msgbox ViridianCity_Mart_Text_ImFishingGuruDoYouLikeToFish, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, ViridianCity_Mart_EventScript_GiveOldRod
+	msgbox ViridianCity_Mart_Text_OhThatsSoDisappointing
+	release
+	end
+
+ViridianCity_Mart_EventScript_AlreadyGotOldRod::
+	msgbox ViridianCity_Mart_Text_HowAreTheFishBiting
+	release
+	end
+
+ViridianCity_Mart_EventScript_GiveOldRod::
+	checkitemspace ITEM_OLD_ROD
+	goto_if_eq VAR_RESULT, FALSE, ViridianCity_Mart_EventScript_NoRoomForOldRod
+	additem ITEM_OLD_ROD
+	msgbox ViridianCity_Mart_Text_TakeThisAndFish
+	msgreceiveditem ViridianCity_Mart_Text_ReceivedOldRodFromFishingGuru, ITEM_OLD_ROD
+	setflag FLAG_GOT_OLD_ROD
+	msgbox ViridianCity_Mart_Text_FishingIsAWayOfLife
+	release
+	end
+
+ViridianCity_Mart_EventScript_NoRoomForOldRod::
+	msgbox ViridianCity_Mart_Text_NoRoomForNiceGift
+	release
+	end

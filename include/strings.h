@@ -1,3 +1,6 @@
+extern const u8 gText_AutoRun[];
+extern const u8 gText_AutoRunOn[];
+extern const u8 gText_AutoRunOff[];
 #ifndef GUARD_STRINGS_H
 #define GUARD_STRINGS_H
 
@@ -922,6 +925,7 @@ extern const u8 gText_BattleStyle[];
 extern const u8 gText_Sound[];
 extern const u8 gText_ButtonMode[];
 extern const u8 gText_Frame[];
+extern const u8 gText_ExpShare[];
 extern const u8 gText_OptionMenuCancel[];
 extern const u8 gText_TextSpeedSlow[];
 extern const u8 gText_TextSpeedMid[];
@@ -937,6 +941,8 @@ extern const u8 gText_ButtonTypeLR[];
 extern const u8 gText_ButtonTypeLEqualsA[];
 extern const u8 gText_Option[];
 extern const u8 gText_FrameType[];
+extern const u8 gText_ExpShareOff[];
+extern const u8 gText_ExpShareOn[];
 extern const u8 gTextJP_Type[];
 extern const u8 gText_PickSwitchCancel[];
 
@@ -958,6 +964,7 @@ extern const u8 gText_Var1CertainlyHowMany[];
 extern const u8 gText_InBagVar1[];
 extern const u8 gText_Var1AndYouWantedVar2[];
 extern const u8 gText_HereYouGoThankYou[];
+extern const u8 gText_HereYouGoThankYouWithBonus[];
 extern const u8 gText_NoMoreRoomForThis[];
 
 // pokedex_screen

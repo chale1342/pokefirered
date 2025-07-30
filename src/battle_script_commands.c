@@ -1,4 +1,6 @@
 #include "global.h"
+#include "battle.h"
+#include "constants/global.h"
 #include "gflib.h"
 #include "item.h"
 #include "util.h"
@@ -39,6 +41,7 @@
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
+// Helper function to get battle speed multiplier
 #define DEFENDER_IS_PROTECTED ((gProtectStructs[gBattlerTarget].protected) && (gBattleMoves[gCurrentMove].flags & FLAG_PROTECT_AFFECTED))
 
 #define LEVEL_UP_BANNER_START 416
@@ -3144,6 +3147,10 @@ static void Cmd_getexp(void)
         {
             u16 calculatedExp;
             s32 viaSentIn;
+            bool8 expShareAll = FALSE;
+            // Check if Exp. Share option is enabled
+            if (gSaveBlock2Ptr && gSaveBlock2Ptr->optionsExpShare)
+                expShareAll = TRUE;
 
             for (viaSentIn = 0, i = 0; i < PARTY_SIZE; i++)
             {
@@ -3159,19 +3166,30 @@ static void Cmd_getexp(void)
                 else
                     holdEffect = ItemId_GetHoldEffect(item);
 
-                if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+                if (!expShareAll && holdEffect == HOLD_EFFECT_EXP_SHARE)
                     viaExpShare++;
             }
 
             calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
 
-            if (viaExpShare) // at least one mon is getting exp via exp share
+            if (expShareAll)
             {
-                *exp = SAFE_DIV(calculatedExp / 2, viaSentIn);
+                // Gen 6+ style: all non-fainted, non-egg party Pokémon get exp
+                *exp = SAFE_DIV(calculatedExp, viaSentIn);
+                if (*exp == 0)
+                    *exp = 1;
+                gExpShareExp = calculatedExp / PARTY_SIZE;
+                if (gExpShareExp == 0)
+                    gExpShareExp = 1;
+            }
+            else if (viaExpShare)
+            {
+                // Modified: Give full exp to battlers, full exp to Exp. Share holders
+                *exp = SAFE_DIV(calculatedExp, viaSentIn);
                 if (*exp == 0)
                     *exp = 1;
 
-                gExpShareExp = calculatedExp / 2 / viaExpShare;
+                gExpShareExp = calculatedExp / viaExpShare;
                 if (gExpShareExp == 0)
                     gExpShareExp = 1;
             }
@@ -3216,19 +3234,19 @@ static void Cmd_getexp(void)
                 if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_POKEDUDE)) && gBattleMons[0].hp != 0 && !gBattleStruct->wildVictorySong)
                 {
                     BattleStopLowHpSound();
-                    PlayBGM(MUS_VICTORY_WILD);
+                    //PlayBGM(MUS_VICTORY_WILD);
                     gBattleStruct->wildVictorySong++;
                 }
 
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
                 {
+                    // Give full experience to battlers or Exp. Share holders
                     if (gBattleStruct->sentInPokes & 1)
                         gBattleMoveDamage = *exp;
+                    else if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+                        gBattleMoveDamage = gExpShareExp;
                     else
                         gBattleMoveDamage = 0;
-
-                    if (holdEffect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp;
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)

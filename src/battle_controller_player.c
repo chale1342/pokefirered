@@ -8,6 +8,7 @@
 #include "party_menu.h"
 #include "pokeball.h"
 #include "strings.h"
+#include "string_util.h"
 #include "pokemon_special_anim.h"
 #include "task.h"
 #include "util.h"
@@ -1399,17 +1400,85 @@ static void MoveSelectionDisplayPpNumber(void)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
 }
 
+static u32 GetTypeEffectivenessMultiplier(u8 atkType, u8 defType1, u8 defType2)
+{
+    s32 i = 0;
+    u32 multiplier = TYPE_MUL_NORMAL;
+    
+    while (TYPE_EFFECT_ATK_TYPE(i) != TYPE_ENDTABLE)
+    {
+        if (TYPE_EFFECT_ATK_TYPE(i) == TYPE_FORESIGHT)
+        {
+            i += 3;
+            continue;
+        }
+        else if (TYPE_EFFECT_ATK_TYPE(i) == atkType)
+        {
+            // check type1
+            if (TYPE_EFFECT_DEF_TYPE(i) == defType1)
+                multiplier = (multiplier * TYPE_EFFECT_MULTIPLIER(i)) / 10;
+            // check type2
+            if (TYPE_EFFECT_DEF_TYPE(i) == defType2 && defType1 != defType2)
+                multiplier = (multiplier * TYPE_EFFECT_MULTIPLIER(i)) / 10;
+        }
+        i += 3;
+    }
+    
+    return multiplier;
+}
+
 static void MoveSelectionDisplayMoveType(void)
 {
     u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 moveType = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    u32 effectiveness = TYPE_MUL_NORMAL;
+    u8 opponentBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    
+    // Calculate type effectiveness against opponent Pokemon
+    if (gBattleMons[opponentBattler].hp != 0)
+    {
+        effectiveness = GetTypeEffectivenessMultiplier(moveType, gBattleMons[opponentBattler].type1, gBattleMons[opponentBattler].type2);
+    }
 
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
     *txtPtr++ = EXT_CTRL_CODE_BEGIN;
     *txtPtr++ = 6;
     *txtPtr++ = 1;
     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+    txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
+    
+    // Add effectiveness indicator arrows
+    if (effectiveness > TYPE_MUL_NORMAL)
+    {
+        // Super effective - green up arrow
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = TEXT_COLOR_GREEN;
+        // Only add space if type name is short enough
+        if (StringLength(gTypeNames[moveType]) <= 5)
+            *txtPtr++ = CHAR_SPACE;
+        *txtPtr++ = CHAR_UP_ARROW;
+        *txtPtr = EOS;
+    }
+    else if (effectiveness < TYPE_MUL_NORMAL)
+    {
+        // Not very effective - red down arrow
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = TEXT_COLOR_RED;
+        // Only add space if type name is short enough
+        if (StringLength(gTypeNames[moveType]) <= 5)
+            *txtPtr++ = CHAR_SPACE;
+        *txtPtr++ = CHAR_DOWN_ARROW;
+        *txtPtr = EOS;
+    }
+    else
+    {
+        // Normal effectiveness - no arrow
+        *txtPtr = EOS;
+    }
+    
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 }
 
