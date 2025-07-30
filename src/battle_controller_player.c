@@ -91,6 +91,7 @@ static void MoveSelectionDisplayMoveNames(void);
 static void HandleMoveSwitching(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
+static u32 GetTypeEffectivenessMultiplier(u8 atkType, u8 defType1, u8 defType2);
 static void Task_LaunchLvlUpAnim(u8 taskId);
 static void Task_PrepareToGiveExpWithExpBar(u8 taskId);
 static void DestroyExpTaskAndCompleteOnInactiveTextPrinter(u8 taskId);
@@ -1367,7 +1368,6 @@ static void MoveSelectionDisplayMoveNames(void)
     s32 i;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     gNumberOfMovesToChoose = 0;
-
     for (i = 0; i < MAX_MON_MOVES; ++i)
     {
         MoveSelectionDestroyCursorAt(i);
@@ -1434,20 +1434,17 @@ static void MoveSelectionDisplayMoveType(void)
     u8 moveType = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
     u32 effectiveness = TYPE_MUL_NORMAL;
     u8 opponentBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-    
     // Calculate type effectiveness against opponent Pokemon
     if (gBattleMons[opponentBattler].hp != 0)
     {
         effectiveness = GetTypeEffectivenessMultiplier(moveType, gBattleMons[opponentBattler].type1, gBattleMons[opponentBattler].type2);
     }
-
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
     *txtPtr++ = EXT_CTRL_CODE_BEGIN;
     *txtPtr++ = 6;
     *txtPtr++ = 1;
     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
     txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
-    
     // Add effectiveness indicator arrows
     if (effectiveness > TYPE_MUL_NORMAL)
     {
@@ -1478,7 +1475,6 @@ static void MoveSelectionDisplayMoveType(void)
         // Normal effectiveness - no arrow
         *txtPtr = EOS;
     }
-    
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 }
 
@@ -1502,7 +1498,7 @@ void MoveSelectionDestroyCursorAt(u8 cursorPosition)
     CopyBgTilemapBufferToVram(0);
 }
 
-void ActionSelectionCreateCursorAt(u8 cursorPosition, u8 arg1)
+void ActionSelectionCreateCursorAt(u8 cursorPosition, u8 unused)
 {
     u16 src[2];
 

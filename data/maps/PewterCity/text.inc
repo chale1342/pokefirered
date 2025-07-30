@@ -134,10 +134,10 @@ PewterCity_Text_ReceivedExpShareFromAide::
 PewterCity_Text_SwitchedShoesWithRunningShoes::
     .string "{PLAYER} switched shoes with the\n"
 PewterCity_Text_ExplainExpShare::
-    .string "The EXP. SHARE lets all your POKéMON
-gain experience from battles, even if they
-didn't fight! Give it to a POKéMON to help
-your whole team grow stronger.$"
+    .string "The EXP. SHARE lets all your POKéMON\n"
+    .string "gain experience from battles, even if they\n"
+    .string "didn't fight! Give it to a POKéMON to help\n"
+    .string "your whole team grow stronger.$"
 
 PewterCity_Text_ExplainRunningShoes::
     .string "Press the B Button to run.\n"

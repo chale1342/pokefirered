@@ -11,6 +11,12 @@
 #include "field_fadetransition.h"
 #include "gba/m4a_internal.h"
 
+// Dynamic Level Scaling option externs
+extern ALIGNED(4) const u8 gText_DynamicLevelScaling[];
+extern ALIGNED(4) const u8 gText_DynamicLevelScalingOff[];
+extern ALIGNED(4) const u8 gText_DynamicLevelScalingOn[];
+extern bool8 gDynamicLevelScalingEnabled;
+
 // can't include the one in menu_helpers.h since Task_OptionMenu needs bool32 for matching
 bool32 IsActiveOverworldLinkBusy(void);
 
@@ -24,18 +30,20 @@ enum
     MENUITEM_COUNT_PAGE1
 };
 
+
 // Menu items - Page 2  
 enum
 {
-    MENUITEM_BUTTONMODE = 4,
+    MENUITEM_BUTTONMODE = 4,  // Keep for save data compatibility but not shown
     MENUITEM_FRAMETYPE,
     MENUITEM_EXPSHARE,
     MENUITEM_AUTORUN,
+    MENUITEM_DYNLEVELSCALING,
     MENUITEM_CANCEL,
     MENUITEM_COUNT_PAGE2
 };
 
-#define MENUITEM_COUNT 9
+#define MENUITEM_COUNT 10
 #define MAX_ITEMS_PER_PAGE 5
 #define ITEMS_ON_PAGE2 5
 
@@ -146,7 +154,9 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 };
 
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 3, 10, 2, 2, 0};
+// Set Button Mode (L/R) to only 2 options (L=A, LR)
+// Add 2 options for Dynamic Level Scaling (OFF/ON)
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 2, 10, 2, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -160,10 +170,10 @@ static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
 // Page 2 items (indices 4-7 in global array)  
 static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
 {
-    gText_ButtonMode,
     gText_Frame,
     gText_ExpShare,
     gText_AutoRun,
+    gText_DynamicLevelScaling,
     gText_OptionMenuCancel,
 };
 
@@ -177,8 +187,19 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [5] = gText_Frame,         // MENUITEM_FRAMETYPE
     [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
     [7] = gText_AutoRun,       // MENUITEM_AUTORUN
-    [8] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+    [8] = gText_DynamicLevelScaling, // MENUITEM_DYNLEVELSCALING
+    [9] = gText_OptionMenuCancel, // MENUITEM_CANCEL
 };
+// Dynamic Level Scaling option values
+extern const u8 gText_DynamicLevelScaling[];
+extern const u8 gText_DynamicLevelScalingOff[];
+extern const u8 gText_DynamicLevelScalingOn[];
+static const u8 *const sDynamicLevelScalingOptions[] = {
+    gText_DynamicLevelScalingOff,
+    gText_DynamicLevelScalingOn
+};
+// In the option menu logic, hook the value to gDynamicLevelScalingEnabled
+// (Add this to the code that handles saving/loading options)
 static const u8 *const sAutoRunOptions[] =
 {
     gText_AutoRunOff,
@@ -215,9 +236,9 @@ static const u8 *const sSoundOptions[] =
     gText_SoundStereo
 };
 
+// Only allow L=A and LR, remove HELP
 static const u8 *const sButtonTypeOptions[] =
 {
-    gText_ButtonTypeHelp,
     gText_ButtonTypeLR,
     gText_ButtonTypeLEqualsA
 };
@@ -258,10 +279,12 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->option[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
     sOptionMenuPtr->option[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
     sOptionMenuPtr->option[MENUITEM_SOUND] = gSaveBlock2Ptr->optionsSound;
-    sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
+    sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = 1; // Always set to L=A (index 1)
     sOptionMenuPtr->option[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
     sOptionMenuPtr->option[MENUITEM_EXPSHARE] = gSaveBlock2Ptr->optionsExpShare;
-    
+    sOptionMenuPtr->option[MENUITEM_AUTORUN] = gSaveBlock2Ptr->optionsAutoRun;
+    // Dynamic Level Scaling: 0 = OFF, 1 = ON
+    sOptionMenuPtr->option[MENUITEM_DYNLEVELSCALING] = gDynamicLevelScalingEnabled ? 1 : 0;
     for (i = 0; i < MENUITEM_COUNT - 1; i++)
     {
         if (sOptionMenuPtr->option[i] > (sOptionMenuItemCounts[i]) - 1)
@@ -567,9 +590,6 @@ static void BufferOptionMenuString(u8 selection)
     case MENUITEM_SOUND:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sSoundOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
-    case MENUITEM_BUTTONMODE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sButtonTypeOptions[sOptionMenuPtr->option[globalIndex]]);
-        break;
     case MENUITEM_FRAMETYPE:
         StringCopy(str, gText_FrameType);
         ConvertIntToDecimalStringN(buf, sOptionMenuPtr->option[globalIndex] + 1, 1, 2);
@@ -581,6 +601,9 @@ static void BufferOptionMenuString(u8 selection)
         break;
     case MENUITEM_AUTORUN:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sAutoRunOptions[sOptionMenuPtr->option[globalIndex]]);
+        break;
+    case MENUITEM_DYNLEVELSCALING:
+        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sDynamicLevelScalingOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
     default:
         break;
@@ -599,11 +622,13 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsBattleSceneOff = sOptionMenuPtr->option[MENUITEM_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle = sOptionMenuPtr->option[MENUITEM_BATTLESTYLE];
     gSaveBlock2Ptr->optionsSound = sOptionMenuPtr->option[MENUITEM_SOUND];
-    gSaveBlock2Ptr->optionsButtonMode = sOptionMenuPtr->option[MENUITEM_BUTTONMODE];
+    gSaveBlock2Ptr->optionsButtonMode = 1; // Always save as L=A
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
     gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
     gSaveBlock2Ptr->optionsAutoRun = sOptionMenuPtr->option[MENUITEM_AUTORUN];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
+    // Save Dynamic Level Scaling option
+    gDynamicLevelScalingEnabled = (sOptionMenuPtr->option[MENUITEM_DYNLEVELSCALING] == 1);
     FREE_AND_SET_NULL(sOptionMenuPtr);
     DestroyTask(taskId);
 }
@@ -697,5 +722,16 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
     if (sOptionMenuPtr->currentPage == 0)
         return pageItem; // Page 1: items 0-3
     else
-        return pageItem + 4; // Page 2: items 4-7 (offset by 4)
+    {
+        // Page 2: skip BUTTON MODE (index 4), map to indices 5-9
+        switch (pageItem)
+        {
+        case 0: return MENUITEM_FRAMETYPE;     // Frame
+        case 1: return MENUITEM_EXPSHARE;      // Exp Share  
+        case 2: return MENUITEM_AUTORUN;       // Auto Run
+        case 3: return MENUITEM_DYNLEVELSCALING; // Dynamic Level
+        case 4: return MENUITEM_CANCEL;        // Cancel
+        default: return MENUITEM_FRAMETYPE;
+        }
+    }
 }

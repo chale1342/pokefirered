@@ -19,7 +19,11 @@
 
 #define MAX_ENCOUNTER_RATE 1600
 
+
 #define HEADER_NONE 0xFFFF
+
+// Global toggle for dynamic level scaling
+COMMON_DATA bool8 gDynamicLevelScalingEnabled = FALSE;
 
 struct WildEncounterData
 {
@@ -154,23 +158,53 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
 
 static u8 ChooseWildMonLevel(const struct WildPokemon * info)
 {
-    u8 lo;
-    u8 hi;
-    u8 mod;
-    u8 res;
-    if (info->maxLevel >= info->minLevel)
+    if (!gDynamicLevelScalingEnabled)
     {
-        lo = info->minLevel;
-        hi = info->maxLevel;
+        // Original logic
+        u8 lo, hi, mod, res;
+        if (info->maxLevel >= info->minLevel)
+        {
+            lo = info->minLevel;
+            hi = info->maxLevel;
+        }
+        else
+        {
+            lo = info->maxLevel;
+            hi = info->minLevel;
+        }
+        mod = hi - lo + 1;
+        res = Random() % mod;
+        return lo + res;
     }
     else
     {
-        lo = info->maxLevel;
-        hi = info->minLevel;
+        // Dynamic scaling logic
+        u8 fixedLVL = 0, min, max, range, rand;
+        if (GetMonData(&gPlayerParty[5], MON_DATA_SPECIES) != SPECIES_NONE)
+            fixedLVL = (GetMonData(&gPlayerParty[0], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[1], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[2], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[3], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[4], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[5], MON_DATA_LEVEL)) / 6;
+        else if ((GetMonData(&gPlayerParty[5], MON_DATA_SPECIES) == SPECIES_NONE) && (GetMonData(&gPlayerParty[4], MON_DATA_SPECIES) != SPECIES_NONE))
+            fixedLVL = (GetMonData(&gPlayerParty[0], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[1], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[2], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[3], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[4], MON_DATA_LEVEL)) / 5;
+        else if ((GetMonData(&gPlayerParty[4], MON_DATA_SPECIES) == SPECIES_NONE) && (GetMonData(&gPlayerParty[3], MON_DATA_SPECIES) != SPECIES_NONE))
+            fixedLVL = (GetMonData(&gPlayerParty[0], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[1], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[2], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[3], MON_DATA_LEVEL)) / 4;
+        else if ((GetMonData(&gPlayerParty[3], MON_DATA_SPECIES) == SPECIES_NONE) && (GetMonData(&gPlayerParty[2], MON_DATA_SPECIES) != SPECIES_NONE))
+            fixedLVL = (GetMonData(&gPlayerParty[0], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[1], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[2], MON_DATA_LEVEL)) / 3;
+        else if ((GetMonData(&gPlayerParty[2], MON_DATA_SPECIES) == SPECIES_NONE) && (GetMonData(&gPlayerParty[1], MON_DATA_SPECIES) != SPECIES_NONE))
+            fixedLVL = (GetMonData(&gPlayerParty[0], MON_DATA_LEVEL) + GetMonData(&gPlayerParty[1], MON_DATA_LEVEL)) / 2;
+        else if ((GetMonData(&gPlayerParty[1], MON_DATA_SPECIES) == SPECIES_NONE) && (GetMonData(&gPlayerParty[0], MON_DATA_SPECIES) != SPECIES_NONE))
+            fixedLVL = GetMonData(&gPlayerParty[0], MON_DATA_LEVEL);
+
+        min = fixedLVL > 3 ? fixedLVL - 3 : 1;
+        max = fixedLVL + 3;
+        range = max - min + 1;
+        rand = Random() % range;
+        return min + rand;
     }
-    mod = hi - lo + 1;
-    res = Random() % mod;
-    return lo + res;
+}
+
+// Function to toggle dynamic level scaling
+void ToggleDynamicLevelScaling(void)
+{
+    gDynamicLevelScalingEnabled = !gDynamicLevelScalingEnabled;
 }
 
 static u16 GetCurrentMapWildMonHeaderId(void)

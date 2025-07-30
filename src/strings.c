@@ -6,6 +6,15 @@ ALIGNED(4) const u8 gText_AutoRun[] = _("AUTO RUN");
 ALIGNED(4) const u8 gText_AutoRunOn[] = _("ON");
 ALIGNED(4) const u8 gText_AutoRunOff[] = _("OFF");
 
+// Dynamic Level Scaling option menu strings
+const u8 gText_DynamicLevelScaling[] = _("DYNAMIC LEVEL");
+const u8 gText_DynamicLevelScalingOff[] = _("OFF");
+const u8 gText_DynamicLevelScalingOn[] = _("ON");
+
+// Dynamic Level Scaling script feedback strings
+const u8 gText_EnableDynamicScaling[] = _("Dynamic Level Scaling enabled!\lWild Pokémon will scale to your party.\pPress A to continue.$");
+const u8 gText_DisableDynamicScaling[] = _("Dynamic Level Scaling disabled!\lWild Pokémon will use default levels.\pPress A to continue.$");
+
 const u8 gExpandedPlaceholder_Empty[] = _("");
 const u8 gExpandedPlaceholder_Kun[] = _("");
 const u8 gExpandedPlaceholder_Chan[] = _("");
