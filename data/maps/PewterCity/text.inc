@@ -1,3 +1,11 @@
+PewterCity_Text_ReceivedAmuletCoinFromAide::
+    .string "AMULET COIN from the AIDE!$"
+
+PewterCity_Text_ExplainAmuletCoin::
+    .string "The AMULET COIN doubles the prize money\n"
+    .string "you receive after battle if the holder\n"
+    .string "participates. Give it to a POKéMON\n"
+    .string "to help you earn more!$"
 Text_DreamEaterTeach::
     .string "Yawn!\n"
     .string "I must have dozed off in the sun.\p"

@@ -713,8 +713,8 @@ PewterCity_EventScript_AideGiveRunningShoes::
 	   call_if_eq VAR_TEMP_1, 3, PewterCity_EventScript_AideExit3
 	   delay 30
 	   textcolor NPC_TEXT_COLOR_NEUTRAL
-	   msgbox PewterCity_Text_ExpShareLetterFromMom
 	   closemessage
+	   setflag FLAG_HIDE_PEWTER_CITY_EXP_SHARE_GUY
 	   removeobject LOCALID_PEWTER_AIDE
 	   setvar VAR_MAP_SCENE_PEWTER_CITY, 2
 	   return

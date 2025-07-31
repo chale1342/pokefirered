@@ -90,6 +90,18 @@ CeladonCity_GameCorner_PrizeRoom_EventScript_ScytherDratini::
 	.endif
 	goto CeladonCity_GameCorner_PrizeRoom_EventScript_ConfirmPrizeMon
 	end
+CeladonCity_GameCorner_PrizeRoom_EventScript_DratiniPinsir2::
+	.ifdef FIRERED
+	setvar VAR_TEMP_1, SPECIES_DRATINI
+	setvar VAR_TEMP_2, 4600
+	.else
+	.ifdef LEAFGREEN
+	setvar VAR_TEMP_1, SPECIES_DRATINI
+	setvar VAR_TEMP_2, 4600
+	.endif
+	.endif
+	goto CeladonCity_GameCorner_PrizeRoom_EventScript_ConfirmPrizeMon
+	end
 
 CeladonCity_GameCorner_PrizeRoom_EventScript_DratiniPinsir2::
 	.ifdef FIRERED

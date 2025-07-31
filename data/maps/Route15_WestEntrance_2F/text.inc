@@ -1,3 +1,8 @@
+Route15_WestEntrance_2F_Text_ExplainAmuletCoin::
+    .string "AMULET COIN is an item to be held\n"
+    .string "by a POKéMON. If the holder\n"
+    .string "participates in battle, you earn\n"
+    .string "double prize money!$"
 Route15_WestEntrance_2F_Text_GiveItemIfCaughtEnough::
     .string "Hi! Remember me?\n"
     .string "I'm one of PROF. OAK's AIDES.\p"

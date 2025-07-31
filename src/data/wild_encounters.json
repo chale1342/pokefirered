@@ -8515,7 +8515,7 @@
               {
                 "min_level": 8,
                 "max_level": 8,
-                "species": "SPECIES_EKANS"
+                "species": "SPECIES_SANDSHREW"
               },
               {
                 "min_level": 12,
@@ -8525,7 +8525,7 @@
               {
                 "min_level": 12,
                 "max_level": 12,
-                "species": "SPECIES_EKANS"
+                "species": "SPECIES_SANDSHREW"
               }
             ]
           },
@@ -8654,7 +8654,7 @@
               {
                 "min_level": 16,
                 "max_level": 16,
-                "species": "SPECIES_ODDISH"
+                "species": "SPECIES_BELLSPROUT"
               },
               {
                 "min_level": 16,
@@ -8664,7 +8664,7 @@
               {
                 "min_level": 15,
                 "max_level": 15,
-                "species": "SPECIES_PIDGEY"
+                "species": "SPECIES_BELLSPROUT"
               },
               {
                 "min_level": 14,
@@ -8946,7 +8946,7 @@
               {
                 "min_level": 17,
                 "max_level": 17,
-                "species": "SPECIES_GROWLITHE"
+                "species": "SPECIES_VULPIX"
               },
               {
                 "min_level": 19,
@@ -8961,7 +8961,7 @@
               {
                 "min_level": 15,
                 "max_level": 15,
-                "species": "SPECIES_GROWLITHE"
+                "species": "SPECIES_VULPIX"
               },
               {
                 "min_level": 17,
@@ -9132,14 +9132,14 @@
                 "species": "SPECIES_TENTACOOL"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 32,
+                "max_level": 32,
+                "species": "SPECIES_MAGMAR"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 25,
+                "max_level": 30,
+                "species": "SPECIES_SLOWPOKE"
               }
             ]
           },
@@ -9147,9 +9147,9 @@
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 5,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 35,
+                "max_level": 40,
+                "species": "SPECIES_SLOWBRO"
               },
               {
                 "min_level": 5,
