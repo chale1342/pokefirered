@@ -17,24 +17,6 @@ SSAnne_1F_Room3_EventScript_BaldingMan::
 	release
 	end
 
-SSAnne_1F_Room3_EventScript_HealPokemon::
-	msgbox SSAnne_1F_Room3_Text_HealingPokemon
-	waitmessage
-	call SSAnne_1F_Room3_EventScript_DoHealing
-	msgbox SSAnne_1F_Room3_Text_HealingComplete
-	release
-	end
-
-SSAnne_1F_Room3_EventScript_DoHealing::
-	applymovement VAR_LAST_TALKED, Movement_Bow
-	waitmovement 0
-	special HealPlayerParty
-	return
-
-SSAnne_1F_Room3_EventScript_DeclineHealing::
-	msgbox SSAnne_1F_Room3_Text_CruiseIsElegantAndCozy
-	release
-	end
 
 SSAnne_1F_Room3_EventScript_HealPokemon::
 	msgbox SSAnne_1F_Room3_Text_HealingPokemon

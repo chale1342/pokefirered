@@ -2527,9 +2527,9 @@ const struct WildPokemon sRoute4_FireRed_LandMons[] =
     { 12, 12, SPECIES_SPEAROW },
     { 12, 12, SPECIES_RATTATA },
     { 10, 10, SPECIES_MANKEY },
-    { 8, 8, SPECIES_EKANS },
+    { 8, 8, SPECIES_SANDSHREW },
     { 12, 12, SPECIES_MANKEY },
-    { 12, 12, SPECIES_EKANS },
+    { 12, 12, SPECIES_SANDSHREW },
 };
 
 const struct WildPokemonInfo sRoute4_FireRed_LandMonsInfo = { 21, sRoute4_FireRed_LandMons };
@@ -2569,9 +2569,9 @@ const struct WildPokemon sRoute5_FireRed_LandMons[] =
     { 12, 12, SPECIES_MEOWTH },
     { 15, 15, SPECIES_ODDISH },
     { 15, 15, SPECIES_PIDGEY },
-    { 16, 16, SPECIES_ODDISH },
+    { 16, 16, SPECIES_BELLSPROUT },
     { 16, 16, SPECIES_PIDGEY },
-    { 15, 15, SPECIES_PIDGEY },
+    { 15, 15, SPECIES_BELLSPROUT },
     { 14, 14, SPECIES_MEOWTH },
     { 15, 15, SPECIES_PIDGEY },
     { 16, 16, SPECIES_MEOWTH },
@@ -2654,10 +2654,10 @@ const struct WildPokemon sRoute8_FireRed_LandMons[] =
     { 20, 20, SPECIES_PIDGEY },
     { 20, 20, SPECIES_MEOWTH },
     { 17, 17, SPECIES_EKANS },
-    { 17, 17, SPECIES_GROWLITHE },
+    { 17, 17, SPECIES_VULPIX },
     { 19, 19, SPECIES_EKANS },
     { 17, 17, SPECIES_EKANS },
-    { 15, 15, SPECIES_GROWLITHE },
+    { 15, 15, SPECIES_VULPIX },
     { 17, 17, SPECIES_EKANS },
     { 18, 18, SPECIES_GROWLITHE },
 };
@@ -2708,14 +2708,14 @@ const struct WildPokemon sRoute10_FireRed_WaterMons[] =
     { 5, 10, SPECIES_TENTACOOL },
     { 10, 20, SPECIES_TENTACOOL },
     { 20, 30, SPECIES_TENTACOOL },
-    { 30, 35, SPECIES_TENTACOOL },
-    { 35, 40, SPECIES_TENTACOOL },
+    { 32, 32, SPECIES_MAGMAR },
+    { 25, 30, SPECIES_SLOWPOKE },
 };
 
 const struct WildPokemonInfo sRoute10_FireRed_WaterMonsInfo = { 2, sRoute10_FireRed_WaterMons };
 const struct WildPokemon sRoute10_FireRed_FishingMons[] =
 {
-    { 5, 5, SPECIES_MAGIKARP },
+    { 35, 40, SPECIES_SLOWBRO },
     { 5, 5, SPECIES_MAGIKARP },
     { 5, 15, SPECIES_HORSEA },
     { 5, 15, SPECIES_MAGIKARP },

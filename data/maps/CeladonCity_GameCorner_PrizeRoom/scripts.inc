@@ -35,7 +35,7 @@ CeladonCity_GameCorner_PrizeRoom_EventScript_ChoosePrizeMon::
 	end
 
 CeladonCity_GameCorner_PrizeRoom_EventScript_EndPrizeExchange::
-	hidecoinsbox 0, 0
+	setvar VAR_TEMP_2, 9999
 	release
 	end
 
@@ -82,18 +82,6 @@ CeladonCity_GameCorner_PrizeRoom_EventScript_ScytherDratini::
 	.ifdef FIRERED
 	setvar VAR_TEMP_1, SPECIES_SCYTHER
 	setvar VAR_TEMP_2, 5500
-	.else
-	.ifdef LEAFGREEN
-	setvar VAR_TEMP_1, SPECIES_DRATINI
-	setvar VAR_TEMP_2, 4600
-	.endif
-	.endif
-	goto CeladonCity_GameCorner_PrizeRoom_EventScript_ConfirmPrizeMon
-	end
-CeladonCity_GameCorner_PrizeRoom_EventScript_DratiniPinsir2::
-	.ifdef FIRERED
-	setvar VAR_TEMP_1, SPECIES_DRATINI
-	setvar VAR_TEMP_2, 4600
 	.else
 	.ifdef LEAFGREEN
 	setvar VAR_TEMP_1, SPECIES_DRATINI
