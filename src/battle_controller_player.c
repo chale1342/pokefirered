@@ -1444,37 +1444,26 @@ static void MoveSelectionDisplayMoveType(void)
     *txtPtr++ = 6;
     *txtPtr++ = 1;
     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
-    txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
-    // Add effectiveness indicator arrows
+    
+    // Add color based on type effectiveness
     if (effectiveness > TYPE_MUL_NORMAL)
     {
-        // Super effective - green up arrow
-        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
-        *txtPtr++ = EXT_CTRL_CODE_COLOR;
-        *txtPtr++ = TEXT_COLOR_GREEN;
-        // Only add space if type name is short enough
-        if (StringLength(gTypeNames[moveType]) <= 5)
-            *txtPtr++ = CHAR_SPACE;
-        *txtPtr++ = CHAR_UP_ARROW;
-        *txtPtr = EOS;
+        // Super effective - add "+" prefix
+        *txtPtr++ = CHAR_PLUS;
+        txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
     }
     else if (effectiveness < TYPE_MUL_NORMAL)
     {
-        // Not very effective - red down arrow
-        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
-        *txtPtr++ = EXT_CTRL_CODE_COLOR;
-        *txtPtr++ = TEXT_COLOR_RED;
-        // Only add space if type name is short enough
-        if (StringLength(gTypeNames[moveType]) <= 5)
-            *txtPtr++ = CHAR_SPACE;
-        *txtPtr++ = CHAR_DOWN_ARROW;
-        *txtPtr = EOS;
+        // Not very effective - add "-" prefix  
+        *txtPtr++ = CHAR_HYPHEN;
+        txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
     }
     else
     {
-        // Normal effectiveness - no arrow
-        *txtPtr = EOS;
+        // Normal effectiveness, use default
+        txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
     }
+    *txtPtr = EOS;
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 }
 
