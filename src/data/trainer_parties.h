@@ -5806,6 +5806,36 @@ static const struct TrainerMonNoItemCustomMoves sParty_LeaderSabrina[] = {
         .species = SPECIES_PERSIAN,
         .moves = {MOVE_SLASH, MOVE_SHADOW_BALL, MOVE_HYPNOSIS, MOVE_THUNDERBOLT},
     },
+};
+
+static const struct TrainerMonNoItemDefaultMoves sParty_GentlemanThomas[] = {
+    {
+        .iv = 0,
+        .lvl = 18,
+        .species = SPECIES_GROWLITHE,
+    },
+    {
+        .iv = 0,
+        .lvl = 18,
+        .species = SPECIES_GROWLITHE,
+    },
+};
+
+static const struct TrainerMonNoItemDefaultMoves sParty_GentlemanArthur[] = {
+    {
+        .iv = 0,
+        .lvl = 19,
+        .species = SPECIES_NIDORAN_M,
+    },
+    {
+        .iv = 0,
+        .lvl = 19,
+        .species = SPECIES_NIDORAN_F,
+    },
+};
+
+static const struct TrainerMonNoItemDefaultMoves sParty_GentlemanTucker[] = {
+    {
         .iv = 0,
         .lvl = 23,
         .species = SPECIES_PIKACHU,
