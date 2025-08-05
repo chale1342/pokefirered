@@ -700,7 +700,7 @@ void LoadBattleMenuWindowGfx(void)
     CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(5) + 12], &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(4));
     
     // Add colors for type effectiveness indicators using positions 1-3
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + 1] = RGB(31,  8,  8); // Red for not very effective
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + 1] = RGB(24,  8,  8); // Red for not very effective
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 2] = RGB(31, 16, 16); // Light red
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 3] = RGB( 8, 24,  8); // Green for super effective  
     
