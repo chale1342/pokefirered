@@ -1438,7 +1438,7 @@ static void MoveSelectionDisplayMoveType(void)
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u8 moveType = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
     u32 effectiveness = TYPE_MUL_NORMAL;
-    u8 opponentBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    u8 opponentBattler = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     
     // Calculate type effectiveness against opponent Pokemon
     if (gBattleMons[opponentBattler].hp != 0)
