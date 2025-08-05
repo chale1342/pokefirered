@@ -5,6 +5,7 @@
 #include "item_menu.h"
 #include "link.h"
 #include "m4a.h"
+#include "menu.h"
 #include "party_menu.h"
 #include "pokeball.h"
 #include "strings.h"
@@ -1367,17 +1368,22 @@ static void MoveSelectionDisplayMoveNames(void)
 {
     s32 i;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 opponentBattler = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     gNumberOfMovesToChoose = 0;
+    
     for (i = 0; i < MAX_MON_MOVES; ++i)
     {
+        u8 *txtPtr;
         MoveSelectionDestroyCursorAt(i);
-        StringCopy(gDisplayedStringBattle, gText_MoveInterfaceDynamicColors);
-        StringAppend(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
+        txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceDynamicColors);
+        txtPtr = StringCopy(txtPtr, gMoveNames[moveInfo->moves[i]]);
+        *txtPtr = EOS;
         BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
         if (moveInfo->moves[i] != MOVE_NONE)
             ++gNumberOfMovesToChoose;
     }
 }
+
 
 static void MoveSelectionDisplayPpString(void)
 {
@@ -1434,35 +1440,45 @@ static void MoveSelectionDisplayMoveType(void)
     u8 moveType = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
     u32 effectiveness = TYPE_MUL_NORMAL;
     u8 opponentBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    
     // Calculate type effectiveness against opponent Pokemon
     if (gBattleMons[opponentBattler].hp != 0)
     {
         effectiveness = GetTypeEffectivenessMultiplier(moveType, gBattleMons[opponentBattler].type1, gBattleMons[opponentBattler].type2);
     }
+    
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-    *txtPtr++ = EXT_CTRL_CODE_BEGIN;
-    *txtPtr++ = 6;
-    *txtPtr++ = 1;
     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
     
-    // Add color based on type effectiveness
+    // Add colored type name based on effectiveness
     if (effectiveness > TYPE_MUL_NORMAL)
     {
-        // Super effective - add "+" prefix
-        *txtPtr++ = CHAR_PLUS;
+        // Super effective - use green (palette 5, color 3)
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = 0x53; // Palette 5, color 3 (green)
         txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = 0x5E; // Reset to palette 5, color 14 (white)
     }
     else if (effectiveness < TYPE_MUL_NORMAL)
     {
-        // Not very effective - add "-" prefix  
-        *txtPtr++ = CHAR_HYPHEN;
+        // Not very effective - use red (palette 5, color 1)
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = 0x51; // Palette 5, color 1 (red)
         txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
+        *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+        *txtPtr++ = EXT_CTRL_CODE_COLOR;
+        *txtPtr++ = 0x5E; // Reset to palette 5, color 14 (white)
     }
     else
     {
-        // Normal effectiveness, use default
+        // Normal effectiveness - use default color
         txtPtr = StringCopy(txtPtr, gTypeNames[moveType]);
     }
+    
     *txtPtr = EOS;
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 }

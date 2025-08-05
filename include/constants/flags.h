@@ -1302,7 +1302,7 @@
 #define FLAG_CUT_TREE_FUCHSIA_CITY_3    0x4BB
 #define FLAG_CUT_TREE_FUCHSIA_CITY_4    0x4BC
 #define FLAG_CUT_TREE_ROUTE2_1          0x4BD
-#define FLAG_CUT_TREE_ROUTE2_2          0x4B
+#define FLAG_CUT_TREE_ROUTE2_2          0x4BE
 #define FLAG_CUT_TREE_ROUTE2_3          0x4BF
 #define FLAG_CUT_TREE_ROUTE2_4          0x4C0
 #define FLAG_CUT_TREE_ROUTE8_1          0x4C1
