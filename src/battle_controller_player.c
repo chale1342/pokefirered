@@ -1368,7 +1368,6 @@ static void MoveSelectionDisplayMoveNames(void)
 {
     s32 i;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    u8 opponentBattler = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     gNumberOfMovesToChoose = 0;
     
     for (i = 0; i < MAX_MON_MOVES; ++i)
