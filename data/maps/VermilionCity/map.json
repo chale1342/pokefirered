@@ -122,8 +122,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_12"
+  "script": "EventScript_CutTree",
+  "flag": "FLAG_CUT_TREE_VERMILION_CITY_1"
     },
     {
       "type": "object",

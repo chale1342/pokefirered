@@ -81,7 +81,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_12"
+  "flag": "FLAG_CUT_TREE_FIVE_ISLAND_MEADOW_1"
     },
     {
       "type": "object",
@@ -95,7 +95,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_13"
+  "flag": "FLAG_CUT_TREE_FIVE_ISLAND_MEADOW_2"
     },
     {
       "type": "object",

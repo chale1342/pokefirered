@@ -42,7 +42,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_12"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_1"
     },
     {
       "type": "object",
@@ -56,7 +56,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_13"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_2"
     },
     {
       "type": "object",
@@ -70,7 +70,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_14"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_3"
     },
     {
       "type": "object",
@@ -84,7 +84,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_15"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_4"
     },
     {
       "type": "object",
@@ -98,7 +98,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_16"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_5"
     },
     {
       "type": "object",
@@ -112,7 +112,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_17"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_6"
     },
     {
       "type": "object",
@@ -126,7 +126,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_18"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_7"
     },
     {
       "type": "object",
@@ -140,7 +140,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_19"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_8"
     },
     {
       "type": "object",
@@ -154,7 +154,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_1A"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_9"
     },
     {
       "type": "object",
@@ -168,7 +168,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_CutTree",
-      "flag": "FLAG_TEMP_1B"
+  "flag": "FLAG_CUT_TREE_THREE_ISLAND_BERRYFOREST_10"
     },
     {
       "type": "object",
