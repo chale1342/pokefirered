@@ -153,6 +153,7 @@ static void CursorCB_Cancel1(u8 taskId);
 static void CursorCB_Item(u8 taskId);
 static void CursorCB_Give(u8 taskId);
 static void CursorCB_TakeItem(u8 taskId);
+static void CursorCB_MoveItem(u8 taskId);
 static void CursorCB_Mail(u8 taskId);
 static void CursorCB_Read(u8 taskId);
 static void CursorCB_TakeMail(u8 taskId);
@@ -173,6 +174,8 @@ static void ResetPartyMenu(void);
 static bool8 ShowPartyMenu(void);
 static void SetPartyMonsAllowedInMinigame(void);
 static void ExitPartyMenu(void);
+
+// Move Item: after selecting MOVE, choose a 2nd Pokémon to receive/swap the item
 static bool8 CreatePartyMonSpritesLoop(void);
 static bool8 AllocPartyMenuBg(void);
 static bool8 AllocPartyMenuBgGfx(void);
@@ -403,6 +406,103 @@ static bool8 MonCanEvolve(void);
 static EWRAM_DATA struct PartyMenuInternal *sPartyMenuInternal = NULL;
 EWRAM_DATA struct PartyMenu gPartyMenu = {0};
 static EWRAM_DATA struct PartyMenuBox *sPartyMenuBoxes = NULL;
+
+// Forward declarations for functions defined later that we need
+static void Task_UpdateHeldItemSprite(u8 taskId);
+static void UpdatePartyMonHeldItemSprite(struct Pokemon *mon, struct PartyMenuBox *menuBox); // existing static later
+static void Task_MoveItem_SelectTarget(u8 taskId);
+
+// Move Item: choose target to move/swap held item
+static void Task_MoveItem_SelectTarget(u8 taskId)
+{
+    if (gPaletteFade.active)
+        return;
+    // Use global slotId so highlight updates normally when moving with DPAD
+    switch (PartyMenuButtonHandler((s8 *)&gPartyMenu.slotId))
+    {
+    case 0: // movement / no selection
+        break;
+    case 2: // cancel
+        HandleChooseMonCancel(taskId, (s8 *)&gPartyMenu.slotId);
+        break;
+    case 1: // selected destination
+        if (gPartyMenu.slotId == gPartyMenu.slotId2 || GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_IS_EGG))
+        {
+            PlaySE(SE_FAILURE);
+            return;
+        }
+        {
+            u16 itemFrom = GetMonData(&gPlayerParty[gPartyMenu.slotId2], MON_DATA_HELD_ITEM);
+            u16 itemTo = GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM);
+            if (itemFrom == ITEM_NONE)
+            {
+                GetMonNickname(&gPlayerParty[gPartyMenu.slotId2], gStringVar1);
+                StringExpandPlaceholders(gStringVar4, gText_PkmnNotHolding);
+                DisplayPartyMenuMessage(gStringVar4, TRUE);
+                ScheduleBgCopyTilemapToVram(2);
+            }
+            else if (itemTo == ITEM_NONE)
+            {
+                SetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM, &itemFrom);
+                itemFrom = ITEM_NONE;
+                SetMonData(&gPlayerParty[gPartyMenu.slotId2], MON_DATA_HELD_ITEM, &itemFrom);
+                GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
+                CopyItemName(GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM), gStringVar2);
+                StringExpandPlaceholders(gStringVar4, gText_PkmnWasGivenItem);
+                // keepOpen FALSE so only one A press (selection) is typically needed
+                DisplayPartyMenuMessage(gStringVar4, FALSE);
+                ScheduleBgCopyTilemapToVram(2);
+            }
+            else
+            {
+                u8 line1[64];
+                u8 line2[64];
+                // Swap held items
+                SetMonData(&gPlayerParty[gPartyMenu.slotId2], MON_DATA_HELD_ITEM, &itemTo);
+                SetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM, &itemFrom);
+                // First line: source mon (slotId2) and its new item (itemTo)
+                GetMonNickname(&gPlayerParty[gPartyMenu.slotId2], gStringVar1);
+                CopyItemName(itemTo, gStringVar2);
+                StringExpandPlaceholders(line1, gText_XsYAnd);
+                // Second line: destination mon (slotId) and its new item (itemFrom)
+                GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
+                CopyItemName(itemFrom, gStringVar2);
+                StringExpandPlaceholders(line2, gText_XsYWereSwapped);
+                StringCopy(gStringVar4, line1);
+                StringAppend(gStringVar4, line2);
+                DisplayPartyMenuMessage(gStringVar4, TRUE); // confirmation
+                ScheduleBgCopyTilemapToVram(2);
+            }
+            UpdatePartyMonHeldItemSprite(&gPlayerParty[gPartyMenu.slotId2], &sPartyMenuBoxes[gPartyMenu.slotId2]);
+            UpdatePartyMonHeldItemSprite(&gPlayerParty[gPartyMenu.slotId], &sPartyMenuBoxes[gPartyMenu.slotId]);
+            // Keep cursor on destination (already gPartyMenu.slotId)
+            gPartyMenu.action = PARTY_ACTION_CHOOSE_MON;
+            gTasks[taskId].func = Task_UpdateHeldItemSprite;
+        }
+        break;
+    }
+}
+
+static void CursorCB_MoveItem(u8 taskId)
+{
+    u16 item = GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM);
+    PlaySE(SE_SELECT);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    if (item == ITEM_NONE)
+    {
+        GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
+        StringExpandPlaceholders(gStringVar4, gText_PkmnNotHolding);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_UpdateHeldItemSprite;
+        return;
+    }
+    CopyItemName(item, gStringVar2);
+    DisplayPartyMenuStdMessage(PARTY_MSG_MOVE_ITEM_WHERE);
+    AnimatePartySlot(gPartyMenu.slotId, 1);
+    gPartyMenu.slotId2 = gPartyMenu.slotId;
+    gTasks[taskId].func = Task_MoveItem_SelectTarget;
+}
 static EWRAM_DATA u8 *sPartyBgGfxTilemap = NULL;
 static EWRAM_DATA u8 *sPartyBgTilemapBuffer = NULL;
 EWRAM_DATA bool8 gPartyMenuUseExitCallback = FALSE;
