@@ -225,6 +225,12 @@ gOakSpeech_Text_WhatWasHisName::
     .string "were babies.\p"
     .string "…Erm, what was his name now?$"
 
+gOakSpeech_Text_FixedRivalIntro::
+    .string "This is my grandson.\p"
+    .string "He's been your rival since you both\n"
+    .string "were babies.\p"
+    .string "His name is {RIVAL}!$"
+
 gOakSpeech_Text_YourRivalsNameWhatWasIt::
     .string "Your rival's name, what was it now?$"
 

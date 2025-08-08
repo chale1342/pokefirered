@@ -111,6 +111,7 @@ extern const u8 gText_ABUTTONNext[];
 extern const u8 gText_ABUTTONNext_BBUTTONBack[];
 extern const u8 gText_Boy[];
 extern const u8 gText_Girl[];
+extern const u8 gOakSpeech_Text_FixedRivalIntro[];
 extern const struct OamData gOamData_AffineOff_ObjBlend_32x32;
 extern const struct OamData gOamData_AffineOff_ObjNormal_32x32;
 extern const struct OamData gOamData_AffineOff_ObjNormal_32x16;
@@ -1562,9 +1563,11 @@ static void Task_OakSpeech_AskRivalsName(u8 taskId)
 
     if (tTrainerPicFadeState != 0)
     {
-        OakSpeechPrintMessage(gOakSpeech_Text_WhatWasHisName, sOakSpeechResources->textSpeed);
-        sOakSpeechResources->hasPlayerBeenNamed = TRUE;
-        gTasks[taskId].func = Task_OakSpeech_MoveRivalDisplayNameOptions;
+    // Set fixed rival name and skip naming/options.
+    sOakSpeechResources->hasPlayerBeenNamed = TRUE;
+    GetDefaultName(TRUE, 0); // copies fixed rival name into save block
+    OakSpeechPrintMessage(gOakSpeech_Text_FixedRivalIntro, sOakSpeechResources->textSpeed);
+    gTasks[taskId].func = Task_OakSpeech_FadeOutRivalPic; // proceed as if name confirmed
     }
 }
 
