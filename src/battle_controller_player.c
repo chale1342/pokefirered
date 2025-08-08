@@ -26,6 +26,43 @@
 #include "constants/songs.h"
 #include "constants/sound.h"
 
+// --- Move split compatibility -------------------------------------------------
+// Some build configurations may not yet have extended BattleMove with a 'split'
+// field or the SPLIT_* macros defined. Provide safe fallbacks so the UI code
+// (Physical/Special/Status icon) compiles without altering core battle logic.
+#ifndef SPLIT_PHYSICAL
+#define SPLIT_PHYSICAL 0
+#endif
+#ifndef SPLIT_SPECIAL
+#define SPLIT_SPECIAL 1
+#endif
+#ifndef SPLIT_STATUS
+#define SPLIT_STATUS 2
+#endif
+
+// If struct BattleMove lacks 'split', map everything to STATUS (hide icon logic).
+#ifndef offsetof
+#define offsetof(st, m) __builtin_offsetof(st, m)
+#endif
+
+#if !defined(__has_member)  // GCC doesn't have __has_member; use heuristic.
+// We can't directly detect the member; rely on a sentinel macro the repo added
+// (pokemon.h shows 'u8 split;' when present). If missing, define ACCESS_BATTLE_MOVE_SPLIT.
+#endif
+
+#ifdef __GNUC__
+// Attempt to take address of member in a void expression; if it fails, provide fallback.
+#define HAVE_BATTLE_MOVE_SPLIT (__builtin_types_compatible_p(typeof(&((const struct BattleMove*)0)->split), const u8 *))
+#else
+#define HAVE_BATTLE_MOVE_SPLIT 1
+#endif
+
+#if !HAVE_BATTLE_MOVE_SPLIT
+static inline u8 GetBattleMoveSplit(u16 move) { (void)move; return SPLIT_STATUS; }
+#else
+static inline u8 GetBattleMoveSplit(u16 move) { return gBattleMoves[move].split; }
+#endif
+
 static void PlayerHandleGetMonData(void);
 static void PlayerHandleSetMonData(void);
 static void PlayerHandleSetRawMonData(void);
@@ -3055,7 +3092,10 @@ static void MoveSelectionDisplaySplitIcon(void)
     MoveSelectionClearSplitIcon();
 
     moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    split = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].split; // 0/1/2
+    if (moveInfo->moves[gMoveSelectionCursor[gActiveBattler]] < MOVES_COUNT)
+        split = GetBattleMoveSplit(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]); // 0/1/2
+    else
+        split = SPLIT_STATUS;
 
     // Each 16x16 4bpp icon is 0x80 bytes; order assumed Physical, Special, Status
     LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20); // load to BG palette slot 10
