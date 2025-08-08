@@ -11,6 +11,7 @@
 #include "strings.h"
 #include "string_util.h"
 #include "pokemon_special_anim.h"
+#include "characters.h" // for CHAR_* letter constants
 #include "task.h"
 #include "util.h"
 #include "battle.h"
@@ -20,11 +21,14 @@
 #include "battle_message.h"
 #include "battle_script_commands.h"
 #include "reshow_battle_screen.h"
+#include "new_menu_helpers.h" // for DrawStdWindowFrame / ClearStdWindowAndFrame
 #include "constants/battle_anim.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
+// Move description pointer table (defined in move_descriptions.c)
+extern const u8 *const gMoveDescriptionPointers[];
 
 // --- Move split compatibility -------------------------------------------------
 // Define SPLIT_* constants if absent (older codebase without PSS split).
@@ -103,6 +107,8 @@ static void MoveSelectionDisplayPpNumber(void);
 static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplaySplitIcon(void);
+static void MoveSelectionDisplayMoveDescription(void);
+static bool8 sDescriptionSubmenu; // TRUE while description window shown
 static void MoveSelectionClearSplitIcon(void);
 static void MoveSelectionDisplayMoveNames(void);
 static void HandleMoveSwitching(void);
@@ -328,14 +334,6 @@ static void HandleInputChooseAction(void)
     }
 }
 
-// Unused
-static void EndBounceEffect2(void)
-{
-    EndBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX);
-    EndBounceEffect(gActiveBattler, BOUNCE_MON);
-    gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseTarget;
-}
-
 static void HandleInputChooseTarget(void)
 {
     s32 i;
@@ -356,20 +354,18 @@ static void HandleInputChooseTarget(void)
     }
     if (JOY_NEW(A_BUTTON))
     {
+        if (sDescriptionSubmenu)
+        {
+            sDescriptionSubmenu = FALSE;
+            FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0));
+            ClearStdWindowAndFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
+            CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_GFX);
+        }
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
         BtlController_EmitTwoReturnValues(1, 10, gMoveSelectionCursor[gActiveBattler] | (gMultiUsePlayerCursor << 8));
         EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
         PlayerBufferExecCompleted();
-    }
-    else if (JOY_NEW(B_BUTTON))
-    {
-        PlaySE(SE_SELECT);
-        gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
-        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
-        DoBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX, 7, 1);
-        DoBounceEffect(gActiveBattler, BOUNCE_MON, 7, 1);
-        EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
     }
     else if (JOY_NEW(DPAD_LEFT | DPAD_UP))
     {
@@ -459,6 +455,34 @@ void HandleInputChooseMove(void)
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 
     PreviewDeterminativeMoveTargets();
+    // If popup active, only START closes it; ignore other inputs.
+    if (sDescriptionSubmenu)
+    {
+        if (JOY_NEW(START_BUTTON))
+        {
+            sDescriptionSubmenu = FALSE;
+            FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0));
+            ClearStdWindowAndFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
+            ClearWindowTilemap(B_WIN_MOVE_DESCRIPTION);
+            CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_GFX);
+            PlaySE(SE_SELECT);
+            MoveSelectionDisplayPpNumber();
+            MoveSelectionDisplayMoveType();
+            MoveSelectionDisplaySplitIcon();
+        }
+        return;
+    }
+
+    // START opens and locks the popup.
+    if (JOY_NEW(START_BUTTON))
+    {
+        sDescriptionSubmenu = TRUE;
+    // Ensure window tilemap present before writing
+    PutWindowTilemap(B_WIN_MOVE_DESCRIPTION);
+    MoveSelectionDisplayMoveDescription();
+        PlaySE(SE_SELECT);
+        return;
+    }
     if (JOY_NEW(A_BUTTON))
     {
         u8 moveTarget;
@@ -521,6 +545,7 @@ void HandleInputChooseMove(void)
     }
     else if (JOY_NEW(B_BUTTON))
     {
+        // Cancel back to action menu (popup cannot be open here due to early return)
         PlaySE(SE_SELECT);
         BtlController_EmitTwoReturnValues(1, 10, 0xFFFF);
         PlayerBufferExecCompleted();
@@ -538,6 +563,8 @@ void HandleInputChooseMove(void)
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
             MoveSelectionDisplaySplitIcon();
+            if (sDescriptionSubmenu)
+                MoveSelectionDisplayMoveDescription();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -553,6 +580,8 @@ void HandleInputChooseMove(void)
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
             MoveSelectionDisplaySplitIcon();
+            if (sDescriptionSubmenu)
+                MoveSelectionDisplayMoveDescription();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -567,6 +596,8 @@ void HandleInputChooseMove(void)
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
             MoveSelectionDisplaySplitIcon();
+            if (sDescriptionSubmenu)
+                MoveSelectionDisplayMoveDescription();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -582,6 +613,8 @@ void HandleInputChooseMove(void)
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
             MoveSelectionDisplaySplitIcon();
+            if (sDescriptionSubmenu)
+                MoveSelectionDisplayMoveDescription();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -1508,6 +1541,55 @@ static void MoveSelectionDisplayMoveType(void)
     
     *txtPtr = EOS;
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+}
+
+static void MoveSelectionDisplayMoveDescription(void)
+{
+    // Minimal single-line popup: Power / Accuracy only.
+    struct ChooseMoveStruct *moveInfo;
+    u16 move;
+    u16 pwr, acc;
+    u8 pwrBuf[4];
+    u8 accBuf[4];
+    const u8 *dashStr;
+    u8 *ptr;
+
+    moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][4]);
+    move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
+    if (move == MOVE_NONE || move >= MOVES_COUNT)
+        return;
+
+    pwr = gBattleMoves[move].power;
+    acc = gBattleMoves[move].accuracy;
+    dashStr = gText_PokeSum_TwoHyphens;
+
+    if (pwr < 2)
+        StringCopy(pwrBuf, dashStr);
+    else
+        ConvertIntToDecimalStringN(pwrBuf, pwr, STR_CONV_MODE_LEFT_ALIGN, 3);
+    if (acc < 2)
+        StringCopy(accBuf, dashStr);
+    else
+        ConvertIntToDecimalStringN(accBuf, acc, STR_CONV_MODE_LEFT_ALIGN, 3);
+
+    PutWindowTilemap(B_WIN_MOVE_DESCRIPTION);
+    FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0xE));
+    LoadStdWindowFrameGfx();
+    DrawStdWindowFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
+
+    ptr = gDisplayedStringBattle;
+    // Use game font character constants to avoid charset mismatch
+    // Abbreviated labels to fit smaller window
+    // Prepend a leading space for extra left padding inside window
+    *ptr++ = CHAR_SPACE;
+    *ptr++ = CHAR_P; *ptr++ = CHAR_W; *ptr++ = CHAR_COLON; *ptr++ = CHAR_SPACE;
+    ptr = StringCopy(ptr, pwrBuf);
+    *ptr++ = CHAR_SPACE; // exactly one space before ACC
+    *ptr++ = CHAR_A; *ptr++ = CHAR_C; *ptr++ = CHAR_C; *ptr++ = CHAR_COLON; *ptr++ = CHAR_SPACE;
+    ptr = StringCopy(ptr, accBuf);
+    *ptr++ = EOS;
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_DESCRIPTION);
+    CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_FULL);
 }
 
 void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 arg1)
@@ -2543,6 +2625,9 @@ void InitMoveSelectionsVarsAndStrings(void)
     MoveSelectionDisplayPpNumber();
     MoveSelectionDisplayMoveType();
     MoveSelectionDisplaySplitIcon();
+    // Ensure description submenu hidden on entry
+    sDescriptionSubmenu = FALSE;
+    ClearWindowTilemap(B_WIN_MOVE_DESCRIPTION);
 }
 
 static void PlayerHandleChooseItem(void)

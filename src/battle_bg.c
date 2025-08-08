@@ -371,6 +371,15 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 7,
         .baseBlock = 0x090
     },
+    [B_WIN_MOVE_DESCRIPTION] = { // START button popup: compact P/A stats
+        .bg = 0,
+    .tilemapLeft = 18, // shift left to accommodate wider width while keeping right edge
+    .tilemapTop = 41,  // vertical placement
+    .width = 11,       // widen to fit "ACC: 100" fully
+    .height = 2, // need 2 tiles for frame + text area
+        .paletteNum = 5, // standard window palette
+        .baseBlock = 0x340 // allocate after move name windows (fits 18*6=108 tiles -> 0x340-0x3AB)
+    },
     DUMMY_WIN_TEMPLATE
 };
 
@@ -702,8 +711,9 @@ void LoadBattleMenuWindowGfx(void)
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = RGB( 9,  9,  9);
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 13] = RGB( 9,  9,  9);
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 14] = RGB(31, 31, 31);
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + 15] = RGB( 26,  26,  25);
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + 15] = RGB(26, 26, 25);
     CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(5) + 12], &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(4));
+
     
     // Add colors for type effectiveness indicators using positions 1-3
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 1] = RGB(24,  8,  8); // Red for not very effective

@@ -2552,8 +2552,8 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
     [B_WIN_LEVEL_UP_BOX] = {
         .fillValue = PIXEL_FILL(0xe),
         .fontId = FONT_NORMAL,
-        .x = 0,
-        .y = 0,
+    .x = 0,
+    .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
@@ -2704,6 +2704,19 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .fgColor = 2,
         .bgColor = 1,
         .shadowColor = 3,
+    },
+    [B_WIN_MOVE_DESCRIPTION] = { // description submenu
+        .fillValue = PIXEL_FILL(0xE), // use standard interior fill (palette color 14)
+    // Use small font; add slight left padding; match move window palette (fg 12, shadow 11)
+    .fontId = FONT_SMALL,
+    .x = 1,
+    .y = 1,
+        .letterSpacing = 0,
+        .lineSpacing = 0,
+        .speed = 0,
+        .fgColor = 12,
+        .bgColor = 14,
+        .shadowColor = 11,
     }
 };
 
