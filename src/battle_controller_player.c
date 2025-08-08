@@ -88,6 +88,8 @@ static void HandleInputChooseTarget(void);
 static void MoveSelectionDisplayPpNumber(void);
 static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
+static void MoveSelectionDisplaySplitIcon(void);
+static void MoveSelectionClearSplitIcon(void);
 static void MoveSelectionDisplayMoveNames(void);
 static void HandleMoveSwitching(void);
 static void WaitForMonSelection(void);
@@ -521,6 +523,7 @@ void HandleInputChooseMove(void)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
+            MoveSelectionDisplaySplitIcon();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -535,6 +538,7 @@ void HandleInputChooseMove(void)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
+            MoveSelectionDisplaySplitIcon();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -548,6 +552,7 @@ void HandleInputChooseMove(void)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
+            MoveSelectionDisplaySplitIcon();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -562,6 +567,7 @@ void HandleInputChooseMove(void)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
             MoveSelectionDisplayPpNumber();
             MoveSelectionDisplayMoveType();
+            MoveSelectionDisplaySplitIcon();
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
@@ -717,6 +723,7 @@ static void HandleMoveSwitching(void)
         MoveSelectionDisplayPpString();
         MoveSelectionDisplayPpNumber();
         MoveSelectionDisplayMoveType();
+        MoveSelectionDisplaySplitIcon();
     }
     if (JOY_NEW(B_BUTTON))
     {
@@ -730,6 +737,7 @@ static void HandleMoveSwitching(void)
         MoveSelectionDisplayPpString();
         MoveSelectionDisplayPpNumber();
         MoveSelectionDisplayMoveType();
+        MoveSelectionDisplaySplitIcon();
     }
     if (JOY_NEW(DPAD_LEFT))
     {
@@ -1386,6 +1394,7 @@ static void MoveSelectionDisplayMoveNames(void)
 
 static void MoveSelectionDisplayPpString(void)
 {
+    // Merged: label and numbers now share one window; just print label for now (numbers appended separately)
     StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
 }
@@ -1399,10 +1408,15 @@ static void MoveSelectionDisplayPpNumber(void)
         return;
     SetPpNumbersPaletteInMoveSelection();
     moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    txtPtr = ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
-    *txtPtr = CHAR_SLASH;
-    ConvertIntToDecimalStringN(++txtPtr, moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
+    // Rebuild full string starting with label to overwrite prior content cleanly.
+    StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP); // e.g. "PP"
+    txtPtr = gDisplayedStringBattle + strlen(gDisplayedStringBattle);
+    *txtPtr++ = CHAR_SPACE; // space between label and value
+    txtPtr = ConvertIntToDecimalStringN(txtPtr, moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
+    *txtPtr++ = CHAR_SLASH;
+    ConvertIntToDecimalStringN(txtPtr, moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
+    // No trimming needed; window width is ample.
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
 }
 
 static u32 GetTypeEffectivenessMultiplier(u8 atkType, u8 defType1, u8 defType2)
@@ -2514,6 +2528,7 @@ void InitMoveSelectionsVarsAndStrings(void)
     MoveSelectionDisplayPpString();
     MoveSelectionDisplayPpNumber();
     MoveSelectionDisplayMoveType();
+    MoveSelectionDisplaySplitIcon();
 }
 
 static void PlayerHandleChooseItem(void)
@@ -3026,4 +3041,38 @@ static void PreviewDeterminativeMoveTargets(void)
         }
         BeginNormalPaletteFade(bitMask, 8, startY, 0, RGB_WHITE);
     }
+}
+
+// Combined Physical/Special/Status icon sheet (3 * 16x16 tiles stacked) like pokeemerald
+static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons_battle.gbapal");
+static const u8  sSplitIcons_Gfx[] = INCBIN_U8("graphics/interface/split_icons_battle.4bpp");
+
+static void MoveSelectionDisplaySplitIcon(void)
+{
+    struct ChooseMoveStruct *moveInfo;
+    u8 split;
+
+    MoveSelectionClearSplitIcon();
+
+    moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    split = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].split; // 0/1/2
+
+    // Each 16x16 4bpp icon is 0x80 bytes; order assumed Physical, Special, Status
+    LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20); // load to BG palette slot 10
+    // Ensure background (index 0) matches the move info box white so unused pixels aren't dark.
+    gPlttBufferUnfaded[BG_PLTT_ID(10)] = RGB_WHITE;
+    gPlttBufferFaded[BG_PLTT_ID(10)] = RGB_WHITE;
+    if (split <= SPLIT_STATUS)
+        BlitBitmapToWindow(B_WIN_DUMMY, sSplitIcons_Gfx + (0x80 * split), 0, 0, 16, 16);
+    PutWindowTilemap(B_WIN_DUMMY);
+    CopyWindowToVram(B_WIN_DUMMY, 3);
+}
+
+static void MoveSelectionClearSplitIcon(void)
+{
+    // Fill with palette index 0 (made white above) before drawing an icon, so any area around
+    // the 16x16 graphic blends with the window background.
+    FillWindowPixelBuffer(B_WIN_DUMMY, PIXEL_FILL(0));
+    PutWindowTilemap(B_WIN_DUMMY);
+    CopyWindowToVram(B_WIN_DUMMY, 3);
 }

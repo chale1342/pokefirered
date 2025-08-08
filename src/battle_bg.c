@@ -204,40 +204,46 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .baseBlock = 0x330
     },
     [B_WIN_PP] = {
+        // Back on BG0; panel widened so no overlap issues.
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 23,
         .tilemapTop = 55,
-        .width = 3,
+    // Single combined PP window (label + numbers). Width 6 (tiles 23-28) leaves border at tile 29 visible.
+	.width = 6,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x290
+    // Place before move type & dummy regions to avoid overlap.
+    .baseBlock = 0x0280, // uses 12 tiles: 0x280-0x28B
     },
     [B_WIN_MOVE_TYPE] = {
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 57,
-        .width = 8,
+    // Width 8 (tiles 21-28) leaves tile 29 border visible on right side
+    .width = 8,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x296
+    .baseBlock = 0x296 // occupies 16 tiles (0x296-0x2A5)
     },
+    // B_WIN_PP_REMAINING no longer used (merged into B_WIN_PP). Keep template slot to preserve enum ordering.
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
-        .tilemapLeft = 24,
-        .tilemapTop = 55,
-        .width = 5,
-        .height = 2,
+        .tilemapLeft = 0,
+        .tilemapTop = 0,
+        .width = 1,
+        .height = 1,
         .paletteNum = 5,
-        .baseBlock = 0x2a6
+        .baseBlock = 0x2A8 // harmless small allocation
     },
     [B_WIN_DUMMY] = {
         .bg = 0,
-        .tilemapLeft = 25,
-        .tilemapTop = 57,
-        .width = 0,
-        .height = 0,
-        .paletteNum = 5,
-        .baseBlock = 0x2b0
+        .tilemapLeft = 21,
+        .tilemapTop = 55,
+        .width = 2,
+        .height = 2,
+        .paletteNum = 10,
+    // After PP window; occupies 4 tiles 0x28E-0x291 (distinct from PP 0x280-0x28D and move type 0x296+)
+    .baseBlock = 0x028E,
     },
     [B_WIN_SWITCH_PROMPT] = {
         .bg = 0,
@@ -246,7 +252,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 4,
         .paletteNum = 5,
-        .baseBlock = 0x2b0
+        .baseBlock = 0x2B2 // shifted to avoid overlap with PP remaining (0x2A8-0x2B1)
     },
     [B_WIN_LEVEL_UP_BOX] = {
         .bg = 1,
