@@ -4,6 +4,29 @@ VermilionCity_House1_MapScripts::
 VermilionCity_House1_EventScript_FishingGuru::
 	lock
 	faceplayer
-	msgbox VermilionCity_House1_Text_FishingGuruLeft, MSGBOX_NPC
+	goto_if_set FLAG_GOT_GOOD_ROD, VermilionCity_House1_EventScript_AlreadyGotGoodRod
+	msgbox VermilionCity_House1_Text_DoYouLikeToFish, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, VermilionCity_House1_EventScript_GiveGoodRod
+	msgbox VermilionCity_House1_Text_OhThatsDisappointing
+	release
+	end
+
+VermilionCity_House1_EventScript_AlreadyGotGoodRod::
+	msgbox VermilionCity_House1_Text_HowAreTheFishBiting, MSGBOX_NPC
+	release
+	end
+
+VermilionCity_House1_EventScript_GiveGoodRod::
+	msgbox VermilionCity_House1_Text_LikeYourStyleTakeThis
+	checkitemspace ITEM_GOOD_ROD
+	goto_if_eq VAR_RESULT, FALSE, VermilionCity_House1_EventScript_NoRoomForGoodRod
+	giveitem_msg VermilionCity_House1_Text_ReceivedGoodRod, ITEM_GOOD_ROD
+	msgbox VermilionCity_House1_Text_GoodRodCanCatchBetterMons
+	setflag FLAG_GOT_GOOD_ROD
+	release
+	end
+
+VermilionCity_House1_EventScript_NoRoomForGoodRod::
+	msgbox VermilionCity_House1_Text_YouHaveNoRoomForGift
 	release
 	end
