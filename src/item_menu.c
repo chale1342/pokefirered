@@ -299,6 +299,8 @@ static const struct ScrollArrowsTemplate sPocketSwitchArrowPairTemplate = {
 };
 
 static const u8 sBlit_SelectButton[] = INCBIN_U8("graphics/interface/select_button.4bpp");
+// Use the same original button graphic for the hold registration as requested
+static const u8 sBlit_SelectButtonHold[] = INCBIN_U8("graphics/interface/select_button.4bpp");
 
 #define tSwitchDir     data[11]
 #define tSwitchCounter data[12]
@@ -715,9 +717,13 @@ static void BagListMenuItemPrintFunc(u8 windowId, u32 itemId, u8 y)
             StringExpandPlaceholders(gStringVar4, gText_TimesStrVar1);
             BagPrintTextOnWindow(windowId, FONT_SMALL, gStringVar4, 0x6e, y, 0, 0, 0xFF, 1);
         }
-        else if (gSaveBlock1Ptr->registeredItem != ITEM_NONE && gSaveBlock1Ptr->registeredItem == bagItemId)
+        else
         {
-            BlitBitmapToWindow(windowId, sBlit_SelectButton, 0x70, y, 0x18, 0x10);
+            if ((gSaveBlock1Ptr->registeredItem != ITEM_NONE && gSaveBlock1Ptr->registeredItem == bagItemId)
+             || (gSaveBlock1Ptr->registeredLongItem != ITEM_NONE && gSaveBlock1Ptr->registeredLongItem == bagItemId))
+            {
+                BlitBitmapToWindow(windowId, sBlit_SelectButton, 0x70, y, 0x18, 0x10);
+            }
         }
     }
 }
@@ -1585,10 +1591,33 @@ static void Task_ItemMenuAction_ToggleSelect(u8 taskId)
     u16 itemId;
     s16 *data = gTasks[taskId].data;
     itemId = BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, data[1]);
+    // Multi-register logic:
+    // 1. If item currently in tap slot -> remove from tap
+    // 2. Else if item currently in hold slot -> remove from hold
+    // 3. Else if tap slot empty -> assign to tap
+    // 4. Else if hold slot empty -> assign to hold
+    // 5. Else replace hold slot with this item
     if (gSaveBlock1Ptr->registeredItem == itemId)
+    {
         gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+    }
+    else if (gSaveBlock1Ptr->registeredLongItem == itemId)
+    {
+        gSaveBlock1Ptr->registeredLongItem = ITEM_NONE;
+    }
+    else if (gSaveBlock1Ptr->registeredItem == ITEM_NONE)
+    {
+        gSaveBlock1Ptr->registeredItem = itemId; // tap slot
+    }
+    else if (gSaveBlock1Ptr->registeredLongItem == ITEM_NONE)
+    {
+        gSaveBlock1Ptr->registeredLongItem = itemId; // hold slot
+    }
     else
-        gSaveBlock1Ptr->registeredItem = itemId;
+    {
+        // both occupied, replace hold slot by default
+        gSaveBlock1Ptr->registeredLongItem = itemId;
+    }
 
     DestroyListMenuTask(data[0], &gBagMenuState.cursorPos[gBagMenuState.pocket], &gBagMenuState.itemsAbove[gBagMenuState.pocket]);
     Bag_BuildListMenuTemplate(gBagMenuState.pocket);
@@ -2019,30 +2048,39 @@ static void Task_TryDoItemDeposit(u8 taskId)
     }
 }
 
-bool8 UseRegisteredKeyItemOnField(void)
+bool8 UseRegisteredKeyItemOnField(bool8 isRegisterHold)
 {
     u8 taskId;
     if (InUnionRoom() == TRUE)
         return FALSE;
     DismissMapNamePopup();
     ChangeBgY(0, 0, 0);
-    if (gSaveBlock1Ptr->registeredItem != ITEM_NONE)
     {
-        if (CheckBagHasItem(gSaveBlock1Ptr->registeredItem, 1) == TRUE)
+        u16 item = isRegisterHold ? gSaveBlock1Ptr->registeredLongItem : gSaveBlock1Ptr->registeredItem;
+    if (item != ITEM_NONE)
+    {
+        if (CheckBagHasItem(item, 1) == TRUE)
         {
             LockPlayerFieldControls();
             FreezeObjectEvents();
             HandleEnforcedLookDirectionOnPlayerStopMoving();
             StopPlayerAvatar();
-            gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItem;
-            taskId = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItem), 8);
+            gSpecialVar_ItemId = item;
+            taskId = CreateTask(ItemId_GetFieldFunc(item), 8);
             gTasks[taskId].data[3] = 1;
             return TRUE;
         }
-        gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+        if (isRegisterHold)
+            gSaveBlock1Ptr->registeredLongItem = ITEM_NONE;
+        else
+            gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     }
-    ScriptContext_SetupScript(EventScript_BagItemCanBeRegistered);
+    if (isRegisterHold)
+        ScriptContext_SetupScript(EventScript_SelectWithoutRegisteredLongItem);
+    else
+        ScriptContext_SetupScript(EventScript_BagItemCanBeRegistered);
     return TRUE;
+    }
 }
 
 static bool8 BagIsTutorial(void)

@@ -31,6 +31,13 @@
 #include "constants/maps.h"
 #include "constants/metatile_behaviors.h"
 
+// Forward declaration for dual registered item handler (tap vs hold)
+bool8 UseRegisteredKeyItemOnField(bool8 isRegisterHold);
+
+// hold duration threshold (~1.5s at 60fps -> 90 frames, but FRLG runs 60fps; use 60 like emerald tutorial)
+#define SELECT_HOLD_FRAMES 60
+static EWRAM_DATA u8 sSelectHoldCounter = 0;
+
 #define SIGNPOST_POKECENTER 0
 #define SIGNPOST_POKEMART 1
 #define SIGNPOST_INDIGO_1 2
@@ -83,7 +90,8 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->heldDirection2 = FALSE;
     input->tookStep = FALSE;
     input->pressedBButton = FALSE;
-    input->pressedRButton = FALSE;
+    input->selectTap = FALSE;
+    input->selectHold = FALSE;
     input->input_field_1_0 = FALSE;
     input->input_field_1_1 = FALSE;
     input->input_field_1_2 = FALSE;
@@ -117,8 +125,20 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
                         input->pressedAButton = TRUE;
                     if (newKeys & B_BUTTON)
                         input->pressedBButton = TRUE;
-                    if (newKeys & R_BUTTON)
-                        input->pressedRButton = TRUE;
+                    // track SELECT hold vs tap
+                    if (JOY_HELD(SELECT_BUTTON))
+                    {
+                        if (sSelectHoldCounter < 0xFF)
+                            sSelectHoldCounter++;
+                        if (sSelectHoldCounter == SELECT_HOLD_FRAMES)
+                            input->selectHold = TRUE; // reached hold threshold
+                    }
+                    else if (sSelectHoldCounter != 0)
+                    {
+                        if (sSelectHoldCounter < SELECT_HOLD_FRAMES)
+                            input->selectTap = TRUE; // released before threshold
+                        sSelectHoldCounter = 0;
+                    }
                 }
             }
         }
@@ -289,11 +309,13 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         ShowStartMenu();
         return TRUE;
     }
-    if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
+    if (input->selectTap && UseRegisteredKeyItemOnField(FALSE) == TRUE)
     {
         gFieldInputRecord.pressedSelectButton = TRUE;
         return TRUE;
     }
+    if (input->selectHold && UseRegisteredKeyItemOnField(TRUE) == TRUE)
+        return TRUE;
 
     return FALSE;
 }
