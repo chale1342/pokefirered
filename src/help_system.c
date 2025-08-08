@@ -1,3 +1,5 @@
+// Help system full implementation is compiled only if not disabled.
+#if !defined(DISABLE_HELP_SYSTEM)
 #include "global.h"
 #include "gflib.h"
 #include "event_data.h"
@@ -1840,8 +1842,9 @@ static bool8 IsInDungeonMap(void)
                 && (i != 15 /* TANOBY */ || FlagGet(FLAG_SYS_UNLOCKED_TANOBY_RUINS) == TRUE)
             )
                 return TRUE;
-        }
-    }
+            }
+
+            // (Help system disabled guard removed during feature strip)
 
     return FALSE;
 }
@@ -2478,3 +2481,23 @@ static void PrintHelpSystemTopicMouseoverDescription(struct HelpSystemListMenu *
         HelpSystem_PrintTopicMouseoverDescription(sHelpSystemTopicMouseoverDescriptionPtrs[index]);
     HS_ShowOrHideToplevelTooltipWindow(1);
 }
+
+#else // DISABLE_HELP_SYSTEM
+
+#include "global.h"
+#include "help_system.h"
+
+// Variables expected elsewhere
+COMMON_DATA u8 gDisableHelpSystemVolumeReduce = TRUE; // referenced by sound.c
+COMMON_DATA bool8 gHelpSystemEnabled = FALSE;
+COMMON_DATA bool8 gHelpSystemToggleWithRButtonDisabled = TRUE;
+
+// Stub functions required by event scripts and other modules
+void Script_SetHelpContext(void){}
+void BackupHelpContext(void){}
+void RestoreHelpContext(void){}
+void SetHelpContextForMap(void){}
+void HelpSystem_Disable(void){gHelpSystemEnabled = FALSE;}
+void HelpSystem_Enable(void){gHelpSystemEnabled = TRUE;}
+
+#endif // !DISABLE_HELP_SYSTEM
