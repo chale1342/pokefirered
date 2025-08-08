@@ -659,6 +659,9 @@ static const u8 *const sRivalNameChoices[] =
 #endif
 };
 
+// Static rival name override
+static const u8 sFixedRivalName[] = _("Shane");
+
 enum
 {
     MALE_PLAYER_PIC,
@@ -2150,7 +2153,8 @@ static void GetDefaultName(u8 hasPlayerBeenNamed, u8 rivalNameChoice)
     }
     else
     {
-        src = sRivalNameChoices[rivalNameChoice];
+    // Ignore chosen/default list and always use fixed rival name
+    src = sFixedRivalName;
         dest = gSaveBlock1Ptr->rivalName;
     }
     for (i = 0; i < PLAYER_NAME_LENGTH && src[i] != EOS; i++)
