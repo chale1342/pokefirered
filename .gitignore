@@ -62,3 +62,6 @@ prefabs.json
 .vscode/*.*
 *.js
 *.sym
+pokefirered.elf
+pokefirered.gba
+pokefirered.map
