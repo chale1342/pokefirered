@@ -91,6 +91,7 @@ static void Task_OakSpeech_FadePlayerPicWhite(u8);
 static void Task_OakSpeech_FadePlayerPicToBlack(u8);
 static void Task_OakSpeech_WaitForFade(u8);
 static void Task_OakSpeech_FreeResources(u8);
+static void SetFixedPlayerName(void);
 
 // Removed CB2_ReturnFromNamingScreen (no naming screen flow now)
 static void CreateNidoranFSprite(u8);
@@ -286,10 +287,10 @@ static const struct WindowTemplate sIntro_WindowTemplates[NUM_INTRO_WINDOWS + 1]
     [WIN_INTRO_TEXTBOX] =
     {
         .bg = 0,
-        .tilemapLeft = 1,
-        .tilemapTop = 4,
-        .width = 28,
-        .height = 15,
+        .tilemapLeft = 2,
+        .tilemapTop = 15,
+        .width = 26,
+        .height = 4,
         .paletteNum = 15,
         .baseBlock = 1
     },
@@ -645,6 +646,12 @@ static const u8 *const sFemaleNameChoices[] =
 // Removed sRivalNameChoices (unused with fixed rival name)
 
 // Static rival name override
+static const u8 sFixedPlayerNames[2][PLAYER_NAME_LENGTH + 1] =
+{
+    [MALE] = _("Red"),
+    [FEMALE] = _("Leaf"),
+};
+
 static const u8 sFixedRivalName[] = _("Shane");
 
 enum
@@ -1005,6 +1012,10 @@ static void Task_OakSpeech_Init(u8 taskId)
     }
     else
     {
+        tTextboxWindowId = AddWindow(&sIntro_WindowTemplates[WIN_INTRO_TEXTBOX]);
+        PutWindowTilemap(tTextboxWindowId);
+        FillWindowPixelBuffer(tTextboxWindowId, PIXEL_FILL(0));
+        CopyWindowToVram(tTextboxWindowId, COPYWIN_FULL);
         sOakSpeechResources->oakSpeechBackgroundTiles = MallocAndDecompress(sOakSpeech_Background_Tiles, &size);
         LoadBgTiles(1, sOakSpeechResources->oakSpeechBackgroundTiles, size, 0);
         CopyToBgTilemapBuffer(1, sOakSpeech_Background_Tilemap, 0, 0);
@@ -1220,6 +1231,7 @@ static void Task_OakSpeech_HandleGenderInput(u8 taskId)
     case MENU_NOTHING_CHOSEN:
         return;
     }
+    SetFixedPlayerName();
     gTasks[taskId].func = Task_OakSpeech_ClearGenderWindows;
 
 }
@@ -1875,15 +1887,30 @@ static void CreateFadeOutTask(u8 taskId, u8 delay)
 }
 
 // Simplified: only retain fixed rival name copier
-static void GetDefaultName(void)
+static void CopyFixedName(u8 *dest, const u8 *src)
 {
-    const u8 *src = sFixedRivalName;
-    u8 *dest = gSaveBlock1Ptr->rivalName;
     u8 i;
+
     for (i = 0; i < PLAYER_NAME_LENGTH && src[i] != EOS; i++)
         dest[i] = src[i];
+
     for (; i < PLAYER_NAME_LENGTH + 1; i++)
         dest[i] = EOS;
+}
+
+static void SetFixedPlayerName(void)
+{
+    u8 gender = gSaveBlock2Ptr->playerGender;
+
+    if (gender >= ARRAY_COUNT(sFixedPlayerNames))
+        gender = MALE;
+
+    CopyFixedName(gSaveBlock2Ptr->playerName, sFixedPlayerNames[gender]);
+}
+
+static void GetDefaultName(void)
+{
+    CopyFixedName(gSaveBlock1Ptr->rivalName, sFixedRivalName);
 }
 
 #undef tSpriteTimer

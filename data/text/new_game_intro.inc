@@ -208,12 +208,13 @@ gOakSpeech_Text_IStudyPokemon::
     .string "I study POKéMON as a profession.\p$"
 
 gOakSpeech_Text_TellMeALittleAboutYourself::
-    .string "But first, tell me a little about\n"
-    .string "yourself.\p$"
+    .string "But first, remind me who I'm\n"
+    .string "talking to.\p$"
 
 gOakSpeech_Text_YourNameWhatIsIt::
-    .string "Let's begin with your name.\n"
-    .string "What is it?\p$"
+    .string "Right, you're {PLAYER}.\n"
+    .string "No need for introductions; it's already\n"
+    .string "on the paperwork.\p$"
 
 gOakSpeech_Text_SoYourNameIsPlayer::
     .string "Right…\n"
@@ -229,7 +230,7 @@ gOakSpeech_Text_FixedRivalIntro::
     .string "This is my grandson.\p"
     .string "He's been your rival since you both\n"
     .string "were babies.\p"
-    .string "His name is {RIVAL}!$"
+    .string "You remember {RIVAL}, of course!$"
 
 gOakSpeech_Text_YourRivalsNameWhatWasIt::
     .string "Your rival's name, what was it now?$"
