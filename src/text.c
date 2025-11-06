@@ -535,7 +535,7 @@ void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
 bool8 TextPrinterWaitAutoMode(struct TextPrinter *textPrinter)
 {
     struct TextPrinterSubStruct *subStruct = &textPrinter->subUnion.sub;
-    u8 delay = (gQuestLogState == QL_STATE_PLAYBACK) ? 50 : 120;
+    u8 delay = (gQuestLogState == QL_STATE_PLAYBACK) ? 50 : 60;
 
     if (subStruct->autoScrollDelay == delay)
     {
@@ -551,7 +551,7 @@ bool8 TextPrinterWaitAutoMode(struct TextPrinter *textPrinter)
 bool16 TextPrinterWaitWithDownArrow(struct TextPrinter *textPrinter)
 {
     bool8 result = FALSE;
-    if (gTextFlags.autoScroll != 0)
+    if (gTextFlags.autoScroll != 0 || gSaveBlock2Ptr->optionsTextMode)
     {
         result = TextPrinterWaitAutoMode(textPrinter);
     }
@@ -570,7 +570,7 @@ bool16 TextPrinterWaitWithDownArrow(struct TextPrinter *textPrinter)
 bool16 TextPrinterWait(struct TextPrinter *textPrinter)
 {
     bool16 result = FALSE;
-    if (gTextFlags.autoScroll != 0)
+    if (gTextFlags.autoScroll != 0 || gSaveBlock2Ptr->optionsTextMode)
     {
         result = TextPrinterWaitAutoMode(textPrinter);
     }

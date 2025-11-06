@@ -6,6 +6,10 @@ ALIGNED(4) const u8 gText_AutoRun[] = _("AUTO RUN");
 ALIGNED(4) const u8 gText_AutoRunOn[] = _("ON");
 ALIGNED(4) const u8 gText_AutoRunOff[] = _("OFF");
 
+ALIGNED(4) const u8 gText_AutoScroll[] = _("AUTO SCROLL");
+ALIGNED(4) const u8 gText_AutoScrollOff[] = _("OFF");
+ALIGNED(4) const u8 gText_AutoScrollOn[] = _("ON");
+
 // Dynamic Level Scaling option menu strings
 const u8 gText_DynamicLevelScaling[] = _("DYNAMIC LEVEL");
 const u8 gText_DynamicLevelScalingOff[] = _("OFF");

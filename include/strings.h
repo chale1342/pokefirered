@@ -1,6 +1,9 @@
 extern const u8 gText_AutoRun[];
 extern const u8 gText_AutoRunOn[];
 extern const u8 gText_AutoRunOff[];
+extern const u8 gText_AutoScroll[];
+extern const u8 gText_AutoScrollOff[];
+extern const u8 gText_AutoScrollOn[];
 #ifndef GUARD_STRINGS_H
 #define GUARD_STRINGS_H
 
