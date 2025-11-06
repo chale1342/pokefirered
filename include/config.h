@@ -68,4 +68,7 @@
 #endif // UBFIX
 #endif // MODERN
 
+// Enable Physical/Special split icons in battle
+#define BATTLE_MOVE_SPLIT_IMPLEMENTED
+
 #endif // GUARD_CONFIG_H
