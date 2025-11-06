@@ -156,7 +156,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
 // Set Button Mode (L/R) to only 2 options (L=A, LR)
 // Add 2 options for Dynamic Level Scaling (OFF/ON)
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {3, 2, 2, 2, 2, 10, 2, 2, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {4, 2, 2, 2, 2, 10, 2, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -215,7 +215,8 @@ static const u8 *const sTextSpeedOptions[] =
 {
     gText_TextSpeedSlow, 
     gText_TextSpeedMid, 
-    gText_TextSpeedFast
+    gText_TextSpeedFast,
+    gText_TextSpeedFaster
 };
 
 static const u8 *const sBattleSceneOptions[] =

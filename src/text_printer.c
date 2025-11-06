@@ -145,12 +145,33 @@ bool16 IsTextPrinterActive(u8 id)
 u32 RenderFont(struct TextPrinter *textPrinter)
 {
     u32 ret;
-    while (TRUE)
+    s32 repeats = 1;
+    
+    // Multiple characters per frame based on text speed
+    switch (gSaveBlock2Ptr->optionsTextSpeed)
+    {
+        case OPTIONS_TEXT_SPEED_SLOW:
+            repeats = 1;
+            break;
+        case OPTIONS_TEXT_SPEED_MID:
+            repeats = 2;
+            break;
+        case OPTIONS_TEXT_SPEED_FAST:
+            repeats = 4;
+            break;
+        case OPTIONS_TEXT_SPEED_FASTER:
+            repeats = 8;
+            break;
+    }
+    
+    while (repeats > 0)
     {
         ret = gFonts[textPrinter->printerTemplate.fontId].fontFunction(textPrinter);
         if (ret != 2)
             return ret;
+        repeats--;
     }
+    return ret;
 }
 
 void GenerateFontHalfRowLookupTable(u8 fgColor, u8 bgColor, u8 shadowColor)
