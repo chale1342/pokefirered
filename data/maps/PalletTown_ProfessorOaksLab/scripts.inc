@@ -802,7 +802,15 @@ PalletTown_ProfessorOaksLab_EventScript_DexCompleted::
 	delay 70
 	msgbox PokedexRating_Text_ThankYouMadeDreamReality
 	setflag SHOWED_OAK_COMPLETE_DEX
+	call_if_unset FLAG_OAK_MENTIONED_MEW, PalletTown_ProfessorOaksLab_EventScript_MentionMew
 	release
+	end
+
+PalletTown_ProfessorOaksLab_EventScript_MentionMew::
+	msgbox PalletTown_ProfessorOaksLab_Text_OakMewHint
+	setflag FLAG_OAK_MENTIONED_MEW
+	clearflag FLAG_HIDE_MEW
+	return
 	end
 
 PalletTown_ProfessorOaksLab_EventScript_OakExcitedNorth::
