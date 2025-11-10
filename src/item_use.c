@@ -611,6 +611,22 @@ static void Task_UsedBlackWhiteFlute(u8 taskId)
     }
 }
 
+void FieldUseFunc_ExpShare(u8 taskId)
+{
+    // Toggle the Exp Share party mode setting
+    if (gSaveBlock2Ptr->optionsExpShare)
+    {
+        gSaveBlock2Ptr->optionsExpShare = 0;
+        StringExpandPlaceholders(gStringVar4, gText_ExpSharePartyModeOff);
+    }
+    else
+    {
+        gSaveBlock2Ptr->optionsExpShare = 1;
+        StringExpandPlaceholders(gStringVar4, gText_ExpSharePartyModeOn);
+    }
+    DisplayItemMessageInBag(taskId, FONT_NORMAL, gStringVar4, Task_ReturnToBagFromContextMenu);
+}
+
 bool8 CanUseEscapeRopeOnCurrMap(void)
 {
     if (gMapHeader.allowEscaping)

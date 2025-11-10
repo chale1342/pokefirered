@@ -36,7 +36,6 @@ enum
 {
     MENUITEM_BUTTONMODE = 4,  // Keep for save data compatibility but not shown
     MENUITEM_FRAMETYPE,
-    MENUITEM_EXPSHARE,
     MENUITEM_AUTORUN,
     MENUITEM_TEXTMODE,
     MENUITEM_DYNLEVELSCALING,
@@ -44,9 +43,9 @@ enum
     MENUITEM_COUNT_PAGE2
 };
 
-#define MENUITEM_COUNT 11
+#define MENUITEM_COUNT 10
 #define MAX_ITEMS_PER_PAGE 5
-#define ITEMS_ON_PAGE2 6
+#define ITEMS_ON_PAGE2 5
 
 // Window Ids
 enum
@@ -157,7 +156,7 @@ static const struct BgTemplate sOptionMenuBgTemplates[] =
 static const u16 sOptionMenuPalette[] = INCBIN_U16("graphics/misc/option_menu.gbapal");
 // Set Button Mode (L/R) to only 2 options (L=A, LR)
 // Add 2 options for Dynamic Level Scaling (OFF/ON)
-static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {4, 2, 2, 2, 2, 10, 2, 2, 2, 2, 0};
+static const u16 sOptionMenuItemCounts[MENUITEM_COUNT] = {4, 2, 2, 2, 2, 10, 2, 2, 2, 0};
 
 // Page 1 items (indices 0-3 in global array)
 static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
@@ -171,7 +170,6 @@ static const u8 *const sOptionMenuPage1Items[MENUITEM_COUNT_PAGE1] =
 static const u8 *const sOptionMenuPage2Items[ITEMS_ON_PAGE2] =
 {
     gText_Frame,
-    gText_ExpShare,
     gText_AutoRun,
     gText_AutoScroll,
     gText_DynamicLevelScaling,
@@ -186,11 +184,10 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [3] = gText_Sound,         // MENUITEM_SOUND
     [4] = gText_ButtonMode,    // MENUITEM_BUTTONMODE
     [5] = gText_Frame,         // MENUITEM_FRAMETYPE
-    [6] = gText_ExpShare,      // MENUITEM_EXPSHARE
-    [7] = gText_AutoRun,       // MENUITEM_AUTORUN
-    [8] = gText_AutoScroll,    // MENUITEM_TEXTMODE
-    [9] = gText_DynamicLevelScaling, // MENUITEM_DYNLEVELSCALING
-    [10] = gText_OptionMenuCancel, // MENUITEM_CANCEL
+    [6] = gText_AutoRun,       // MENUITEM_AUTORUN
+    [7] = gText_AutoScroll,    // MENUITEM_TEXTMODE
+    [8] = gText_DynamicLevelScaling, // MENUITEM_DYNLEVELSCALING
+    [9] = gText_OptionMenuCancel, // MENUITEM_CANCEL
 };
 // Dynamic Level Scaling option values
 extern const u8 gText_DynamicLevelScaling[];
@@ -211,11 +208,6 @@ static const u8 *const sTextModeOptions[] =
 {
     gText_AutoScrollOff,
     gText_AutoScrollOn
-};
-static const u8 *const sExpShareOptions[] =
-{
-    gText_ExpShareOff,
-    gText_ExpShareOn
 };
 
 static const u8 *const sTextSpeedOptions[] =
@@ -289,7 +281,6 @@ void CB2_OptionsMenuFromStartMenu(void)
     sOptionMenuPtr->option[MENUITEM_SOUND] = gSaveBlock2Ptr->optionsSound;
     sOptionMenuPtr->option[MENUITEM_BUTTONMODE] = 1; // Always set to L=A (index 1)
     sOptionMenuPtr->option[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
-    sOptionMenuPtr->option[MENUITEM_EXPSHARE] = gSaveBlock2Ptr->optionsExpShare;
     sOptionMenuPtr->option[MENUITEM_AUTORUN] = gSaveBlock2Ptr->optionsAutoRun;
     sOptionMenuPtr->option[MENUITEM_TEXTMODE] = gSaveBlock2Ptr->optionsTextMode;
     // Dynamic Level Scaling: 0 = OFF, 1 = ON
@@ -605,9 +596,6 @@ static void BufferOptionMenuString(u8 selection)
         StringAppendN(str, buf, 3);
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, str);
         break;
-    case MENUITEM_EXPSHARE:
-        AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sExpShareOptions[sOptionMenuPtr->option[globalIndex]]);
-        break;
     case MENUITEM_AUTORUN:
         AddTextPrinterParameterized3(1, FONT_NORMAL, x, y, dst, -1, sAutoRunOptions[sOptionMenuPtr->option[globalIndex]]);
         break;
@@ -636,7 +624,6 @@ static void CloseAndSaveOptionMenu(u8 taskId)
     gSaveBlock2Ptr->optionsSound = sOptionMenuPtr->option[MENUITEM_SOUND];
     gSaveBlock2Ptr->optionsButtonMode = 1; // Always save as L=A
     gSaveBlock2Ptr->optionsWindowFrameType = sOptionMenuPtr->option[MENUITEM_FRAMETYPE];
-    gSaveBlock2Ptr->optionsExpShare = sOptionMenuPtr->option[MENUITEM_EXPSHARE];
     gSaveBlock2Ptr->optionsAutoRun = sOptionMenuPtr->option[MENUITEM_AUTORUN];
     gSaveBlock2Ptr->optionsTextMode = sOptionMenuPtr->option[MENUITEM_TEXTMODE];
     SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
@@ -736,15 +723,14 @@ static u8 GetGlobalMenuItemIndex(u8 pageItem)
         return pageItem; // Page 1: items 0-3
     else
     {
-        // Page 2: skip BUTTON MODE (index 4), map to indices 5-10
+        // Page 2: skip BUTTON MODE (index 4), map to indices 5-9
         switch (pageItem)
         {
         case 0: return MENUITEM_FRAMETYPE;     // Frame
-        case 1: return MENUITEM_EXPSHARE;      // Exp Share  
-        case 2: return MENUITEM_AUTORUN;       // Auto Run
-        case 3: return MENUITEM_TEXTMODE;      // Auto Scroll
-        case 4: return MENUITEM_DYNLEVELSCALING; // Dynamic Level
-        case 5: return MENUITEM_CANCEL;        // Cancel
+        case 1: return MENUITEM_AUTORUN;       // Auto Run
+        case 2: return MENUITEM_TEXTMODE;      // Auto Scroll
+        case 3: return MENUITEM_DYNLEVELSCALING; // Dynamic Level
+        case 4: return MENUITEM_CANCEL;        // Cancel
         default: return MENUITEM_FRAMETYPE;
         }
     }
