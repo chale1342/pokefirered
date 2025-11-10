@@ -3121,6 +3121,7 @@ static void Cmd_getexp(void)
     s32 sentIn;
     s32 viaExpShare = 0;
     u16 *exp = &gBattleStruct->expValue;
+    bool8 expSharePartyMode;
 
     gBattlerFainted = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
     sentIn = gSentPokesToOpponent[(gBattlerFainted & 2) >> 1];
@@ -3174,22 +3175,22 @@ static void Cmd_getexp(void)
 
             if (expShareAll)
             {
-                // Gen 6+ style: all non-fainted, non-egg party Pokémon get exp
+                // Bag toggle mode: all non-fainted, non-egg party Pokémon get 50% exp
                 *exp = SAFE_DIV(calculatedExp, viaSentIn);
                 if (*exp == 0)
                     *exp = 1;
-                gExpShareExp = calculatedExp / PARTY_SIZE;
+                gExpShareExp = calculatedExp / 2; // 50% to non-battlers
                 if (gExpShareExp == 0)
                     gExpShareExp = 1;
             }
             else if (viaExpShare)
             {
-                // Modified: Give full exp to battlers, full exp to Exp. Share holders
+                // Held item mode: Give full exp to battlers, 100% exp to Exp. Share holders
                 *exp = SAFE_DIV(calculatedExp, viaSentIn);
                 if (*exp == 0)
                     *exp = 1;
 
-                gExpShareExp = calculatedExp / viaExpShare;
+                gExpShareExp = calculatedExp; // 100% to holder
                 if (gExpShareExp == 0)
                     gExpShareExp = 1;
             }
@@ -3216,7 +3217,11 @@ static void Cmd_getexp(void)
             else
                 holdEffect = ItemId_GetHoldEffect(item);
 
-            if (holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1))
+            // Check if party mode is enabled
+            expSharePartyMode = (gSaveBlock2Ptr && gSaveBlock2Ptr->optionsExpShare);
+
+            // Skip Pokemon that didn't battle and aren't holding Exp Share, unless party mode is on
+            if (!expSharePartyMode && holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1))
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
                 gBattleScripting.getexpState = 5;
@@ -3240,13 +3245,27 @@ static void Cmd_getexp(void)
 
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
                 {
-                    // Give full experience to battlers or Exp. Share holders
+                    // Determine EXP amount based on mode and battler status
                     if (gBattleStruct->sentInPokes & 1)
+                    {
+                        // Pokemon battled - gets full exp
                         gBattleMoveDamage = *exp;
-                    else if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+                    }
+                    else if (expSharePartyMode)
+                    {
+                        // Party mode enabled - non-battlers get 50% exp
                         gBattleMoveDamage = gExpShareExp;
+                    }
+                    else if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+                    {
+                        // Holding Exp Share item - gets 100% exp
+                        gBattleMoveDamage = gExpShareExp;
+                    }
                     else
+                    {
                         gBattleMoveDamage = 0;
+                    }
+                    
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)

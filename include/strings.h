@@ -947,6 +947,8 @@ extern const u8 gText_Option[];
 extern const u8 gText_FrameType[];
 extern const u8 gText_ExpShareOff[];
 extern const u8 gText_ExpShareOn[];
+extern const u8 gText_ExpSharePartyModeOn[];
+extern const u8 gText_ExpSharePartyModeOff[];
 extern const u8 gTextJP_Type[];
 extern const u8 gText_PickSwitchCancel[];
 
