@@ -5,6 +5,7 @@
 #include "m4a.h"
 #include "overworld.h"
 #include "event_data.h"
+#include "area_pokemon_screen.h"
 #include "region_map.h"
 #include "party_menu.h"
 #include "field_effect.h"
@@ -12,6 +13,8 @@
 #include "menu.h"
 #include "strings.h"
 #include "map_preview_screen.h"
+#include "text_window.h"
+#include "wild_pokemon_area.h"
 #include "constants/songs.h"
 #include "constants/region_map_sections.h"
 #include "constants/heal_locations.h"
@@ -109,7 +112,10 @@ struct RegionMap
     u16 dungeonWinTop;    // Never read
     u16 dungeonWinRight;  // Never read
     u16 dungeonWinBottom; // Never read
-    u8 filler[6]; 
+    u8 filler[6];
+    bool8 restoreCursor;
+    u8 restoreX;
+    u8 restoreY;
     TaskFunc mainTask;
     MainCallback savedCallback;
 }; // size = 0x47C0
@@ -286,6 +292,14 @@ static EWRAM_DATA struct PlayerIcon * sPlayerIcon = NULL;
 static EWRAM_DATA struct MapIcons * sMapIcons = NULL;
 static EWRAM_DATA struct RegionMapGpuRegs * sRegionMapGpuRegs[3] = {};
 static EWRAM_DATA struct FlyMap * sFlyMap = NULL;
+static EWRAM_DATA u8 sAreaSubmenuWindowId = WINDOW_NONE;
+static EWRAM_DATA u8 sAreaSubmenuCursorPos = 0;
+static EWRAM_DATA u8 sAreaSubmenuItemCount = 0;
+static EWRAM_DATA bool8 sAreaSubmenuHasGuide = FALSE;
+static EWRAM_DATA bool8 sAreaSubmenuIsLocationMenu = FALSE;
+static EWRAM_DATA u8 sAreaEncounterLocationCount = 0;
+static EWRAM_DATA struct AreaEncounterLocation sAreaEncounterLocations[8];
+static EWRAM_DATA u8 sAreaEncounterLocationLabels[8][16];
 
 static void InitRegionMapType(void);
 static void CB2_OpenRegionMap(void);
@@ -294,6 +308,7 @@ static void CreateMainMapTask(void);
 static void Task_RegionMap(u8);
 static void SaveMainMapTask(u8);
 static void FreeRegionMap(u8);
+static void FreeRegionMapRuntime(void);
 static void CB2_RegionMap(void);
 static void NullVBlankHBlankCallbacks(void);
 static void SetRegionMapVBlankCB(void);
@@ -342,6 +357,17 @@ static void CreateMapCursorSprite(void);
 static void SetMapCursorInvisibility(bool8);
 static void ResetCursorSnap(void);
 static void FreeMapCursor(void);
+static void InitAreaActionMenu(u8 taskId);
+static void Task_AreaSubmenu(u8 taskId);
+static void DrawAreaSubmenu(void);
+static void CloseAreaSubmenu(u8 taskId);
+static bool8 IsAreaActionAvailable(void);
+static bool8 IsMapPreviewAvailable(void);
+static bool8 ShouldShowEncounterLocationMenu(void);
+static void BuildEncounterLocationLabels(void);
+static const u8 *GetAreaSubmenuLabel(u8 index);
+static void OpenAreaPokemonScreenFromMap(u8 taskId, s8 locationIndex);
+static void CB2_ReturnToRegionMapFromAreaPokemonScreen(void);
 static u8 HandleRegionMapInput(void);
 static u8 MoveMapCursor(void);
 static u8 GetRegionMapInput(void);
@@ -514,6 +540,24 @@ static const struct WindowTemplate sRegionMapWindowTemplates[] = {
         .baseBlock = 0x15a
     }, DUMMY_WIN_TEMPLATE
 };
+
+static const struct WindowTemplate sAreaSubmenuWindowTemplate = {
+    .bg = 3,
+    .tilemapLeft = 15,
+    .tilemapTop = 6,
+    .width = 14,
+    .height = 4,
+    .paletteNum = 15,
+    .baseBlock = 0x164
+};
+
+static const u8 sText_AllAreas[] = _("All Areas");
+static const u8 sText_Center[] = _("Center");
+static const u8 sText_East[] = _("East");
+static const u8 sText_North[] = _("North");
+static const u8 sText_West[] = _("West");
+static const u8 sText_B[] = _("B");
+static const u8 sText_F[] = _("F");
 
 ALIGNED(4) const u8 sTextColor_White[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE,       TEXT_COLOR_DARK_GRAY};
 ALIGNED(4) const u8 sTextColor_Green[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_LIGHT_GREEN, TEXT_COLOR_DARK_GRAY};
@@ -1256,6 +1300,10 @@ static void Task_RegionMap(u8 taskId)
                 {
                     PrintTopBarTextRight(gText_RegionMap_AButtonCancel);
                 }
+                else if (IsAreaActionAvailable())
+                {
+                    PrintTopBarTextRight(gText_RegionMap_AButtonOK);
+                }
                 else
                 {
                     PrintTopBarTextRight(gText_RegionMap_Space);
@@ -1263,8 +1311,8 @@ static void Task_RegionMap(u8 taskId)
             }
             break;
         case MAP_INPUT_A_BUTTON:
-            if (GetSelectedMapsecType(LAYER_DUNGEON) == MAPSECTYPE_VISITED && sRegionMap->permissions[MAPPERM_HAS_MAP_PREVIEW] == TRUE)
-                InitDungeonMapPreview(0, taskId, SaveMainMapTask);
+            if (IsAreaActionAvailable())
+                InitAreaActionMenu(taskId);
             break;
         case MAP_INPUT_SWITCH:
             InitSwitchMapMenu(sRegionMap->selectedRegion, taskId, SaveMainMapTask);
@@ -1319,19 +1367,24 @@ static void SaveMainMapTask(u8 taskId)
 
 static void FreeRegionMap(u8 taskId)
 {
+    FreeRegionMapRuntime();
+    DestroyTask(taskId);
+    if (sRegionMap->savedCallback == NULL)
+        SetMainCallback2(gMain.savedCallback);
+    else
+        SetMainCallback2(sRegionMap->savedCallback);
+    FREE_IF_NOT_NULL(sRegionMap);
+}
+
+static void FreeRegionMapRuntime(void)
+{
     if (GetRegionMapPermission(MAPPERM_HAS_OPEN_ANIM) == TRUE)
         FreeMapOpenCloseAnim();
     FreeMapIcons();
     FreeMapCursor();
     FreePlayerIcon();
     FreeAndResetGpuRegs();
-    DestroyTask(taskId);
     FreeAllWindowBuffers();
-    if (sRegionMap->savedCallback == NULL)
-        SetMainCallback2(gMain.savedCallback);
-    else
-        SetMainCallback2(sRegionMap->savedCallback);
-    FREE_IF_NOT_NULL(sRegionMap);
 }
 
 static void FreeRegionMapForFlyMap(void)
@@ -2692,7 +2745,17 @@ static void CreateMapCursor(u16 tileTag, u16 palTag)
     LZ77UnCompWram(sMapCursor_Gfx, sMapCursor->tiles);
     sMapCursor->tileTag = tileTag;
     sMapCursor->palTag = palTag;
-    GetPlayerPositionOnRegionMap_HandleOverrides();
+    if (sRegionMap->restoreCursor)
+    {
+        sMapCursor->x = sRegionMap->restoreX;
+        sMapCursor->y = sRegionMap->restoreY;
+        sMapCursor->selectedMapsec = GetSelectedMapSection(GetSelectedRegionMap(), LAYER_MAP, sMapCursor->y, sMapCursor->x);
+        sRegionMap->restoreCursor = FALSE;
+    }
+    else
+    {
+        GetPlayerPositionOnRegionMap_HandleOverrides();
+    }
     sMapCursor->spriteX = 8 * sMapCursor->x + 36;
     sMapCursor->spriteY = 8 * sMapCursor->y + 36;
     sMapCursor->inputHandler = HandleRegionMapInput;
@@ -2749,6 +2812,253 @@ static void FreeMapCursor(void)
         FreeSpritePaletteByTag(sMapCursor->palTag);
     }
     FREE_IF_NOT_NULL(sMapCursor);
+}
+
+static bool8 IsMapPreviewAvailable(void)
+{
+    return (GetDungeonMapsecUnderCursor() != MAPSEC_NONE
+         && GetSelectedMapsecType(LAYER_DUNGEON) == MAPSECTYPE_VISITED
+         && sRegionMap->permissions[MAPPERM_HAS_MAP_PREVIEW] == TRUE);
+}
+
+static bool8 IsAreaActionAvailable(void)
+{
+    if (GetMapCursorX() == SWITCH_BUTTON_X && GetMapCursorY() == SWITCH_BUTTON_Y)
+        return FALSE;
+    if (GetMapCursorX() == CANCEL_BUTTON_X && GetMapCursorY() == CANCEL_BUTTON_Y)
+        return FALSE;
+    if (GetSelectedMapsecType(LAYER_MAP) == MAPSECTYPE_NOT_VISITED || GetSelectedMapsecType(LAYER_MAP) == MAPSECTYPE_NONE)
+        return IsMapPreviewAvailable();
+
+    return TRUE;
+}
+
+static void InitAreaActionMenu(u8 taskId)
+{
+    struct WindowTemplate template = sAreaSubmenuWindowTemplate;
+
+    Menu_LoadStdPal();
+    sAreaSubmenuIsLocationMenu = FALSE;
+    sAreaSubmenuHasGuide = IsMapPreviewAvailable();
+    sAreaSubmenuItemCount = 2 + sAreaSubmenuHasGuide;
+    sAreaSubmenuCursorPos = 0;
+    template.height = sAreaSubmenuItemCount * 2;
+    sAreaSubmenuWindowId = AddWindow(&template);
+    DrawAreaSubmenu();
+    gTasks[taskId].func = Task_AreaSubmenu;
+}
+
+static bool8 ShouldShowEncounterLocationMenu(void)
+{
+    u8 i;
+
+    sAreaEncounterLocationCount = GetEncounterLocationsForMapsec(sMapCursor->selectedMapsec,
+                                                                 sAreaEncounterLocations,
+                                                                 ARRAY_COUNT(sAreaEncounterLocations));
+    if (sAreaEncounterLocationCount <= 1)
+        return FALSE;
+    if (sMapCursor->selectedMapsec == MAPSEC_KANTO_SAFARI_ZONE)
+        return TRUE;
+
+    for (i = 0; i < sAreaEncounterLocationCount; i++)
+    {
+        const struct MapHeader *mapHeader = Overworld_GetMapHeaderByGroupAndId(sAreaEncounterLocations[i].mapGroup,
+                                                                               sAreaEncounterLocations[i].mapNum);
+        if (mapHeader->floorNum != 0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static void BuildEncounterLocationLabels(void)
+{
+    u8 i;
+
+    for (i = 0; i < sAreaEncounterLocationCount; i++)
+    {
+        const struct MapHeader *mapHeader = Overworld_GetMapHeaderByGroupAndId(sAreaEncounterLocations[i].mapGroup,
+                                                                               sAreaEncounterLocations[i].mapNum);
+        u8 *label = sAreaEncounterLocationLabels[i];
+
+        if (sMapCursor->selectedMapsec == MAPSEC_KANTO_SAFARI_ZONE)
+        {
+            switch (sAreaEncounterLocations[i].mapNum)
+            {
+            case MAP_NUM(MAP_SAFARI_ZONE_CENTER):
+                StringCopy(label, sText_Center);
+                break;
+            case MAP_NUM(MAP_SAFARI_ZONE_EAST):
+                StringCopy(label, sText_East);
+                break;
+            case MAP_NUM(MAP_SAFARI_ZONE_NORTH):
+                StringCopy(label, sText_North);
+                break;
+            case MAP_NUM(MAP_SAFARI_ZONE_WEST):
+                StringCopy(label, sText_West);
+                break;
+            default:
+                StringCopy(label, sText_AllAreas);
+                break;
+            }
+        }
+        else if (mapHeader->floorNum < 0)
+        {
+            u8 *dst = StringCopy(label, sText_B);
+
+            dst = ConvertIntToDecimalStringN(dst, -mapHeader->floorNum, STR_CONV_MODE_LEFT_ALIGN, 1);
+            dst = StringCopy(dst, sText_F);
+            *dst = EOS;
+        }
+        else if (mapHeader->floorNum > 0)
+        {
+            u8 *dst = ConvertIntToDecimalStringN(label, mapHeader->floorNum, STR_CONV_MODE_LEFT_ALIGN, 1);
+
+            dst = StringCopy(dst, sText_F);
+            *dst = EOS;
+        }
+        else
+        {
+            StringCopy(label, sText_AllAreas);
+        }
+    }
+}
+
+static const u8 *GetAreaSubmenuLabel(u8 index)
+{
+    if (sAreaSubmenuIsLocationMenu)
+    {
+        if (index == 0)
+            return sText_AllAreas;
+        return sAreaEncounterLocationLabels[index - 1];
+    }
+
+    if (index == 0)
+        return gText_ViewPokemon;
+    if (index == 1 && sAreaSubmenuHasGuide)
+        return gText_AreaGuide;
+    return gFameCheckerText_Cancel;
+}
+
+static void DrawAreaSubmenu(void)
+{
+    u8 i;
+
+    LoadUserWindowGfx(sAreaSubmenuWindowId, sAreaSubmenuWindowTemplate.baseBlock, BG_PLTT_ID(15));
+    FillWindowPixelBuffer(sAreaSubmenuWindowId, PIXEL_FILL(1));
+    DrawStdFrameWithCustomTileAndPalette(sAreaSubmenuWindowId, FALSE, sAreaSubmenuWindowTemplate.baseBlock, 15);
+    for (i = 0; i < sAreaSubmenuItemCount; i++)
+    {
+        if (i == sAreaSubmenuCursorPos)
+            AddTextPrinterParameterized(sAreaSubmenuWindowId, FONT_NORMAL, gText_SelectorArrow2, 4, 2 + i * 16, 0, NULL);
+        AddTextPrinterParameterized(sAreaSubmenuWindowId, FONT_NORMAL, GetAreaSubmenuLabel(i), 16, 2 + i * 16, 0, NULL);
+    }
+    CopyWindowToVram(sAreaSubmenuWindowId, COPYWIN_FULL);
+}
+
+static void CloseAreaSubmenu(u8 taskId)
+{
+    ClearStdWindowAndFrame(sAreaSubmenuWindowId, TRUE);
+    RemoveWindow(sAreaSubmenuWindowId);
+    sAreaSubmenuWindowId = WINDOW_NONE;
+    sAreaSubmenuCursorPos = 0;
+    sAreaSubmenuItemCount = 0;
+    sAreaSubmenuHasGuide = FALSE;
+    sAreaSubmenuIsLocationMenu = FALSE;
+    gTasks[taskId].func = sRegionMap->mainTask;
+}
+
+static void OpenAreaPokemonScreenFromMap(u8 taskId, s8 locationIndex)
+{
+    u16 mapsec = sMapCursor->selectedMapsec;
+
+    sRegionMap->restoreCursor = TRUE;
+    sRegionMap->restoreX = sMapCursor->x;
+    sRegionMap->restoreY = sMapCursor->y;
+    CloseAreaSubmenu(taskId);
+    FreeRegionMapRuntime();
+    DestroyTask(taskId);
+    if (locationIndex >= 0)
+    {
+        InitAreaPokemonScreenForEncounterMap(mapsec,
+                                             sAreaEncounterLocations[locationIndex].mapGroup,
+                                             sAreaEncounterLocations[locationIndex].mapNum,
+                                             sAreaEncounterLocationLabels[locationIndex],
+                                             CB2_ReturnToRegionMapFromAreaPokemonScreen);
+    }
+    else
+    {
+        InitAreaPokemonScreen(mapsec, CB2_ReturnToRegionMapFromAreaPokemonScreen);
+    }
+}
+
+static void CB2_ReturnToRegionMapFromAreaPokemonScreen(void)
+{
+    sRegionMap->mainState = 0;
+    sRegionMap->openState = 0;
+    sRegionMap->loadGfxState = 0;
+    SetMainCallback2(CB2_OpenRegionMap);
+}
+
+static void Task_AreaSubmenu(u8 taskId)
+{
+    if (JOY_NEW(DPAD_UP) && sAreaSubmenuCursorPos > 0)
+    {
+        sAreaSubmenuCursorPos--;
+        PlaySE(SE_SELECT);
+        DrawAreaSubmenu();
+    }
+    else if (JOY_NEW(DPAD_DOWN) && sAreaSubmenuCursorPos + 1 < sAreaSubmenuItemCount)
+    {
+        sAreaSubmenuCursorPos++;
+        PlaySE(SE_SELECT);
+        DrawAreaSubmenu();
+    }
+    else if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        CloseAreaSubmenu(taskId);
+    }
+    else if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_M_HYPER_BEAM2);
+        if (sAreaSubmenuIsLocationMenu)
+        {
+            if (sAreaSubmenuCursorPos == 0)
+                OpenAreaPokemonScreenFromMap(taskId, -1);
+            else
+                OpenAreaPokemonScreenFromMap(taskId, sAreaSubmenuCursorPos - 1);
+        }
+        else if (sAreaSubmenuCursorPos == 0)
+        {
+            if (ShouldShowEncounterLocationMenu())
+            {
+                struct WindowTemplate template = sAreaSubmenuWindowTemplate;
+
+                sAreaSubmenuIsLocationMenu = TRUE;
+                BuildEncounterLocationLabels();
+                sAreaSubmenuItemCount = sAreaEncounterLocationCount + 1;
+                sAreaSubmenuCursorPos = 0;
+                ClearStdWindowAndFrame(sAreaSubmenuWindowId, TRUE);
+                RemoveWindow(sAreaSubmenuWindowId);
+                template.height = sAreaSubmenuItemCount * 2;
+                sAreaSubmenuWindowId = AddWindow(&template);
+                DrawAreaSubmenu();
+            }
+            else
+            {
+                OpenAreaPokemonScreenFromMap(taskId, -1);
+            }
+        }
+        else if (sAreaSubmenuHasGuide && sAreaSubmenuCursorPos == 1)
+        {
+            CloseAreaSubmenu(taskId);
+            InitDungeonMapPreview(0, taskId, SaveMainMapTask);
+        }
+        else
+        {
+            CloseAreaSubmenu(taskId);
+        }
+    }
 }
 
 static u8 HandleRegionMapInput(void)

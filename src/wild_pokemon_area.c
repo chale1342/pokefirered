@@ -6,6 +6,7 @@
 #include "overworld.h"
 #include "pokedex.h"
 #include "pokedex_area_markers.h"
+#include "wild_pokemon_area.h"
 #include "constants/region_map_sections.h"
 #include "constants/maps.h"
 
@@ -15,12 +16,21 @@ struct RoamerPair
     u16 starter;
 };
 
+struct AreaStaticEncounter
+{
+    u16 mapsec;
+    u16 species;
+};
+
 static s32 GetRoamerIndex(u16 species);
 static s32 GetRoamerPokedexAreaMarkers(u16 species, struct Subsprite * subsprites);
 static bool32 IsSpeciesOnMap(const struct WildPokemonHeader * data, s32 species);
 static bool32 IsSpeciesInEncounterTable(const struct WildPokemonInfo * pokemon, s32 species, s32 count);
 static u16 GetMapSecIdFromWildMonHeader(const struct WildPokemonHeader * header);
 static bool32 FindDexAreaByMapSec(u16 mapSecId, const u16 (*lut)[2], s32 count, s32 * lutIdx_p, u16 * tableIdx_p);
+static void TryAppendSpeciesToList(u16 species, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies);
+static void SortSpeciesList(u16 *speciesBuf, u16 count);
+static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies);
 
 static const u16 sDexAreas_Kanto[][2] = {
     { MAPSEC_PALLET_TOWN,         DEX_AREA_PALLET_TOWN },
@@ -158,6 +168,125 @@ static const struct RoamerPair sRoamerPairs[] = {
     { SPECIES_SUICUNE, SPECIES_CHARMANDER },
     { SPECIES_RAIKOU,  SPECIES_SQUIRTLE   }
 };
+
+static const struct AreaStaticEncounter sAreaStaticEncounters[] = {
+    { MAPSEC_ROUTE_12,       SPECIES_SNORLAX   },
+    { MAPSEC_ROUTE_16,       SPECIES_SNORLAX   },
+    { MAPSEC_POWER_PLANT,    SPECIES_ZAPDOS    },
+    { MAPSEC_POWER_PLANT,    SPECIES_ELECTRODE },
+    { MAPSEC_SEAFOAM_ISLANDS, SPECIES_ARTICUNO },
+    { MAPSEC_POKEMON_TOWER,  SPECIES_MAROWAK   },
+    { MAPSEC_CERULEAN_CAVE,  SPECIES_MEWTWO    },
+    { MAPSEC_BERRY_FOREST,   SPECIES_HYPNO     },
+    { MAPSEC_MT_EMBER,       SPECIES_MOLTRES   },
+    { MAPSEC_NAVEL_ROCK,     SPECIES_LUGIA     },
+    { MAPSEC_NAVEL_ROCK,     SPECIES_HO_OH     },
+    { MAPSEC_BIRTH_ISLAND,   SPECIES_DEOXYS    },
+};
+
+u16 BuildSpeciesListForMapsec(u16 mapsec, u16 *speciesBuf, u16 maxCount)
+{
+    bool8 seenSpecies[NUM_SPECIES] = {FALSE};
+    u16 count;
+    s32 i;
+
+    if (speciesBuf == NULL || maxCount == 0)
+        return 0;
+
+    count = 0;
+    for (i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); i++)
+    {
+        if (GetMapSecIdFromWildMonHeader(&gWildMonHeaders[i]) != mapsec)
+            continue;
+
+        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+    }
+
+    for (i = 0; i < ARRAY_COUNT(sAreaStaticEncounters); i++)
+    {
+        if (sAreaStaticEncounters[i].mapsec == mapsec)
+            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, speciesBuf, &count, maxCount, seenSpecies);
+    }
+
+    SortSpeciesList(speciesBuf, count);
+    return count;
+}
+
+u16 BuildSpeciesListForEncounterMap(u8 mapGroup, u8 mapNum, u16 *speciesBuf, u16 maxCount)
+{
+    bool8 seenSpecies[NUM_SPECIES] = {FALSE};
+    u16 count;
+    u16 mapsec;
+    s32 i;
+
+    if (speciesBuf == NULL || maxCount == 0)
+        return 0;
+
+    count = 0;
+    mapsec = Overworld_GetMapHeaderByGroupAndId(mapGroup, mapNum)->regionMapSectionId;
+    for (i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); i++)
+    {
+        if (gWildMonHeaders[i].mapGroup != mapGroup || gWildMonHeaders[i].mapNum != mapNum)
+            continue;
+
+        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        break;
+    }
+
+    for (i = 0; i < ARRAY_COUNT(sAreaStaticEncounters); i++)
+    {
+        if (sAreaStaticEncounters[i].mapsec == mapsec)
+            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, speciesBuf, &count, maxCount, seenSpecies);
+    }
+
+    SortSpeciesList(speciesBuf, count);
+    return count;
+}
+
+u16 GetEncounterLocationsForMapsec(u16 mapsec, struct AreaEncounterLocation *locations, u16 maxCount)
+{
+    u16 count;
+    s32 i;
+
+    if (locations == NULL || maxCount == 0)
+        return 0;
+
+    count = 0;
+    for (i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); i++)
+    {
+        bool8 duplicate;
+        u16 j;
+
+        if (GetMapSecIdFromWildMonHeader(&gWildMonHeaders[i]) != mapsec)
+            continue;
+
+        duplicate = FALSE;
+        for (j = 0; j < count; j++)
+        {
+            if (locations[j].mapGroup == gWildMonHeaders[i].mapGroup
+             && locations[j].mapNum == gWildMonHeaders[i].mapNum)
+            {
+                duplicate = TRUE;
+                break;
+            }
+        }
+        if (duplicate || count >= maxCount)
+            continue;
+
+        locations[count].mapGroup = gWildMonHeaders[i].mapGroup;
+        locations[count].mapNum = gWildMonHeaders[i].mapNum;
+        locations[count].mapsec = mapsec;
+        count++;
+    }
+
+    return count;
+}
 
 // Scans for the given species and populates 'subsprites' with the area markers.
 // Returns the number of areas where the species was found.
@@ -314,4 +443,47 @@ static bool32 FindDexAreaByMapSec(u16 mapSecId, const u16 (*table)[2], s32 count
         }
     }
     return FALSE;
+}
+
+static void TryAppendSpeciesToList(u16 species, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies)
+{
+    if (species == SPECIES_NONE || species >= NUM_SPECIES)
+        return;
+    if (seenSpecies[species] == TRUE)
+        return;
+    if (*count >= maxCount)
+        return;
+
+    seenSpecies[species] = TRUE;
+    speciesBuf[*count] = species;
+    (*count)++;
+}
+
+static void SortSpeciesList(u16 *speciesBuf, u16 count)
+{
+    u16 i;
+
+    for (i = 1; i < count; i++)
+    {
+        u16 species = speciesBuf[i];
+        s16 j = i - 1;
+
+        while (j >= 0 && speciesBuf[j] > species)
+        {
+            speciesBuf[j + 1] = speciesBuf[j];
+            j--;
+        }
+        speciesBuf[j + 1] = species;
+    }
+}
+
+static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies)
+{
+    s32 i;
+
+    if (info == NULL)
+        return;
+
+    for (i = 0; i < encounterCount; i++)
+        TryAppendSpeciesToList(info->wildPokemon[i].species, speciesBuf, count, maxCount, seenSpecies);
 }
