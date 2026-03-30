@@ -542,16 +542,17 @@ static const struct WindowTemplate sRegionMapWindowTemplates[] = {
 };
 
 static const struct WindowTemplate sAreaSubmenuWindowTemplate = {
-    .bg = 3,
+    .bg = 2,
     .tilemapLeft = 15,
     .tilemapTop = 6,
     .width = 14,
     .height = 4,
     .paletteNum = 15,
-    .baseBlock = 0x164
+    .baseBlock = 1
 };
 
 static const u8 sText_AllAreas[] = _("All Areas");
+static const u8 sText_AllSafariZones[] = _("All Safari Zones");
 static const u8 sText_Center[] = _("Center");
 static const u8 sText_East[] = _("East");
 static const u8 sText_North[] = _("North");
@@ -1278,16 +1279,13 @@ static void Task_RegionMap(u8 taskId)
             PlaySEForSelectedMapsec();
             if (GetDungeonMapsecUnderCursor() != MAPSEC_NONE)
             {
-                if (GetRegionMapPermission(MAPPERM_HAS_MAP_PREVIEW) == TRUE)
+                if (IsAreaActionAvailable())
                 {
-                    if (GetSelectedMapsecType(LAYER_DUNGEON) == MAPSECTYPE_VISITED)
-                    {
-                        PrintTopBarTextRight(gText_RegionMap_AButtonGuide);
-                    }
-                    else
-                    {
-                        PrintTopBarTextRight(gText_RegionMap_Space);
-                    }
+                    PrintTopBarTextRight(gText_RegionMap_AButtonOK);
+                }
+                else
+                {
+                    PrintTopBarTextRight(gText_RegionMap_Space);
                 }
             }
             else
@@ -1436,6 +1434,7 @@ static void InitRegionMapBgs(void)
     ChangeBgY(3, 0, 0);
     InitWindows(sRegionMapWindowTemplates);
     DeactivateAllTextPrinters();
+    LoadStdWindowFrameGfx();
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_WIN0_ON | DISPCNT_WIN1_ON);
     SetBgTilemapBuffers();
     UpdateMapsecNameBox();
@@ -1478,9 +1477,9 @@ static void UpdateMapsecNameBox(void)
     SetBldCnt(0, BLDCNT_TGT1_BG0 | BLDCNT_TGT1_OBJ, BLDCNT_EFFECT_DARKEN);
     SetBldY(BLDCNT_TGT1_BG1 | BLDCNT_TGT1_BG2);
     SetWinIn(
-        (WININ_WIN0_BG0 | WININ_WIN0_BG3 | WININ_WIN0_OBJ | WININ_WIN0_CLR),
-        (WININ_WIN1_BG0 | WININ_WIN1_BG3 | WININ_WIN1_OBJ | WININ_WIN1_CLR) >> 8);
-    SetWinOut(WINOUT_WIN01_BG0 | WINOUT_WIN01_BG1 | WINOUT_WIN01_BG3 | WINOUT_WIN01_OBJ);
+        (WININ_WIN0_BG0 | WININ_WIN0_BG2 | WININ_WIN0_BG3 | WININ_WIN0_OBJ | WININ_WIN0_CLR),
+        (WININ_WIN1_BG0 | WININ_WIN1_BG2 | WININ_WIN1_BG3 | WININ_WIN1_OBJ | WININ_WIN1_CLR) >> 8);
+    SetWinOut(WINOUT_WIN01_BG0 | WINOUT_WIN01_BG1 | WINOUT_WIN01_BG2 | WINOUT_WIN01_BG3 | WINOUT_WIN01_OBJ);
     SetGpuWindowDims(0, &sMapsecNameWindowDims[WIN_MAP_NAME]);
     SetGpuWindowDims(1, &sMapsecNameWindowDims[WIN_DUNGEON_NAME]);
     SetDispCnt(0, FALSE);
@@ -2827,17 +2826,21 @@ static bool8 IsAreaActionAvailable(void)
         return FALSE;
     if (GetMapCursorX() == CANCEL_BUTTON_X && GetMapCursorY() == CANCEL_BUTTON_Y)
         return FALSE;
-    if (GetSelectedMapsecType(LAYER_MAP) == MAPSECTYPE_NOT_VISITED || GetSelectedMapsecType(LAYER_MAP) == MAPSECTYPE_NONE)
-        return IsMapPreviewAvailable();
+    if (GetSelectedMapsecType(LAYER_MAP) != MAPSECTYPE_NONE)
+        return TRUE;
+    if (GetDungeonMapsecUnderCursor() != MAPSEC_NONE
+     && GetSelectedMapsecType(LAYER_DUNGEON) != MAPSECTYPE_NONE)
+        return TRUE;
 
-    return TRUE;
+    return FALSE;
 }
 
 static void InitAreaActionMenu(u8 taskId)
 {
     struct WindowTemplate template = sAreaSubmenuWindowTemplate;
 
-    Menu_LoadStdPal();
+    ShowBg(2);
+    LoadStdWindowGfxOnBg(2, 0x100, BG_PLTT_ID(15));
     sAreaSubmenuIsLocationMenu = FALSE;
     sAreaSubmenuHasGuide = IsMapPreviewAvailable();
     sAreaSubmenuItemCount = 2 + sAreaSubmenuHasGuide;
@@ -2852,12 +2855,23 @@ static bool8 ShouldShowEncounterLocationMenu(void)
 {
     u8 i;
 
-    sAreaEncounterLocationCount = GetEncounterLocationsForMapsec(sMapCursor->selectedMapsec,
-                                                                 sAreaEncounterLocations,
-                                                                 ARRAY_COUNT(sAreaEncounterLocations));
+    if (sMapCursor->selectedMapsec == MAPSEC_FUCHSIA_CITY)
+    {
+        sAreaEncounterLocationCount = GetEncounterLocationsForMapsec(MAPSEC_KANTO_SAFARI_ZONE,
+                                                                     sAreaEncounterLocations,
+                                                                     ARRAY_COUNT(sAreaEncounterLocations));
+    }
+    else
+    {
+        sAreaEncounterLocationCount = GetEncounterLocationsForMapsec(sMapCursor->selectedMapsec,
+                                                                     sAreaEncounterLocations,
+                                                                     ARRAY_COUNT(sAreaEncounterLocations));
+    }
+
     if (sAreaEncounterLocationCount <= 1)
         return FALSE;
-    if (sMapCursor->selectedMapsec == MAPSEC_KANTO_SAFARI_ZONE)
+    if (sMapCursor->selectedMapsec == MAPSEC_FUCHSIA_CITY
+     || sMapCursor->selectedMapsec == MAPSEC_KANTO_SAFARI_ZONE)
         return TRUE;
 
     for (i = 0; i < sAreaEncounterLocationCount; i++)
@@ -2880,7 +2894,7 @@ static void BuildEncounterLocationLabels(void)
                                                                                sAreaEncounterLocations[i].mapNum);
         u8 *label = sAreaEncounterLocationLabels[i];
 
-        if (sMapCursor->selectedMapsec == MAPSEC_KANTO_SAFARI_ZONE)
+        if (sAreaEncounterLocations[i].mapsec == MAPSEC_KANTO_SAFARI_ZONE)
         {
             switch (sAreaEncounterLocations[i].mapNum)
             {
@@ -2918,7 +2932,7 @@ static void BuildEncounterLocationLabels(void)
         }
         else
         {
-            StringCopy(label, sText_AllAreas);
+            GetMapNameGeneric(label, sAreaEncounterLocations[i].mapsec);
         }
     }
 }
@@ -2928,7 +2942,7 @@ static const u8 *GetAreaSubmenuLabel(u8 index)
     if (sAreaSubmenuIsLocationMenu)
     {
         if (index == 0)
-            return sText_AllAreas;
+            return (sMapCursor->selectedMapsec == MAPSEC_FUCHSIA_CITY) ? sText_AllSafariZones : sText_AllAreas;
         return sAreaEncounterLocationLabels[index - 1];
     }
 
@@ -2943,9 +2957,9 @@ static void DrawAreaSubmenu(void)
 {
     u8 i;
 
-    LoadUserWindowGfx(sAreaSubmenuWindowId, sAreaSubmenuWindowTemplate.baseBlock, BG_PLTT_ID(15));
     FillWindowPixelBuffer(sAreaSubmenuWindowId, PIXEL_FILL(1));
-    DrawStdFrameWithCustomTileAndPalette(sAreaSubmenuWindowId, FALSE, sAreaSubmenuWindowTemplate.baseBlock, 15);
+    DrawTextBorderOuter(sAreaSubmenuWindowId, 0x100, 15);
+    PutWindowTilemap(sAreaSubmenuWindowId);
     for (i = 0; i < sAreaSubmenuItemCount; i++)
     {
         if (i == sAreaSubmenuCursorPos)
@@ -2953,12 +2967,14 @@ static void DrawAreaSubmenu(void)
         AddTextPrinterParameterized(sAreaSubmenuWindowId, FONT_NORMAL, GetAreaSubmenuLabel(i), 16, 2 + i * 16, 0, NULL);
     }
     CopyWindowToVram(sAreaSubmenuWindowId, COPYWIN_FULL);
+    CopyBgTilemapBufferToVram(2);
 }
 
 static void CloseAreaSubmenu(u8 taskId)
 {
     ClearStdWindowAndFrame(sAreaSubmenuWindowId, TRUE);
     RemoveWindow(sAreaSubmenuWindowId);
+    HideBg(2);
     sAreaSubmenuWindowId = WINDOW_NONE;
     sAreaSubmenuCursorPos = 0;
     sAreaSubmenuItemCount = 0;
@@ -2971,6 +2987,13 @@ static void OpenAreaPokemonScreenFromMap(u8 taskId, s8 locationIndex)
 {
     u16 mapsec = sMapCursor->selectedMapsec;
 
+    if (mapsec == MAPSEC_NONE)
+    {
+        u16 dungeonMapsec = GetDungeonMapsecUnderCursor();
+        if (dungeonMapsec != MAPSEC_NONE)
+            mapsec = dungeonMapsec;
+    }
+
     sRegionMap->restoreCursor = TRUE;
     sRegionMap->restoreX = sMapCursor->x;
     sRegionMap->restoreY = sMapCursor->y;
@@ -2979,7 +3002,7 @@ static void OpenAreaPokemonScreenFromMap(u8 taskId, s8 locationIndex)
     DestroyTask(taskId);
     if (locationIndex >= 0)
     {
-        InitAreaPokemonScreenForEncounterMap(mapsec,
+        InitAreaPokemonScreenForEncounterMap(sAreaEncounterLocations[locationIndex].mapsec,
                                              sAreaEncounterLocations[locationIndex].mapGroup,
                                              sAreaEncounterLocations[locationIndex].mapNum,
                                              sAreaEncounterLocationLabels[locationIndex],

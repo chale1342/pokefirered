@@ -28,9 +28,9 @@ static bool32 IsSpeciesOnMap(const struct WildPokemonHeader * data, s32 species)
 static bool32 IsSpeciesInEncounterTable(const struct WildPokemonInfo * pokemon, s32 species, s32 count);
 static u16 GetMapSecIdFromWildMonHeader(const struct WildPokemonHeader * header);
 static bool32 FindDexAreaByMapSec(u16 mapSecId, const u16 (*lut)[2], s32 count, s32 * lutIdx_p, u16 * tableIdx_p);
-static void TryAppendSpeciesToList(u16 species, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies);
-static void SortSpeciesList(u16 *speciesBuf, u16 count);
-static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies);
+static void TryAppendSpeciesToList(u16 species, u8 minLevel, u8 maxLevel, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 *count, u16 maxCount, bool8 *seenSpecies);
+static void SortSpeciesList(u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 count);
+static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 *count, u16 maxCount, bool8 *seenSpecies);
 
 static const u16 sDexAreas_Kanto[][2] = {
     { MAPSEC_PALLET_TOWN,         DEX_AREA_PALLET_TOWN },
@@ -184,7 +184,7 @@ static const struct AreaStaticEncounter sAreaStaticEncounters[] = {
     { MAPSEC_BIRTH_ISLAND,   SPECIES_DEOXYS    },
 };
 
-u16 BuildSpeciesListForMapsec(u16 mapsec, u16 *speciesBuf, u16 maxCount)
+u16 BuildSpeciesListForMapsec(u16 mapsec, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 maxCount)
 {
     bool8 seenSpecies[NUM_SPECIES] = {FALSE};
     u16 count;
@@ -196,26 +196,30 @@ u16 BuildSpeciesListForMapsec(u16 mapsec, u16 *speciesBuf, u16 maxCount)
     count = 0;
     for (i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); i++)
     {
-        if (GetMapSecIdFromWildMonHeader(&gWildMonHeaders[i]) != mapsec)
+        u16 headerMapsec = GetMapSecIdFromWildMonHeader(&gWildMonHeaders[i]);
+
+        if (headerMapsec != mapsec
+         && !(mapsec == MAPSEC_FUCHSIA_CITY && headerMapsec == MAPSEC_KANTO_SAFARI_ZONE))
             continue;
 
-        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
     }
 
     for (i = 0; i < ARRAY_COUNT(sAreaStaticEncounters); i++)
     {
-        if (sAreaStaticEncounters[i].mapsec == mapsec)
-            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, speciesBuf, &count, maxCount, seenSpecies);
+        if (sAreaStaticEncounters[i].mapsec == mapsec
+         || (mapsec == MAPSEC_FUCHSIA_CITY && sAreaStaticEncounters[i].mapsec == MAPSEC_KANTO_SAFARI_ZONE))
+            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, 0, 0, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
     }
 
-    SortSpeciesList(speciesBuf, count);
+    SortSpeciesList(speciesBuf, minLevels, maxLevels, count);
     return count;
 }
 
-u16 BuildSpeciesListForEncounterMap(u8 mapGroup, u8 mapNum, u16 *speciesBuf, u16 maxCount)
+u16 BuildSpeciesListForEncounterMap(u8 mapGroup, u8 mapNum, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 maxCount)
 {
     bool8 seenSpecies[NUM_SPECIES] = {FALSE};
     u16 count;
@@ -232,20 +236,20 @@ u16 BuildSpeciesListForEncounterMap(u8 mapGroup, u8 mapNum, u16 *speciesBuf, u16
         if (gWildMonHeaders[i].mapGroup != mapGroup || gWildMonHeaders[i].mapNum != mapNum)
             continue;
 
-        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
-        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].landMonsInfo, LAND_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].waterMonsInfo, WATER_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].rockSmashMonsInfo, ROCK_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
+        AppendEncounterTableSpecies(gWildMonHeaders[i].fishingMonsInfo, FISH_WILD_COUNT, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
         break;
     }
 
     for (i = 0; i < ARRAY_COUNT(sAreaStaticEncounters); i++)
     {
         if (sAreaStaticEncounters[i].mapsec == mapsec)
-            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, speciesBuf, &count, maxCount, seenSpecies);
+            TryAppendSpeciesToList(sAreaStaticEncounters[i].species, 0, 0, speciesBuf, minLevels, maxLevels, &count, maxCount, seenSpecies);
     }
 
-    SortSpeciesList(speciesBuf, count);
+    SortSpeciesList(speciesBuf, minLevels, maxLevels, count);
     return count;
 }
 
@@ -445,39 +449,71 @@ static bool32 FindDexAreaByMapSec(u16 mapSecId, const u16 (*table)[2], s32 count
     return FALSE;
 }
 
-static void TryAppendSpeciesToList(u16 species, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies)
+static void TryAppendSpeciesToList(u16 species, u8 minLevel, u8 maxLevel, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 *count, u16 maxCount, bool8 *seenSpecies)
 {
     if (species == SPECIES_NONE || species >= NUM_SPECIES)
         return;
     if (seenSpecies[species] == TRUE)
+    {
+        if (minLevels != NULL && maxLevels != NULL && (minLevel != 0 || maxLevel != 0))
+        {
+            u16 i;
+            for (i = 0; i < *count; i++)
+            {
+                if (speciesBuf[i] == species)
+                {
+                    if (minLevel < minLevels[i])
+                        minLevels[i] = minLevel;
+                    if (maxLevel > maxLevels[i])
+                        maxLevels[i] = maxLevel;
+                    break;
+                }
+            }
+        }
         return;
+    }
     if (*count >= maxCount)
         return;
 
     seenSpecies[species] = TRUE;
     speciesBuf[*count] = species;
+    if (minLevels != NULL && maxLevels != NULL)
+    {
+        minLevels[*count] = minLevel;
+        maxLevels[*count] = maxLevel;
+    }
     (*count)++;
 }
 
-static void SortSpeciesList(u16 *speciesBuf, u16 count)
+static void SortSpeciesList(u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 count)
 {
     u16 i;
 
     for (i = 1; i < count; i++)
     {
         u16 species = speciesBuf[i];
+        u8 minLvl = (minLevels != NULL) ? minLevels[i] : 0;
+        u8 maxLvl = (maxLevels != NULL) ? maxLevels[i] : 0;
         s16 j = i - 1;
 
         while (j >= 0 && speciesBuf[j] > species)
         {
             speciesBuf[j + 1] = speciesBuf[j];
+            if (minLevels != NULL)
+                minLevels[j + 1] = minLevels[j];
+            if (maxLevels != NULL)
+                maxLevels[j + 1] = maxLevels[j];
             j--;
         }
         speciesBuf[j + 1] = species;
+        if (minLevels != NULL)
+            minLevels[j + 1] = minLvl;
+        if (maxLevels != NULL)
+            maxLevels[j + 1] = maxLvl;
     }
 }
 
-static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u16 *count, u16 maxCount, bool8 *seenSpecies)
+static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 encounterCount, u16 *speciesBuf, u8 *minLevels, u8 *maxLevels, u16 *count, u16 maxCount, bool8 *seenSpecies)
 {
     s32 i;
 
@@ -485,5 +521,5 @@ static void AppendEncounterTableSpecies(const struct WildPokemonInfo *info, u8 e
         return;
 
     for (i = 0; i < encounterCount; i++)
-        TryAppendSpeciesToList(info->wildPokemon[i].species, speciesBuf, count, maxCount, seenSpecies);
+        TryAppendSpeciesToList(info->wildPokemon[i].species, info->wildPokemon[i].minLevel, info->wildPokemon[i].maxLevel, speciesBuf, minLevels, maxLevels, count, maxCount, seenSpecies);
 }

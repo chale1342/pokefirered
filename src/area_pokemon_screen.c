@@ -1,21 +1,24 @@
 #include "global.h"
 #include "gflib.h"
 #include "area_pokemon_screen.h"
+#include "characters.h"
 #include "data.h"
 #include "menu.h"
 #include "new_menu_helpers.h"
 #include "pokemon_icon.h"
 #include "region_map.h"
+#include "string_util.h"
 #include "strings.h"
 #include "wild_pokemon_area.h"
 #include "constants/songs.h"
 
-#define AREA_POKEMON_VISIBLE_ROWS 3
+#define AREA_POKEMON_VISIBLE_ROWS 5
+#define ROW_HEIGHT 20
 
 enum
 {
     WIN_TITLE,
-    WIN_PANEL,
+    WIN_LIST,
     WIN_COUNT
 };
 
@@ -24,6 +27,8 @@ struct AreaPokemonScreen
     MainCallback returnCallback;
     u16 bg0TilemapBuffer[BG_SCREEN_SIZE];
     u16 speciesList[NUM_SPECIES];
+    u8 minLevels[NUM_SPECIES];
+    u8 maxLevels[NUM_SPECIES];
     u16 mapsec;
     u16 speciesCount;
     u16 topIndex;
@@ -67,18 +72,18 @@ static const struct WindowTemplate sAreaPokemonWindowTemplates[] = {
     [WIN_TITLE] = {
         .bg = 0,
         .tilemapLeft = 1,
-        .tilemapTop = 2,
+        .tilemapTop = 1,
         .width = 28,
-        .height = 3,
+        .height = 2,
         .paletteNum = 15,
         .baseBlock = 1
     },
-    [WIN_PANEL] = {
+    [WIN_LIST] = {
         .bg = 0,
         .tilemapLeft = 1,
-        .tilemapTop = 5,
+        .tilemapTop = 4,
         .width = 28,
-        .height = 14,
+        .height = 15,
         .paletteNum = 15,
         .baseBlock = 0x39
     },
@@ -146,19 +151,22 @@ static bool8 SetupAreaPokemonScreen(void)
         sAreaPokemonScreen->speciesCount = BuildSpeciesListForEncounterMap(sAreaPokemonScreen->mapGroup,
                                                                            sAreaPokemonScreen->mapNum,
                                                                            sAreaPokemonScreen->speciesList,
+                                                                           sAreaPokemonScreen->minLevels,
+                                                                           sAreaPokemonScreen->maxLevels,
                                                                            ARRAY_COUNT(sAreaPokemonScreen->speciesList));
     }
     else
     {
         sAreaPokemonScreen->speciesCount = BuildSpeciesListForMapsec(sAreaPokemonScreen->mapsec,
                                                                      sAreaPokemonScreen->speciesList,
+                                                                     sAreaPokemonScreen->minLevels,
+                                                                     sAreaPokemonScreen->maxLevels,
                                                                      ARRAY_COUNT(sAreaPokemonScreen->speciesList));
     }
+    DrawStdWindowFrame(WIN_TITLE, FALSE);
+    DrawStdWindowFrame(WIN_LIST, FALSE);
     DrawAreaPokemonScreen();
-    PutWindowTilemap(WIN_TITLE);
-    PutWindowTilemap(WIN_PANEL);
-    CopyWindowToVram(WIN_TITLE, COPYWIN_FULL);
-    CopyWindowToVram(WIN_PANEL, COPYWIN_FULL);
+    CopyBgTilemapBufferToVram(0);
     ShowBg(0);
     return TRUE;
 }
@@ -221,63 +229,80 @@ static void DrawAreaPokemonScreen(void)
     u8 *countEnd;
 
     FillWindowPixelBuffer(WIN_TITLE, PIXEL_FILL(1));
-    DrawStdWindowFrame(WIN_TITLE, FALSE);
     if (sAreaPokemonScreen->useEncounterMap)
         StringCopy(areaName, sAreaPokemonScreen->title);
     else
         GetMapNameGeneric(areaName, sAreaPokemonScreen->mapsec);
-    AddTextPrinterParameterized(WIN_TITLE, FONT_NORMAL, areaName, 8, 4, 0, NULL);
+    AddTextPrinterParameterized(WIN_TITLE, FONT_NORMAL, areaName, 4, 1, 0, NULL);
     countEnd = ConvertIntToDecimalStringN(countText, sAreaPokemonScreen->speciesCount, STR_CONV_MODE_RIGHT_ALIGN, 3);
     StringCopy(countEnd, gText_PokedexPokemon);
-    AddTextPrinterParameterized(WIN_TITLE, FONT_SMALL, countText, 140, 8, 0, NULL);
+    AddTextPrinterParameterized(WIN_TITLE, FONT_NORMAL, countText, 140, 1, 0, NULL);
 
-    FillWindowPixelBuffer(WIN_PANEL, PIXEL_FILL(1));
-    DrawStdWindowFrame(WIN_PANEL, FALSE);
+    FillWindowPixelBuffer(WIN_LIST, PIXEL_FILL(1));
     PrintAreaPokemonRows();
-    AddTextPrinterParameterized(WIN_PANEL, FONT_SMALL, gText_AreaPokemonControls, 8, 92, 0, NULL);
+    {
+        static const u8 sControlsTextColor[] = {TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
+        FillWindowPixelRect(WIN_LIST, PIXEL_FILL(15), 0, 102, 224, 18);
+        AddTextPrinterParameterized3(WIN_LIST, FONT_NORMAL, 4, 104, sControlsTextColor, 0, gText_AreaPokemonControls);
+    }
     CopyWindowToVram(WIN_TITLE, COPYWIN_FULL);
-    CopyWindowToVram(WIN_PANEL, COPYWIN_FULL);
+    CopyWindowToVram(WIN_LIST, COPYWIN_FULL);
     CreateVisibleIcons();
 }
 
 static void PrintAreaPokemonRows(void)
 {
-    static const u8 sRowYCoords[AREA_POKEMON_VISIBLE_ROWS] = {4, 36, 68};
     u8 row;
 
     DestroyVisibleIcons();
     if (sAreaPokemonScreen->speciesCount == 0)
     {
-        AddTextPrinterParameterized(WIN_PANEL, FONT_NORMAL, gText_NoPokemonFound, 48, 44, 0, NULL);
+        AddTextPrinterParameterized(WIN_LIST, FONT_NORMAL, gText_NoPokemonFound, 48, 44, 0, NULL);
         return;
     }
 
     for (row = 0; row < AREA_POKEMON_VISIBLE_ROWS; row++)
     {
         u16 listIndex = sAreaPokemonScreen->topIndex + row;
+        u16 yPos = row * ROW_HEIGHT + 2;
 
         if (listIndex >= sAreaPokemonScreen->speciesCount)
             break;
 
         sAreaPokemonScreen->visibleSpecies[row] = sAreaPokemonScreen->speciesList[listIndex];
-        AddTextPrinterParameterized(WIN_PANEL, FONT_NORMAL, gSpeciesNames[sAreaPokemonScreen->visibleSpecies[row]], 48, sRowYCoords[row] + 12, 0, NULL);
+        AddTextPrinterParameterized(WIN_LIST, FONT_SMALL, gSpeciesNames[sAreaPokemonScreen->visibleSpecies[row]], 36, yPos + 4, 0, NULL);
+
+        if (sAreaPokemonScreen->minLevels[listIndex] != 0 || sAreaPokemonScreen->maxLevels[listIndex] != 0)
+        {
+            u8 levelText[16];
+            u8 *dst = StringCopy(levelText, gText_Lv);
+
+            dst = ConvertIntToDecimalStringN(dst, sAreaPokemonScreen->minLevels[listIndex], STR_CONV_MODE_LEFT_ALIGN, 3);
+            if (sAreaPokemonScreen->maxLevels[listIndex] != sAreaPokemonScreen->minLevels[listIndex])
+            {
+                *dst++ = CHAR_HYPHEN;
+                dst = ConvertIntToDecimalStringN(dst, sAreaPokemonScreen->maxLevels[listIndex], STR_CONV_MODE_LEFT_ALIGN, 3);
+            }
+            *dst = EOS;
+            AddTextPrinterParameterized(WIN_LIST, FONT_SMALL, levelText, 160, yPos + 4, 0, NULL);
+        }
     }
 }
 
 static void CreateVisibleIcons(void)
 {
-    static const s16 sIconYCoords[AREA_POKEMON_VISIBLE_ROWS] = {59, 91, 123};
     u8 row;
 
     for (row = 0; row < AREA_POKEMON_VISIBLE_ROWS; row++)
     {
         u16 species = sAreaPokemonScreen->visibleSpecies[row];
+        s16 yPos = 44 + row * ROW_HEIGHT;
 
         if (species == SPECIES_NONE)
             continue;
 
         SafeLoadMonIconPalette(species);
-        sAreaPokemonScreen->iconSpriteIds[row] = CreateMonIcon_HandleDeoxys(species, SpriteCallbackDummy, 36, sIconYCoords[row], 0, FALSE);
+        sAreaPokemonScreen->iconSpriteIds[row] = CreateMonIcon_HandleDeoxys(species, SpriteCallbackDummy, 20, yPos, 0, FALSE);
         gSprites[sAreaPokemonScreen->iconSpriteIds[row]].oam.priority = 0;
     }
 }
