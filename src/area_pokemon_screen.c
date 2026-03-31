@@ -296,7 +296,7 @@ static void CreateVisibleIcons(void)
     for (row = 0; row < AREA_POKEMON_VISIBLE_ROWS; row++)
     {
         u16 species = sAreaPokemonScreen->visibleSpecies[row];
-        s16 yPos = 44 + row * ROW_HEIGHT;
+        s16 yPos = 40 + row * ROW_HEIGHT;
 
         if (species == SPECIES_NONE)
             continue;
