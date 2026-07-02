@@ -150,6 +150,15 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysD;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysA;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysN;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_SSAnne;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bulbasaur;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Ivysaur;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Venusaur;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Charmander;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Charmeleon;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Charizard;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Squirtle;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wartortle;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Blastoise;
 
 
 const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM_OBJ_EVENT_GFX] = {
@@ -305,4 +314,13 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_DEOXYS_A]                 = &gObjectEventGraphicsInfo_DeoxysA,
     [OBJ_EVENT_GFX_DEOXYS_N]                 = &gObjectEventGraphicsInfo_DeoxysN,
     [OBJ_EVENT_GFX_SS_ANNE]                  = &gObjectEventGraphicsInfo_SSAnne,
+    [OBJ_EVENT_GFX_BULBASAUR]                = &gObjectEventGraphicsInfo_Bulbasaur,
+    [OBJ_EVENT_GFX_IVYSAUR]                  = &gObjectEventGraphicsInfo_Ivysaur,
+    [OBJ_EVENT_GFX_VENUSAUR]                 = &gObjectEventGraphicsInfo_Venusaur,
+    [OBJ_EVENT_GFX_CHARMANDER]               = &gObjectEventGraphicsInfo_Charmander,
+    [OBJ_EVENT_GFX_CHARMELEON]               = &gObjectEventGraphicsInfo_Charmeleon,
+    [OBJ_EVENT_GFX_CHARIZARD]                = &gObjectEventGraphicsInfo_Charizard,
+    [OBJ_EVENT_GFX_SQUIRTLE]                 = &gObjectEventGraphicsInfo_Squirtle,
+    [OBJ_EVENT_GFX_WARTORTLE]                = &gObjectEventGraphicsInfo_Wartortle,
+    [OBJ_EVENT_GFX_BLASTOISE]                = &gObjectEventGraphicsInfo_Blastoise,
 };

@@ -2923,3 +2923,5 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_SSAnne = {
     .images = sPicTable_SSAnne,
     .affineAnims = gDummySpriteAffineAnimTable,
 };
+
+#include "object_event_graphics_info_followers.h"
