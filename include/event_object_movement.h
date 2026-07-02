@@ -250,6 +250,7 @@ enum {
 };
 
 // Follower pokemon (ported from merrp/aarant pokeemerald followers)
+u8 GetDirectionToFace(s16 x1, s16 y1, s16 x2, s16 y2);
 struct Pokemon *GetFirstLiveMon(void);
 struct ObjectEvent *GetFollowerObject(void);
 void UpdateFollowingPokemon(void);

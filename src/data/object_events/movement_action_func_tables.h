@@ -8,6 +8,8 @@ bool8 MovementAction_ExitPokeball_Step1(struct ObjectEvent *, struct Sprite *);
 bool8 MovementAction_EnterPokeball_Step0(struct ObjectEvent *, struct Sprite *);
 bool8 MovementAction_EnterPokeball_Step1(struct ObjectEvent *, struct Sprite *);
 bool8 MovementAction_EnterPokeball_Step2(struct ObjectEvent *, struct Sprite *);
+static bool8 (*const sMovementActionFuncs_ExitPokeball[])(struct ObjectEvent *, struct Sprite *);
+static bool8 (*const sMovementActionFuncs_EnterPokeball[])(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceDownFast_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceUpFast_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceLeftFast_Step0(struct ObjectEvent *, struct Sprite *);
