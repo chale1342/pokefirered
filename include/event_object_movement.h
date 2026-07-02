@@ -233,4 +233,39 @@ u8 GetFishingBiteDirectionAnimNum(u8 direction);
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY);
 void ResetObjectEvents(void);
 
+// Values for the player's playerCopyableMovement field, i.e. indices
+// into gCopyPlayerMovementFuncs/gFollowPlayerMovementFuncs
+enum {
+    COPY_MOVE_NONE,
+    COPY_MOVE_FACE,
+    COPY_MOVE_WALK,
+    COPY_MOVE_WALK_FAST,
+    COPY_MOVE_WALK_FASTER,
+    COPY_MOVE_SLIDE,
+    COPY_MOVE_JUMP_IN_PLACE,
+    COPY_MOVE_JUMP,
+    COPY_MOVE_JUMP2,
+    COPY_MOVE_EMPTY_1,
+    COPY_MOVE_EMPTY_2,
+};
+
+// Follower pokemon (ported from merrp/aarant pokeemerald followers)
+struct Pokemon *GetFirstLiveMon(void);
+struct ObjectEvent *GetFollowerObject(void);
+void UpdateFollowingPokemon(void);
+void RemoveFollowingPokemon(void);
+void ClearObjectEventMovement(struct ObjectEvent *, struct Sprite *);
+void StartSpriteAnimInDirection(struct ObjectEvent *, struct Sprite *, u8 direction, u8 animNum);
+void MovementType_FollowPlayer(struct Sprite *);
+bool8 MovementType_FollowPlayer_Shadow(struct ObjectEvent *, struct Sprite *);
+bool8 MovementType_FollowPlayer_Active(struct ObjectEvent *, struct Sprite *);
+bool8 MovementType_FollowPlayer_Moving(struct ObjectEvent *, struct Sprite *);
+bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_Step(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_GoSpeed1(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_GoSpeed2(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_Slide(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_JumpInPlace(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+bool8 FollowablePlayerMovement_GoSpeed4(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
+
 #endif // GUARD_EVENT_OBJECT_MOVEMENT_H

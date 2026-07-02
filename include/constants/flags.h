@@ -24,6 +24,9 @@
 #define FLAG_TEMP_D      (TEMP_FLAGS_START + 0x0D)
 #define FLAG_TEMP_E      (TEMP_FLAGS_START + 0x0E)
 #define FLAG_TEMP_F      (TEMP_FLAGS_START + 0x0F)
+
+// Cleared on map load; set to keep the follower pokemon despawned
+#define FLAG_TEMP_HIDE_FOLLOWER FLAG_TEMP_E
 #define FLAG_TEMP_10     (TEMP_FLAGS_START + 0x10)
 
 // Used for obstacles (e.g. cut trees and rock smash rocks)

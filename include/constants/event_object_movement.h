@@ -83,7 +83,8 @@
 #define MOVEMENT_TYPE_RAISE_HAND_AND_JUMP              0x4E
 #define MOVEMENT_TYPE_RAISE_HAND_AND_SWIM              0x4F
 #define MOVEMENT_TYPE_WANDER_AROUND_SLOWER             0x50
-#define MOVEMENT_TYPES_COUNT                           0x51
+#define MOVEMENT_TYPE_FOLLOW_PLAYER                    0x51
+#define MOVEMENT_TYPES_COUNT                           0x52
 
 #define MOVEMENT_ACTION_FACE_DOWN                       0x0
 #define MOVEMENT_ACTION_FACE_UP                         0x1
@@ -258,6 +259,8 @@
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_UP     0xA7
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_LEFT   0xA8
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_RIGHT  0xA9
+#define MOVEMENT_ACTION_EXIT_POKEBALL                   0xAA
+#define MOVEMENT_ACTION_ENTER_POKEBALL                  0xAB
 
 #define MOVEMENT_ACTION_STEP_END 0xFE
 #define MOVEMENT_ACTION_NONE     0xFF

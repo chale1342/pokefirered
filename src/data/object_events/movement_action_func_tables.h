@@ -3,6 +3,11 @@ static bool8 MovementAction_FaceUp_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceLeft_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceRight_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_PauseSpriteAnim(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_ExitPokeball_Step0(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_ExitPokeball_Step1(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_EnterPokeball_Step0(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_EnterPokeball_Step1(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_EnterPokeball_Step2(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceDownFast_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceUpFast_Step0(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementAction_FaceLeftFast_Step0(struct ObjectEvent *, struct Sprite *);
@@ -633,6 +638,20 @@ static bool8 (*const *const sMovementActionFuncs[])(struct ObjectEvent *, struct
     [MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_UP]        = sMovementActionFuncs_JumpSpecialWithEffectUp,
     [MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_LEFT]      = sMovementActionFuncs_JumpSpecialWithEffectLeft,
     [MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_RIGHT]     = sMovementActionFuncs_JumpSpecialWithEffectRight,
+    [MOVEMENT_ACTION_EXIT_POKEBALL]                      = sMovementActionFuncs_ExitPokeball,
+    [MOVEMENT_ACTION_ENTER_POKEBALL]                     = sMovementActionFuncs_EnterPokeball,
+};
+
+static bool8 (*const sMovementActionFuncs_ExitPokeball[])(struct ObjectEvent *, struct Sprite *) = {
+    MovementAction_ExitPokeball_Step0,
+    MovementAction_ExitPokeball_Step1,
+    MovementAction_PauseSpriteAnim,
+};
+
+static bool8 (*const sMovementActionFuncs_EnterPokeball[])(struct ObjectEvent *, struct Sprite *) = {
+    MovementAction_EnterPokeball_Step0,
+    MovementAction_EnterPokeball_Step1,
+    MovementAction_EnterPokeball_Step2,
 };
 
 static bool8 (*const sMovementActionFuncs_FaceDown[])(struct ObjectEvent *, struct Sprite *) = {

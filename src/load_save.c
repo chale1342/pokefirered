@@ -10,6 +10,7 @@
 #include "berry_powder.h"
 #include "overworld.h"
 #include "quest_log.h"
+#include "constants/event_objects.h"
 
 #define SAVEBLOCK_MOVE_RANGE    128
 
@@ -178,7 +179,12 @@ void SaveObjectEvents(void)
     int i;
 
     for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
         gSaveBlock1Ptr->objectEvents[i] = gObjectEvents[i];
+        // Save the follower as inactive; it respawns from the party on load
+        if (gObjectEvents[i].localId == OBJ_EVENT_ID_FOLLOWER)
+            gSaveBlock1Ptr->objectEvents[i].active = FALSE;
+    }
 }
 
 void LoadObjectEvents(void)
