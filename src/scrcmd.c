@@ -34,7 +34,10 @@
 #include "field_effect.h"
 #include "fieldmap.h"
 #include "field_door.h"
+#include "event_scripts.h"
+#include "follower_helper.h"
 #include "constants/event_objects.h"
+#include "constants/event_object_movement.h"
 #include "constants/maps.h"
 #include "constants/sound.h"
 
@@ -84,6 +87,7 @@ bool8 ScrCmd_nop1(struct ScriptContext * ctx)
 
 bool8 ScrCmd_end(struct ScriptContext * ctx)
 {
+    FlagClear(FLAG_SAFE_FOLLOWER_MOVEMENT);
     StopScript(ctx);
     return FALSE;
 }
@@ -121,6 +125,13 @@ bool8 ScrCmd_callnative(struct ScriptContext * ctx)
     void (*func )(void) = ((void (*)(void))ScriptReadWord(ctx));
     func();
     return FALSE;
+}
+
+// Like callnative, but the function is passed the script context
+bool8 ScrCmd_callfunc(struct ScriptContext * ctx)
+{
+    u32 func = ScriptReadWord(ctx);
+    return ((ScrCmdFunc) func)(ctx);
 }
 
 bool8 ScrCmd_waitstate(struct ScriptContext * ctx)
@@ -260,6 +271,7 @@ bool8 ScrCmd_returnram(struct ScriptContext * ctx)
 
 bool8 ScrCmd_endram(struct ScriptContext * ctx)
 {
+    FlagClear(FLAG_SAFE_FOLLOWER_MOVEMENT);
     ClearRamScript();
     StopScript(ctx);
     return TRUE;
@@ -979,13 +991,43 @@ bool8 ScrCmd_fadeinbgm(struct ScriptContext * ctx)
     return FALSE;
 }
 
+// Put the follower Pokemon (if present and visible) into its Poke Ball.
+// Returns the follower object, or NULL if there was nothing to hide.
+static struct ObjectEvent * ScriptHideFollower(void)
+{
+    struct ObjectEvent *obj = GetFollowerObject();
+
+    if (obj == NULL || obj->invisible)
+        return NULL;
+
+    ClearObjectEventMovement(obj, &gSprites[obj->spriteId]);
+    gSprites[obj->spriteId].animCmdIndex = 0; // Reset start frame of animation
+    // Note: ScriptMovement_ returns TRUE on error
+    if (ScriptMovement_StartObjectMovementScript(obj->localId, obj->mapNum, obj->mapGroup, EnterPokeballMovement))
+        return NULL;
+    return obj;
+}
+
 bool8 ScrCmd_applymovement(struct ScriptContext * ctx)
 {
     u16 localId = VarGet(ScriptReadHalfword(ctx));
-    const void *movementScript = (const void *)ScriptReadWord(ctx);
+    const u8 *movementScript = (const u8 *)ScriptReadWord(ctx);
+    struct ObjectEvent *objEvent;
 
+    // When applying script movements to follower, it may have frozen animation that must be cleared
+    if (localId == OBJ_EVENT_ID_FOLLOWER && (objEvent = GetFollowerObject()) && objEvent->frozen)
+    {
+        ClearObjectEventMovement(objEvent, &gSprites[objEvent->spriteId]);
+        gSprites[objEvent->spriteId].animCmdIndex = 0; // Reset start frame of animation
+    }
     ScriptMovement_StartObjectMovementScript(localId, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, movementScript);
     sMovingNpcId = localId;
+    if (localId != OBJ_EVENT_ID_FOLLOWER
+        && !FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT)
+        && (movementScript < Common_Movement_FollowerSafeStart || movementScript > Common_Movement_FollowerSafeEnd))
+    {
+        ScriptHideFollower();
+    }
     return FALSE;
 }
 
@@ -1003,7 +1045,16 @@ bool8 ScrCmd_applymovementat(struct ScriptContext * ctx)
 
 static bool8 WaitForMovementFinish(void)
 {
-    return ScriptMovement_IsObjectMovementFinished(sMovingNpcId, sMovingNpcMapNum, sMovingNpcMapGroup);
+    if (ScriptMovement_IsObjectMovementFinished(sMovingNpcId, sMovingNpcMapNum, sMovingNpcMapGroup))
+    {
+        struct ObjectEvent *objEvent = GetFollowerObject();
+        // If the follower is still entering the pokeball, wait for it to finish too.
+        // This prevents a `release` after this script command from getting the follower stuck in an intermediate state
+        if (sMovingNpcId != OBJ_EVENT_ID_FOLLOWER && objEvent && ObjectEventGetHeldMovementActionId(objEvent) == MOVEMENT_ACTION_ENTER_POKEBALL)
+            return ScriptMovement_IsObjectMovementFinished(objEvent->localId, objEvent->mapNum, objEvent->mapGroup);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 bool8 ScrCmd_waitmovement(struct ScriptContext * ctx)
@@ -1199,12 +1250,17 @@ bool8 ScrCmd_lockall(struct ScriptContext * ctx)
     }
     else
     {
+        struct ObjectEvent *followerObj = GetFollowerObject();
         FreezeObjects_WaitForPlayer();
         SetupNativeScript(ctx, IsFreezePlayerFinished);
+        if (FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT) && followerObj) // Unfreeze follower object (conditionally)
+            UnfreezeObjectEvent(followerObj);
         return TRUE;
     }
 }
 
+// lock freezes all object events except the player, follower, and the selected object immediately.
+// The player and selected object are frozen after waiting for their current movement to finish.
 bool8 ScrCmd_lock(struct ScriptContext * ctx)
 {
     if (IsUpdateLinkStateCBActive())
@@ -1213,16 +1269,22 @@ bool8 ScrCmd_lock(struct ScriptContext * ctx)
     }
     else
     {
+        struct ObjectEvent *followerObj = GetFollowerObject();
         if (gObjectEvents[gSelectedObjectEvent].active)
         {
             FreezeObjects_WaitForPlayerAndSelected();
             SetupNativeScript(ctx, IsFreezeSelectedObjectAndPlayerFinished);
+            // follower is being talked to; keep it frozen
+            if (gObjectEvents[gSelectedObjectEvent].localId == OBJ_EVENT_ID_FOLLOWER)
+                followerObj = NULL;
         }
         else
         {
             FreezeObjects_WaitForPlayer();
             SetupNativeScript(ctx, IsFreezePlayerFinished);
         }
+        if (followerObj) // Unfreeze follower object
+            UnfreezeObjectEvent(followerObj);
         return TRUE;
     }
 }
@@ -1230,6 +1292,11 @@ bool8 ScrCmd_lock(struct ScriptContext * ctx)
 bool8 ScrCmd_releaseall(struct ScriptContext * ctx)
 {
     u8 playerObjectId;
+    struct ObjectEvent *followerObject = GetFollowerObject();
+
+    // Release follower from movement iff it exists and is in the shadowing state
+    if (followerObject && gSprites[followerObject->spriteId].data[1] == 0)
+        ClearObjectEventMovement(followerObject, &gSprites[followerObject->spriteId]);
 
     HideFieldMessageBox();
     playerObjectId = GetObjectEventIdByLocalIdAndMap(LOCALID_PLAYER, 0, 0);
@@ -1242,6 +1309,11 @@ bool8 ScrCmd_releaseall(struct ScriptContext * ctx)
 bool8 ScrCmd_release(struct ScriptContext * ctx)
 {
     u8 playerObjectId;
+    struct ObjectEvent *followerObject = GetFollowerObject();
+
+    // Release follower from movement iff it exists and is in the shadowing state
+    if (followerObject && gSprites[followerObject->spriteId].data[1] == 0)
+        ClearObjectEventMovement(followerObject, &gSprites[followerObject->spriteId]);
 
     HideFieldMessageBox();
     if (gObjectEvents[gSelectedObjectEvent].active)
@@ -1608,6 +1680,16 @@ bool8 ScrCmd_bufferleadmonspeciesname(struct ScriptContext * ctx)
     u8 partyIndex = GetLeadMonIndex();
     u32 species = GetMonData(&gPlayerParty[partyIndex], MON_DATA_SPECIES, NULL);
     StringCopy(dest, gSpeciesNames[species]);
+    return FALSE;
+}
+
+// Buffers the nickname of the first non-fainted party mon (i.e. the follower)
+bool8 ScrFunc_bufferlivemonnickname(struct ScriptContext * ctx)
+{
+    u8 stringVarIndex = ScriptReadByte(ctx);
+
+    GetMonData(GetFirstLiveMon(), MON_DATA_NICKNAME, sScriptStringVars[stringVarIndex]);
+    StringGet_Nickname(sScriptStringVars[stringVarIndex]);
     return FALSE;
 }
 
@@ -2081,6 +2163,15 @@ bool8 ScrCmd_playmoncry(struct ScriptContext * ctx)
     return FALSE;
 }
 
+// Plays the cry of the first non-fainted party mon (i.e. the follower)
+bool8 ScrFunc_playfirstmoncry(struct ScriptContext * ctx)
+{
+    u16 species = GetMonData(GetFirstLiveMon(), MON_DATA_SPECIES);
+
+    PlayCry_Script(species, 0);
+    return FALSE;
+}
+
 bool8 ScrCmd_waitmoncry(struct ScriptContext * ctx)
 {
     SetupNativeScript(ctx, IsCryFinished);
@@ -2248,4 +2339,28 @@ bool8 ScrCmd_setmonmetlocation(struct ScriptContext * ctx)
     if (partyIndex < PARTY_SIZE)
         SetMonData(&gPlayerParty[partyIndex], MON_DATA_MET_LOCATION, &location);
     return FALSE;
+}
+
+// Script command (see the `hidefollower` macro): hides the follower Pokemon
+// in its Poke Ball; if `wait` is nonzero, waits for the animation to finish.
+bool8 ScrFunc_hidefollower(struct ScriptContext * ctx)
+{
+    bool16 wait = VarGet(ScriptReadHalfword(ctx));
+    struct ObjectEvent *obj;
+
+    if ((obj = ScriptHideFollower()) != NULL && wait)
+    {
+        sMovingNpcId = obj->localId;
+        sMovingNpcMapGroup = obj->mapGroup;
+        sMovingNpcMapNum = obj->mapNum;
+        SetupNativeScript(ctx, WaitForMovementFinish);
+    }
+
+    // Just in case, prevent `applymovement`
+    // from hiding the follower again
+    if (obj)
+        FlagSet(FLAG_SAFE_FOLLOWER_MOVEMENT);
+
+    // execute next script command with no delay
+    return TRUE;
 }

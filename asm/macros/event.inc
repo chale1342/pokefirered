@@ -1633,6 +1633,13 @@
 	.2byte \quantity
 	.endm
 
+	@ Like callnative, but the function is passed the script context
+	@ so it can read arguments that follow this command.
+	.macro callfunc func:req
+	.byte 0xd5
+	.4byte \func
+	.endm
+
 
 @ Supplementary
 
@@ -1855,4 +1862,11 @@
 	setvar VAR_0x8005, \level
 	setvar VAR_0x8006, \item
 	special CreateEnemyEventMon
+	.endm
+
+	@ Hide any follower Pokemon if present, putting it into its Poke Ball;
+	@ by default waits for its movement to finish
+	.macro hidefollower wait=1
+	callfunc ScrFunc_hidefollower
+	.2byte \wait
 	.endm
