@@ -1585,7 +1585,9 @@
 #define SPECIAL_FLAGS_START           0x4000
 #define FLAG_DONT_SHOW_MAP_NAME_POPUP (SPECIAL_FLAGS_START + 0x0)
 #define FLAG_DONT_TRANSITION_MUSIC    (SPECIAL_FLAGS_START + 0x1)
-// FLAG_SPECIAL_FLAG_0x4002 - 0x407F also exist and are unused
+// When set, `applymovement` does not hide the follower Pokemon
+#define FLAG_SAFE_FOLLOWER_MOVEMENT   (SPECIAL_FLAGS_START + 0x2)
+// FLAG_SPECIAL_FLAG_0x4003 - 0x407F also exist and are unused
 #define SPECIAL_FLAGS_END             (SPECIAL_FLAGS_START + 0x7F)
 
 #endif // GUARD_CONSTANTS_FLAGS_H

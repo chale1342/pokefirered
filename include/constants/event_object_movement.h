@@ -258,6 +258,10 @@
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_UP     0xA7
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_LEFT   0xA8
 #define MOVEMENT_ACTION_JUMP_SPECIAL_WITH_EFFECT_RIGHT  0xA9
+// Follower Pokemon actions (implemented by the core follower port
+// in src/event_object_movement.c; names/order must match)
+#define MOVEMENT_ACTION_EXIT_POKEBALL                   0xAA
+#define MOVEMENT_ACTION_ENTER_POKEBALL                  0xAB
 
 #define MOVEMENT_ACTION_STEP_END 0xFE
 #define MOVEMENT_ACTION_NONE     0xFF
