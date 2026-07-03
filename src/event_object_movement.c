@@ -4997,8 +4997,8 @@ bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *objectEvent, struct Spri
 {
     if (!objectEvent->singleMovementActive)
     {
-        // walk in place
-        ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection));
+        // stand still, facing the same direction
+        ObjectEventSetSingleMovement(objectEvent, sprite, GetFaceDirectionMovementAction(objectEvent->facingDirection));
         sprite->data[1] = 1;
         objectEvent->singleMovementActive = TRUE;
         return TRUE;
