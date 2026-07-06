@@ -1941,10 +1941,11 @@ void UpdateFollowingPokemon(void)
 
     // Don't spawn a follower if:
     // 1. The lead party mon has no follower graphics
-    // 2. The map is indoors and the follower graphics are larger than 32x32
+    // 2. The map is indoors (follower is buggy in tight rooms and shows an
+    //    NPC-icon placeholder, e.g. the last mon in Oak's lab)
     // 3. FLAG_TEMP_HIDE_FOLLOWER is set
     if (!GetFollowerInfo(&species, &shiny)
-     || (gMapHeader.mapType == MAP_TYPE_INDOOR && GetObjectEventGraphicsInfo(FollowerSpeciesGraphicsId(species))->oam->size > ST_OAM_SIZE_2)
+     || IsMapTypeIndoors(gMapHeader.mapType)
      || FlagGet(FLAG_TEMP_HIDE_FOLLOWER))
     {
         RemoveFollowingPokemon();
@@ -4972,6 +4973,29 @@ bool8 MovementType_FollowPlayer_Active(struct ObjectEvent *objectEvent, struct S
         objectEvent->singleMovementActive = TRUE;
         sprite->data[1] = 2; // movement action sets state to 0
         return TRUE;
+    }
+    // Catch-up guard: the follower is meant to sit on the player's previous
+    // tile (its breadcrumb). A ledge jump moves the player 2 tiles at once, so
+    // if the player then stops or turns before the follower jumps the ledge,
+    // the follower can strand itself and walk through walls chasing sideways.
+    // Snap it back onto the breadcrumb once it drifts too far to recover on its
+    // own (>2 tiles, or >1 while the player is idle since idle won't advance it).
+    // ponytail: warp-on-strand safety net; swap for a smooth walk-back if the
+    // occasional snap looks bad.
+    if (!objectEvent->singleMovementActive)
+    {
+        struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+        s16 dx = objectEvent->currentCoords.x - player->previousCoords.x;
+        s16 dy = objectEvent->currentCoords.y - player->previousCoords.y;
+        s16 gap = (dx < 0 ? -dx : dx) + (dy < 0 ? -dy : dy);
+        u8 copyable = PlayerGetCopyableMovement();
+        bool8 playerIdle = (copyable == COPY_MOVE_NONE || copyable == COPY_MOVE_FACE);
+
+        if (gap > 2 || (playerIdle && gap > 1))
+        {
+            MoveObjectEventToMapCoords(objectEvent, player->previousCoords.x, player->previousCoords.y);
+            objectEvent->triggerGroundEffectsOnMove = FALSE;
+        }
     }
     return gFollowPlayerMovementFuncs[PlayerGetCopyableMovement()](objectEvent, sprite, GetPlayerMovementDirection(), NULL);
 }
