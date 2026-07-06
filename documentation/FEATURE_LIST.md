@@ -320,10 +320,14 @@ make -j$(nproc)
 
 ## Version History
 
+This project uses semantic versioning (MAJOR.MINOR.PATCH).
+
+- **v3.0.0**: Region map Pokemon area browser, starter-line overworld followers, skippable Controls Guide and Pikachu intro, title screen art fixes (Charizard belly corruption, ENHANCED logo legibility)
+- **v2.0**: Physical/Special split icons, dual-mode EXP Share, FASTER text speed and AUTO SCROLL options, complete feature documentation
 - **v1.5**: Mew encounter, options menu pagination, enhanced features
 - **v1.0**: Initial enhanced release with Exp. Share, battle speed, indoor running
 - **Pre-1.0**: Progressive feature additions and testing
 
 ---
 
-**Last Updated**: November 7, 2025
+**Last Updated**: July 6, 2026
