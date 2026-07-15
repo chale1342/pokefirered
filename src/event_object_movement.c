@@ -7464,7 +7464,19 @@ static u8 LoadFillColorPalette(u16 color, u16 paletteTag, struct Sprite *sprite)
 static void ObjectEventSetPokeballGfx(struct ObjectEvent *objEvent)
 {
     // ponytail: always a plain pokeball; merrp matches the mon's own ball gfx
+    u8 i;
+
     ObjectEventSetGraphicsId(objEvent, OBJ_EVENT_GFX_ITEM_BALL);
+    // SetGraphicsId only points the sprite at the item ball's fixed palette
+    // slot; that palette is only loaded when a map spawns an item ball, so
+    // load it dynamically like FollowerLoadPalette does for the mon
+    i = FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_NPC_WHITE);
+    if (i != 0xFF)
+        UpdateSpritePalette(&sObjectEventSpritePalettes[i], &gSprites[objEvent->spriteId]);
+    // The sprite still carries the mon's walking animNum, which indexes past
+    // the item ball's single-entry inanimate anim table and cycles garbage
+    // tiles; pin it to the ball's only valid anim
+    StartSpriteAnim(&gSprites[objEvent->spriteId], ANIM_STAY_STILL);
 }
 
 #define sDuration   data[3]
@@ -7530,6 +7542,11 @@ bool8 MovementAction_ExitPokeball_Step1(struct ObjectEvent *objectEvent, struct 
     else if (sprite->sDuration == animStepFrame)
     {
         FollowerSetGraphics(objectEvent, FollowerGraphicsIdToSpecies(sFollowerGraphicsId), sFollowerShiny);
+        // Resume the directional anim that ObjectEventSetPokeballGfx pinned
+        // to the ball's stay-still anim
+        StartSpriteAnim(sprite, (sprite->sSpeedFlip & 1)
+                                ? GetMoveDirectionFastestAnimNum(objectEvent->facingDirection)
+                                : GetJumpSpecialDirectionAnimNum(objectEvent->facingDirection));
         LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
         // Initialize affine animation
         sprite->affineAnims = sAffineAnims_PokeballFollower;
