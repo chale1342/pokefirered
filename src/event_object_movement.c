@@ -7464,13 +7464,15 @@ static u8 LoadFillColorPalette(u16 color, u16 paletteTag, struct Sprite *sprite)
 static void ObjectEventSetPokeballGfx(struct ObjectEvent *objEvent)
 {
     // ponytail: always a plain pokeball; merrp matches the mon's own ball gfx
+    const struct ObjectEventGraphicsInfo *info;
     u8 i;
 
     ObjectEventSetGraphicsId(objEvent, OBJ_EVENT_GFX_ITEM_BALL);
     // SetGraphicsId only points the sprite at the item ball's fixed palette
     // slot; that palette is only loaded when a map spawns an item ball, so
     // load it dynamically like FollowerLoadPalette does for the mon
-    i = FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_NPC_WHITE);
+    info = GetObjectEventGraphicsInfo(objEvent->graphicsId);
+    i = FindObjectEventPaletteIndexByTag(info->paletteTag);
     if (i != 0xFF)
         UpdateSpritePalette(&sObjectEventSpritePalettes[i], &gSprites[objEvent->spriteId]);
     // The sprite still carries the mon's walking animNum, which indexes past
