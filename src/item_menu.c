@@ -299,8 +299,8 @@ static const struct ScrollArrowsTemplate sPocketSwitchArrowPairTemplate = {
 };
 
 static const u8 sBlit_SelectButton[] = INCBIN_U8("graphics/interface/select_button.4bpp");
-// Use the same original button graphic for the hold registration as requested
-static const u8 sBlit_SelectButtonHold[] = INCBIN_U8("graphics/interface/select_button.4bpp");
+// Recolored (light blue) variant so the hold-registered item is visually distinct from the tap-registered one
+static const u8 sBlit_SelectButtonHold[] = INCBIN_U8("graphics/interface/select_button_hold.4bpp");
 
 #define tSwitchDir     data[11]
 #define tSwitchCounter data[12]
@@ -719,10 +719,15 @@ static void BagListMenuItemPrintFunc(u8 windowId, u32 itemId, u8 y)
         }
         else
         {
-            if ((gSaveBlock1Ptr->registeredItem != ITEM_NONE && gSaveBlock1Ptr->registeredItem == bagItemId)
-             || (gSaveBlock1Ptr->registeredLongItem != ITEM_NONE && gSaveBlock1Ptr->registeredLongItem == bagItemId))
+            if (gSaveBlock1Ptr->registeredItem != ITEM_NONE && gSaveBlock1Ptr->registeredItem == bagItemId)
             {
+                // Primary (tap Select to use) — original red button
                 BlitBitmapToWindow(windowId, sBlit_SelectButton, 0x70, y, 0x18, 0x10);
+            }
+            else if (gSaveBlock1Ptr->registeredLongItem != ITEM_NONE && gSaveBlock1Ptr->registeredLongItem == bagItemId)
+            {
+                // Secondary (hold Select to use) — light blue button
+                BlitBitmapToWindow(windowId, sBlit_SelectButtonHold, 0x70, y, 0x18, 0x10);
             }
         }
     }
