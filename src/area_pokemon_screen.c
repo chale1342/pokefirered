@@ -5,15 +5,22 @@
 #include "data.h"
 #include "menu.h"
 #include "new_menu_helpers.h"
+#include "pokedex.h"
+#include "pokemon.h"
 #include "pokemon_icon.h"
+#include "pokemon_storage_system.h"
 #include "region_map.h"
 #include "string_util.h"
 #include "strings.h"
 #include "wild_pokemon_area.h"
+#include "constants/items.h"
 #include "constants/songs.h"
 
 #define AREA_POKEMON_VISIBLE_ROWS 5
 #define ROW_HEIGHT 20
+#define CAUGHT_ICON_SIZE 8
+#define FIRST_BALL_ITEM ITEM_MASTER_BALL
+#define LAST_BALL_ITEM ITEM_PREMIER_BALL
 
 enum
 {
@@ -29,6 +36,7 @@ struct AreaPokemonScreen
     u16 speciesList[NUM_SPECIES];
     u8 minLevels[NUM_SPECIES];
     u8 maxLevels[NUM_SPECIES];
+    u8 caughtBalls[NUM_SPECIES];
     u16 mapsec;
     u16 speciesCount;
     u16 topIndex;
@@ -42,6 +50,24 @@ struct AreaPokemonScreen
     u8 title[32];
 };
 
+// 8x8 icons for each ball type, in item id order (ITEM_MASTER_BALL..ITEM_PREMIER_BALL)
+static const u8 sBallIcons_Gfx[] = INCBIN_U8("graphics/interface/area_pokemon_ball_icons.4bpp");
+
+// Loaded over indices 5-14 of the list window's palette (unused by its text and frame),
+// giving the ball icons colors the standard text palette lacks
+static const u16 sBallIconPalette[] = {
+    RGB(31, 28, 4),   // 5: yellow
+    RGB(4, 19, 1),    // 6: green
+    RGB(18, 8, 25),   // 7: purple
+    RGB(6, 10, 25),   // 8: blue
+    RGB(30, 16, 22),  // 9: pink
+    RGB(9, 24, 28),   // 10: cyan
+    RGB(4, 4, 4),     // 11: black
+    RGB(30, 18, 6),   // 12: orange
+    RGB(15, 18, 6),   // 13: olive
+    RGB(18, 18, 18),  // 14: gray
+};
+
 static EWRAM_DATA struct AreaPokemonScreen *sAreaPokemonScreen = NULL;
 
 static void CB2_InitAreaPokemonScreen(void);
@@ -53,6 +79,7 @@ static void DrawAreaPokemonScreen(void);
 static void DestroyVisibleIcons(void);
 static void CreateVisibleIcons(void);
 static void PrintAreaPokemonRows(void);
+static void BuildCaughtBallList(void);
 static void StartExitAreaPokemonScreen(void);
 static bool8 IsExitAreaPokemonScreenComplete(void);
 
@@ -163,6 +190,8 @@ static bool8 SetupAreaPokemonScreen(void)
                                                                      sAreaPokemonScreen->maxLevels,
                                                                      ARRAY_COUNT(sAreaPokemonScreen->speciesList));
     }
+    BuildCaughtBallList();
+    LoadPalette(sBallIconPalette, BG_PLTT_ID(15) + 5, sizeof(sBallIconPalette));
     DrawStdWindowFrame(WIN_TITLE, FALSE);
     DrawStdWindowFrame(WIN_LIST, FALSE);
     DrawAreaPokemonScreen();
@@ -250,6 +279,49 @@ static void DrawAreaPokemonScreen(void)
     CreateVisibleIcons();
 }
 
+static void SetCaughtBallForSpecies(u16 species, u16 ball)
+{
+    u16 i;
+
+    if (ball < FIRST_BALL_ITEM || ball > LAST_BALL_ITEM)
+        return;
+
+    for (i = 0; i < sAreaPokemonScreen->speciesCount; i++)
+    {
+        if (sAreaPokemonScreen->speciesList[i] == species)
+        {
+            if (sAreaPokemonScreen->caughtBalls[i] == ITEM_NONE)
+                sAreaPokemonScreen->caughtBalls[i] = ball;
+            return;
+        }
+    }
+}
+
+// The pokedex only records that a species was caught, not what ball was used, so
+// scan the party and boxes for a mon of each listed species. Species the player
+// no longer has (traded, evolved, released) fall back to a plain poke ball.
+static void BuildCaughtBallList(void)
+{
+    u16 i;
+    u8 box, pos;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+        if (species != SPECIES_NONE && species != SPECIES_EGG)
+            SetCaughtBallForSpecies(species, GetMonData(&gPlayerParty[i], MON_DATA_POKEBALL));
+    }
+    for (box = 0; box < TOTAL_BOXES_COUNT; box++)
+    {
+        for (pos = 0; pos < IN_BOX_COUNT; pos++)
+        {
+            u16 species = GetBoxMonDataAt(box, pos, MON_DATA_SPECIES_OR_EGG);
+            if (species != SPECIES_NONE && species != SPECIES_EGG)
+                SetCaughtBallForSpecies(species, GetBoxMonDataAt(box, pos, MON_DATA_POKEBALL));
+        }
+    }
+}
+
 static void PrintAreaPokemonRows(void)
 {
     u8 row;
@@ -285,6 +357,16 @@ static void PrintAreaPokemonRows(void)
             }
             *dst = EOS;
             AddTextPrinterParameterized(WIN_LIST, FONT_SMALL, levelText, 160, yPos + 4, 0, NULL);
+        }
+
+        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(sAreaPokemonScreen->visibleSpecies[row]), FLAG_GET_CAUGHT))
+        {
+            u16 ball = sAreaPokemonScreen->caughtBalls[listIndex];
+
+            if (ball == ITEM_NONE)
+                ball = ITEM_POKE_BALL;
+            BlitBitmapToWindow(WIN_LIST, &sBallIcons_Gfx[(ball - FIRST_BALL_ITEM) * TILE_SIZE_4BPP],
+                               204, yPos + 6, CAUGHT_ICON_SIZE, CAUGHT_ICON_SIZE);
         }
     }
 }
