@@ -344,6 +344,7 @@ struct SaveBlock2
               u16 optionsExpShare:1; // Exp. Share toggle (0 = off, 1 = on)
               u16 optionsAutoRun:1; // Auto Run toggle (0 = off, 1 = on)
               u16 optionsTextMode:1; // Auto-scroll text (0 = manual, 1 = auto)
+              u16 optionsNicknamePromptOff:1; // Skip nickname prompts (0 = ask, 1 = skip)
     /*0x018*/ struct Pokedex pokedex;
     /*0x090*/ u8 filler_90[0x8];
     /*0x098*/ struct Time localTimeOffset;

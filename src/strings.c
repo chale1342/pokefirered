@@ -10,6 +10,10 @@ ALIGNED(4) const u8 gText_AutoScroll[] = _("AUTO SCROLL");
 ALIGNED(4) const u8 gText_AutoScrollOff[] = _("OFF");
 ALIGNED(4) const u8 gText_AutoScrollOn[] = _("ON");
 
+ALIGNED(4) const u8 gText_NicknamePrompt[] = _("NICKNAME");
+ALIGNED(4) const u8 gText_NicknamePromptAsk[] = _("ASK");
+ALIGNED(4) const u8 gText_NicknamePromptSkip[] = _("SKIP");
+
 // Dynamic Level Scaling option menu strings
 const u8 gText_DynamicLevelScaling[] = _("DYNAMIC LEVEL");
 const u8 gText_DynamicLevelScalingOff[] = _("OFF");

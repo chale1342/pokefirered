@@ -86,8 +86,10 @@ BattleScript_TryPrintCaughtMonInfo:
 	setbyte gBattleCommunication, 0
 	displaydexinfo
 BattleScript_TryNicknameCaughtMon::
+	jumpifnicknamedisabled BattleScript_SkipNicknameAsk
 	printstring STRINGID_GIVENICKNAMECAPTURED
 	waitstate
+BattleScript_SkipNicknameAsk::
 	setbyte gBattleCommunication, 0
 	trygivecaughtmonnick BattleScript_GiveCaughtMonEnd
 	givecaughtmon

@@ -4,6 +4,9 @@ extern const u8 gText_AutoRunOff[];
 extern const u8 gText_AutoScroll[];
 extern const u8 gText_AutoScrollOff[];
 extern const u8 gText_AutoScrollOn[];
+extern const u8 gText_NicknamePrompt[];
+extern const u8 gText_NicknamePromptAsk[];
+extern const u8 gText_NicknamePromptSkip[];
 #ifndef GUARD_STRINGS_H
 #define GUARD_STRINGS_H
 

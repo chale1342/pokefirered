@@ -1940,6 +1940,11 @@ static void CB2_EggHatch_1(void)
             sEggHatchData->CB2_state++;
         break;
     case 8:
+        if (gSaveBlock2Ptr->optionsNicknamePromptOff)
+        {
+            sEggHatchData->CB2_state = 11;
+            break;
+        }
         DayCare_GetMonNickname(&gPlayerParty[sEggHatchData->eggPartyID], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_NickHatchPrompt);
         EggHatchPrintMessage(sEggHatchData->windowId, gStringVar4, 0, 2, 1);

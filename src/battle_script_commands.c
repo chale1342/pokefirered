@@ -311,6 +311,7 @@ static void Cmd_subattackerhpbydmg(void);
 static void Cmd_removeattackerstatus1(void);
 static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
+static void Cmd_jumpifnicknamedisabled(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -562,6 +563,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removeattackerstatus1,                   //0xF5
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
+    Cmd_jumpifnicknamedisabled,                  //0xF8
 };
 
 struct StatFractions
@@ -9828,6 +9830,11 @@ static void Cmd_trygivecaughtmonnick(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
+        if (gSaveBlock2Ptr->optionsNicknamePromptOff)
+        {
+            gBattleCommunication[MULTIUSE_STATE] = 4;
+            break;
+        }
         HandleBattleWindow(23, 8, 29, 13, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
         gBattleCommunication[MULTIUSE_STATE]++;
@@ -9897,6 +9904,14 @@ static void Cmd_trygivecaughtmonnick(void)
             gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
         break;
     }
+}
+
+static void Cmd_jumpifnicknamedisabled(void)
+{
+    if (gSaveBlock2Ptr->optionsNicknamePromptOff)
+        gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
+    else
+        gBattlescriptCurrInstr += 5;
 }
 
 static void Cmd_subattackerhpbydmg(void)
