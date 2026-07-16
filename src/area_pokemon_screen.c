@@ -344,6 +344,19 @@ static void PrintAreaPokemonRows(void)
         sAreaPokemonScreen->visibleSpecies[row] = sAreaPokemonScreen->speciesList[listIndex];
         AddTextPrinterParameterized(WIN_LIST, FONT_SMALL, gSpeciesNames[sAreaPokemonScreen->visibleSpecies[row]], 36, yPos + 4, 0, NULL);
 
+        {
+            u8 catchText[8];
+            u8 *dst;
+            // Base catch rate as a percentage of the 255 maximum; the real chance
+            // also depends on ball, HP and status, so this is a difficulty guide
+            u16 pct = (gSpeciesInfo[sAreaPokemonScreen->visibleSpecies[row]].catchRate * 100 + 127) / 255;
+
+            dst = ConvertIntToDecimalStringN(catchText, pct, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            *dst++ = CHAR_PERCENT;
+            *dst = EOS;
+            AddTextPrinterParameterized(WIN_LIST, FONT_SMALL, catchText, 118, yPos + 4, 0, NULL);
+        }
+
         if (sAreaPokemonScreen->minLevels[listIndex] != 0 || sAreaPokemonScreen->maxLevels[listIndex] != 0)
         {
             u8 levelText[16];
