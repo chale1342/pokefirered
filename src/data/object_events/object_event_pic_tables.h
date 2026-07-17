@@ -1193,6 +1193,10 @@ static const struct SpriteFrameImage sPicTable_GymSign[] = {
     overworld_frame(gObjectEventPic_GymSign, 2, 4, 0),
 };
 
+static const struct SpriteFrameImage sPicTable_VendingMachine[] = {
+    overworld_frame(gObjectEventPic_VendingMachine, 2, 4, 0),
+};
+
 static const struct SpriteFrameImage sPicTable_Sign[] = {
     overworld_frame(gObjectEventPic_Sign, 2, 2, 0),
 };

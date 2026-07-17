@@ -164,8 +164,9 @@
 #define OBJ_EVENT_GFX_SQUIRTLE 158
 #define OBJ_EVENT_GFX_WARTORTLE 159
 #define OBJ_EVENT_GFX_BLASTOISE 160
+#define OBJ_EVENT_GFX_VENDING_MACHINE 161
 
-#define NUM_OBJ_EVENT_GFX     161
+#define NUM_OBJ_EVENT_GFX     162
 
 // These are dynamic object gfx ids.
 // They correspond with the values of the VAR_OBJ_GFX_ID_X vars.

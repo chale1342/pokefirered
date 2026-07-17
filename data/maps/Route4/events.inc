@@ -12,6 +12,7 @@ Route4_ObjectEvents:
 	object_event 5, OBJ_EVENT_GFX_BLACKBELT, 47, 3, 3, MOVEMENT_TYPE_FACE_RIGHT, 1, 1, TRAINER_TYPE_NONE, 0, Route4_EventScript_MegaPunchTutor, 0
 	object_event 6, OBJ_EVENT_GFX_BLACKBELT, 50, 3, 3, MOVEMENT_TYPE_FACE_LEFT, 1, 1, TRAINER_TYPE_NONE, 0, Route4_EventScript_MegaKickTutor, 0
 	clone_event 7, OBJ_EVENT_GFX_COOLTRAINER_M, 109, 3, LOCALID_CERULEAN_CAVE_GUARD, MAP_CERULEAN_CITY
+	object_event 8, OBJ_EVENT_GFX_VENDING_MACHINE, 15, 6, 3, MOVEMENT_TYPE_FACE_DOWN, 0, 0, TRAINER_TYPE_NONE, 0, EventScript_VendingMachine, 0
 
 Route4_MapWarps:
 	warp_def 19, 5, 3, 3, MAP_MT_MOON_1F

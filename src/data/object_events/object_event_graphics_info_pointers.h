@@ -101,6 +101,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Ruby;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Sapphire;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_OldAmber;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_GymSign;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_VendingMachine;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Sign;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_TrainerTips;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Clipboard;
@@ -323,4 +324,5 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_SQUIRTLE]                 = &gObjectEventGraphicsInfo_Squirtle,
     [OBJ_EVENT_GFX_WARTORTLE]                = &gObjectEventGraphicsInfo_Wartortle,
     [OBJ_EVENT_GFX_BLASTOISE]                = &gObjectEventGraphicsInfo_Blastoise,
+    [OBJ_EVENT_GFX_VENDING_MACHINE]          = &gObjectEventGraphicsInfo_VendingMachine,
 };

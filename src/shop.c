@@ -29,6 +29,7 @@
 #include "constants/items.h"
 #include "constants/game_stat.h"
 #include "constants/field_weather.h"
+#include "constants/map_types.h"
 
 #define tItemCount data[1]
 #define tItemId data[5]
@@ -79,6 +80,10 @@ EWRAM_DATA u16 (*gShopTilemapBuffer4)[0x400] = {0};
 EWRAM_DATA struct ListMenuItem *sShopMenuListMenu = {0};
 static EWRAM_DATA u8 (*sShopMenuItemStrings)[13] = {0};
 EWRAM_DATA struct QuestLogEvent_Shop sHistory[2] = {0};
+static EWRAM_DATA bool8 sIsVendingMachine = FALSE;
+static EWRAM_DATA bool8 sNextShopIsVendingMachine = FALSE;
+
+static const u8 sText_VendingMachineAnythingElse[] = _("Need anything else?");
 
 //Function Declarations
 static u8 CreateShopMenu(u8 martType);
@@ -119,6 +124,7 @@ static void BuyMenuDrawMapView(void);
 static void BuyMenuDrawMapBg(void);
 static void BuyMenuDrawMapMetatile(s16 x, s16 y, const u16 *src, u8 metatileLayerType);
 static void BuyMenuDrawMapMetatileLayer(u16 *dest, s16 offset1, s16 offset2, const u16 *src);
+static u16 RemapOutdoorMapTilePalette(u16 tile);
 static void BuyMenuCollectObjectEventData(void);
 static void BuyMenuDrawObjectEvents(void);
 static void BuyMenuCopyTilemapData(void);
@@ -297,6 +303,7 @@ static void Task_HandleShopMenuQuit(u8 taskId)
     ClearShopMenuWindow();
     RecordTransactionForQuestLog();
     DestroyTask(taskId);
+    sIsVendingMachine = FALSE;
     if (sShopData.callback != NULL)
         sShopData.callback();
 }
@@ -325,10 +332,18 @@ static void MapPostLoadHook_ReturnToShopMenu(void)
 
 static void Task_ReturnToShopMenu(u8 taskId)
 {
+    const u8 *message;
+
     if (IsWeatherNotFadingIn() != TRUE)
         return;
 
-    DisplayItemMessageOnField(taskId, GetMartFontId(), gText_AnythingElseICanHelp, ShowShopMenuAfterExitingBuyOrSellMenu);
+    if (sIsVendingMachine)
+        message = sText_VendingMachineAnythingElse;
+    else
+        message = gText_AnythingElseICanHelp;
+
+    DisplayItemMessageOnField(taskId, GetMartFontId(), message,
+                              ShowShopMenuAfterExitingBuyOrSellMenu);
 }
 
 static void ShowShopMenuAfterExitingBuyOrSellMenu(u8 taskId)
@@ -464,6 +479,16 @@ static void BuyMenuInitBgs(void)
 static void BuyMenuDecompressBgGraphics(void)
 {
     u16 *pal;
+    u16 outdoorPalette6[16];
+    u16 outdoorPalette11[16];
+
+    if (gMapHeader.mapType != MAP_TYPE_INDOOR)
+    {
+        CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(6)], outdoorPalette6,
+                  PLTT_SIZE_4BPP);
+        CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(11)], outdoorPalette11,
+                  PLTT_SIZE_4BPP);
+    }
 
     DecompressAndCopyTileDataToVram(1, gBuyMenuFrame_Gfx, 0x480, 0x3DC, 0);
     if ((sShopData.martType) != MART_TYPE_TMHM)
@@ -476,6 +501,12 @@ static void BuyMenuDecompressBgGraphics(void)
     LoadPalette(&pal[0 * 16], BG_PLTT_ID(11), PLTT_SIZE_4BPP);
     LoadPalette(&pal[1 * 16], BG_PLTT_ID(6), PLTT_SIZE_4BPP);
     Free(pal);
+
+    if (gMapHeader.mapType != MAP_TYPE_INDOOR)
+    {
+        LoadPalette(outdoorPalette6, BG_PLTT_ID(12), PLTT_SIZE_4BPP);
+        LoadPalette(outdoorPalette11, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
+    }
 }
 
 static void RecolorItemDescriptionBox(bool32 a0)
@@ -772,10 +803,26 @@ static void BuyMenuDrawMapMetatile(s16 x, s16 y, const u16 *src, u8 metatileLaye
 
 static void BuyMenuDrawMapMetatileLayer(u16 *dest, s16 offset1, s16 offset2, const u16 *src)
 {
-    dest[offset1 + offset2] = src[0]; // top left
-    dest[offset1 + offset2 + 1] = src[1]; // top right
-    dest[offset1 + offset2 + 32] = src[2]; // bottom left
-    dest[offset1 + offset2 + 33] = src[3]; // bottom right
+    dest[offset1 + offset2] = RemapOutdoorMapTilePalette(src[0]); // top left
+    dest[offset1 + offset2 + 1] = RemapOutdoorMapTilePalette(src[1]); // top right
+    dest[offset1 + offset2 + 32] = RemapOutdoorMapTilePalette(src[2]); // bottom left
+    dest[offset1 + offset2 + 33] = RemapOutdoorMapTilePalette(src[3]); // bottom right
+}
+
+static u16 RemapOutdoorMapTilePalette(u16 tile)
+{
+    u16 paletteNum;
+
+    if (gMapHeader.mapType == MAP_TYPE_INDOOR)
+        return tile;
+
+    paletteNum = tile >> 12;
+    if (paletteNum == 6)
+        paletteNum = 12;
+    else if (paletteNum == 11)
+        paletteNum = 13;
+
+    return (tile & 0xFFF) | (paletteNum << 12);
 }
 
 static void BuyMenuCollectObjectEventData(void)
@@ -1152,6 +1199,8 @@ static void RecordTransactionForQuestLog(void)
 
 void CreatePokemartMenu(const u16 *itemsForSale)
 {
+    sIsVendingMachine = sNextShopIsVendingMachine;
+    sNextShopIsVendingMachine = FALSE;
     SetShopItemsForSale(itemsForSale);
     CreateShopMenu(MART_TYPE_REGULAR);
     SetShopMenuCallback(ScriptContext_Enable);
@@ -1159,6 +1208,11 @@ void CreatePokemartMenu(const u16 *itemsForSale)
     memset(&sHistory, 0, sizeof(sHistory));
     sHistory[0].mapSec = gMapHeader.regionMapSectionId;
     sHistory[1].mapSec = gMapHeader.regionMapSectionId;
+}
+
+void SetVendingMachineShop(void)
+{
+    sNextShopIsVendingMachine = TRUE;
 }
 
 void CreateDecorationShop1Menu(const u16 *itemsForSale)
@@ -1222,4 +1276,3 @@ static u32 GetDiscountedPrice(u16 itemId)
         return basePrice; // No discount
     }
 }
-

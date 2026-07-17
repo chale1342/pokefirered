@@ -1367,6 +1367,7 @@ Text_TestMsg::
 	.include "data/scripts/trainer_tower.inc"
 	.include "data/scripts/test.inc"
 	.include "data/scripts/follower.inc"
+	.include "data/scripts/vending_machine.inc"
 	.include "data/text/save.inc"
 	.include "data/text/new_game_intro.inc"
 	.include "data/text/pokedude.inc"

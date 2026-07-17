@@ -1,6 +1,6 @@
 # Pokemon FireRed Enhanced - Complete Feature List
 
-**Version**: 1.5+  
+**Version**: 3.1.0
 **Base**: pokefirered decomp project  
 **Author**: chale1342
 
@@ -322,6 +322,7 @@ make -j$(nproc)
 
 This project uses semantic versioning (MAJOR.MINOR.PATCH).
 
+- **v3.1.0**: Supply vending machines near Mt. Moon, Rock Tunnel, the Route 12 fishing rest house, and Ember Spa; vending-specific dialogue; corrected outdoor shop-preview palettes
 - **v3.0.0**: Region map Pokemon area browser, starter-line overworld followers, skippable Controls Guide and Pikachu intro, title screen art fixes (Charizard belly corruption, ENHANCED logo legibility)
 - **v2.0**: Physical/Special split icons, dual-mode EXP Share, FASTER text speed and AUTO SCROLL options, complete feature documentation
 - **v1.5**: Mew encounter, options menu pagination, enhanced features
@@ -330,4 +331,4 @@ This project uses semantic versioning (MAJOR.MINOR.PATCH).
 
 ---
 
-**Last Updated**: July 6, 2026
+**Last Updated**: July 17, 2026

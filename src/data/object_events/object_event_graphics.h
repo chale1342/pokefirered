@@ -199,6 +199,7 @@ const u16 gObjectEventPic_Ruby[] = INCBIN_U16("graphics/object_events/pics/misc/
 const u16 gObjectEventPic_Sapphire[] = INCBIN_U16("graphics/object_events/pics/misc/sapphire.4bpp");
 const u16 gObjectEventPic_OldAmber[] = INCBIN_U16("graphics/object_events/pics/misc/old_amber.4bpp");
 const u16 gObjectEventPic_GymSign[] = INCBIN_U16("graphics/object_events/pics/misc/gym_sign.4bpp");
+const u16 gObjectEventPic_VendingMachine[] = INCBIN_U16("graphics/object_events/pics/misc/vending_machine.4bpp");
 const u16 gObjectEventPic_Sign[] = INCBIN_U16("graphics/object_events/pics/misc/sign.4bpp");
 const u16 gObjectEventPic_WoodenSign[] = INCBIN_U16("graphics/object_events/pics/misc/wooden_sign.4bpp");
 const u16 gObjectEventPic_Clipboard[] = INCBIN_U16("graphics/object_events/pics/misc/clipboard.4bpp");
