@@ -1898,16 +1898,17 @@ static u8 UpdateSpritePalette(const struct SpritePalette *spritePalette, struct 
     return sprite->oam.paletteNum = LoadSpritePalette(spritePalette);
 }
 
-// Load the follower's normal or shiny palette into a free OBJ palette slot
-// and assign it to the follower's sprite
+// Load the follower's normal or shiny palette into its reserved OBJ palette
+// slot. Uses PatchObjectPalette (fixed slot) rather than the dynamic tag
+// pool, since the latter is shared with field effects (e.g. tall grass) and
+// the follower holding one of those slots for as long as it's on screen
+// starves field effects of palette slots, corrupting their colors.
 static void FollowerLoadPalette(struct ObjectEvent *objEvent, bool8 shiny)
 {
     const struct ObjectEventGraphicsInfo *info = GetObjectEventGraphicsInfo(objEvent->graphicsId);
     u16 tag = shiny ? info->paletteTag + FOLLOWER_SHINY_PAL_TAG_OFFSET : info->paletteTag;
-    u8 i = FindObjectEventPaletteIndexByTag(tag);
 
-    if (i != 0xFF)
-        UpdateSpritePalette(&sObjectEventSpritePalettes[i], &gSprites[objEvent->spriteId]);
+    PatchObjectPalette(tag, info->paletteSlot);
 }
 
 static void FollowerSetGraphics(struct ObjectEvent *objEvent, u16 species, bool8 shiny)
