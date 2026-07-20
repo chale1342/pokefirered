@@ -77,7 +77,7 @@ Some tips before proceeding:
     sudo apt update && sudo apt upgrade
     ```
 
-> Note: If the repository you plan to build has an **[older revision of the INSTALL.md](https://github.com/pret/pokefirered/blob/b7a6240/INSTALL.md)**, then follow the [legacy WSL1 instructions](docs/legacy_WSL1_INSTALL.md) from here.
+> Note: If the repository you plan to build has an **[older revision of the INSTALL.md](https://github.com/pret/pokefirered/blob/b7a6240/INSTALL.md)**, then follow the [legacy WSL1 instructions](legacy_WSL1_INSTALL.md) from here.
 
 4. Certain packages are required to build pokefirered. Install these packages by running the following command:
 

@@ -38,4 +38,4 @@
     source /etc/profile.d/devkit-env.sh
     ```
 
-Proceed to [Choosing where to store pokefirered (WSL1) of the current INSTALL.md](/INSTALL.md#choosing-where-to-store-pokefirered-WSL1).
+Proceed to [Choosing where to store pokefirered (WSL1) of the current INSTALL.md](INSTALL.md#choosing-where-to-store-pokefirered-WSL1).
