@@ -1,41 +1,48 @@
 CinnabarIsland_Gym_Text_BlaineIntro::
-    .string "Hah!\p"
-    .string "I am BLAINE, the red-hot LEADER\n"
+    .string "Hah-hah-hah!\p"
+    .string "The name's BLAINE, red-hot LEADER\n"
     .string "of CINNABAR GYM!\p"
-    .string "My fiery POKéMON are all rough\n"
-    .string "and ready with intense heat!\p"
-    .string "They incinerate all challengers!\p"
-    .string "Hah!\n"
-    .string "You better have BURN HEAL!{PLAY_BGM}{MUS_ENCOUNTER_GYM_LEADER}$"
+    .string "My POKéMON and I turn up the\n"
+    .string "heat on every challenger!\p"
+    .string "That's not just hot air, that's\n"
+    .string "a promise!\p"
+    .string "Hah! Better bring a BURN HEAL,\n"
+    .string "or two, or ten!{PLAY_BGM}{MUS_ENCOUNTER_GYM_LEADER}$"
 
 CinnabarIsland_Gym_Text_BlaineDefeat::
-    .string "I have burned down to nothing!\n"
-    .string "Not even ashes remain!\p"
+    .string "Gwahaha! Snuffed out cold!\n"
+    .string "Not even embers left of me!\p"
     .string "You have earned the VOLCANOBADGE.$"
 
 CinnabarIsland_Gym_Text_FireBlastIsUltimateFireMove::
-    .string "FIRE BLAST is the ultimate fire\n"
-    .string "technique.\p"
-    .string "Don't waste it on WATER POKéMON.$"
+    .string "FIRE BLAST is my magnum opus,\n"
+    .string "the ultimate fire technique!\p"
+    .string "Hah! Don't waste it on some\n"
+    .string "soggy WATER POKéMON, now!$"
 
 CinnabarIsland_Gym_Text_ExplainVolcanoBadge::
-    .string "Hah!\p"
-    .string "The VOLCANOBADGE heightens the\n"
-    .string "SPECIAL stats of your POKéMON.\p"
-    .string "Here, you can have this, too!$"
+    .string "Hah! Here, catch, fresh off\n"
+    .string "the volcano, the VOLCANOBADGE!\p"
+    .string "It heightens the SPECIAL stats\n"
+    .string "of your POKéMON.\p"
+    .string "And I've got one more thing for\n"
+    .string "you, so don't run off yet!$"
 
 CinnabarIsland_Gym_Text_ReceivedTM38FromBlaine::
     .string "{PLAYER} received TM38\n"
     .string "from BLAINE.$"
 
 CinnabarIsland_Gym_Text_BlainePostBattle::
-    .string "TM38 contains FIRE BLAST.\n"
-    .string "Teach it to FIRE-type POKéMON.\p"
+    .string "TM38 contains FIRE BLAST, my\n"
+    .string "pride and joy of a move!\p"
+    .string "Teach it to a FIRE-type and\n"
+    .string "watch the fireworks!\p"
     .string "VULPIX or CHARMELEON would be\n"
-    .string "ideal for that move.$"
+    .string "ideal candidates, hah!$"
 
 CinnabarIsland_Gym_Text_MakeSpaceForThis::
-    .string "Make space for this, child!$"
+    .string "Hah! Make some room, would you?\n"
+    .string "This won't fit in a stuffed bag!$"
 
 CinnabarIsland_Gym_Text_ErikIntro::
     .string "Do you know how hot POKéMON fire\n"
@@ -150,14 +157,15 @@ CinnabarIsland_Gym_Text_GymStatuePlayerWon::
     .string "{RIVAL}, {PLAYER}$"
 
 CinnabarIsland_Gym_Text_PokemonQuizRules::
-    .string "POKéMON Quiz!\p"
-    .string "Get it right, and the door opens to\n"
-    .string "the next room.\p"
-    .string "Get it wrong, and face a TRAINER!\p"
-    .string "If you want to conserve your\n"
-    .string "POKéMON for the GYM LEADER…\p"
-    .string "Then get it right!\n"
-    .string "Here we go!$"
+    .string "It's POKéMON Quiz time! Hah!\p"
+    .string "Answer right, and the door swings\n"
+    .string "wide open!\p"
+    .string "Answer wrong, and a TRAINER's\n"
+    .string "itching for a battle!\p"
+    .string "Want to save your POKéMON for\n"
+    .string "yours truly, the LEADER?\p"
+    .string "Then think fast and answer\n"
+    .string "right! Here we go!$"
 
 CinnabarIsland_Gym_Text_QuizQuestion1::
     .string "CATERPIE evolves into METAPOD?$"
@@ -181,10 +189,11 @@ CinnabarIsland_Gym_Text_QuizQuestion6::
     .string "TM28 contains TOMBSTONY?$"
 
 CinnabarIsland_Gym_Text_CorrectGoOnThrough::
-    .string "You're absolutely correct!\p"
+    .string "Correct! Hah, I knew you had\n"
+    .string "the brains to match the heat!\p"
     .string "Go on through!$"
 
 CinnabarIsland_Gym_Text_SorryBadCall::
-    .string "Sorry!\n"
-    .string "Bad call!$"
+    .string "Ooh, sorry!\n"
+    .string "That one's gonna burn!$"
 

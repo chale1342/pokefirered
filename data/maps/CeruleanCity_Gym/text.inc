@@ -1,40 +1,41 @@
 CeruleanCity_Gym_Text_MistyIntro::
-    .string "Hi, you're a new face!\p"
-    .string "Only those TRAINERS who have a\n"
-    .string "policy about POKéMON can turn pro.\p"
-    .string "What is your approach when you\n"
+    .string "Well, well, a new face!\p"
+    .string "Word of advice: don't judge a\n"
+    .string "TRAINER by their age.\p"
+    .string "So? What's your approach when you\n"
     .string "catch and train POKéMON?\p"
-    .string "My policy is an all-out offensive\n"
+    .string "Mine's simple: an all-out blitz\n"
     .string "with WATER-type POKéMON!{PLAY_BGM}{MUS_ENCOUNTER_GYM_LEADER}$"
 
 CeruleanCity_Gym_Text_ExplainTM03::
     .string "TM03 teaches WATER PULSE.\p"
-    .string "Use it on an aquatic POKéMON!$"
+    .string "Slap it on a POKéMON that loves\n"
+    .string "the water, like I do!$"
 
 CeruleanCity_Gym_Text_ExplainCascadeBadge::
     .string "The CASCADEBADGE makes all\n"
-    .string "POKéMON up to Lv. 30 obey.\p"
-    .string "That includes even outsiders you\n"
-    .string "got in trades.\p"
-    .string "There's more. You can now use CUT\n"
-    .string "anytime, even out of battle.\p"
-    .string "You can CUT down small trees to\n"
-    .string "open new pathways.\p"
-    .string "You can also have my favorite TM.$"
+    .string "POKéMON up to Lv. 30 obey you.\p"
+    .string "Even ones you got in trades from\n"
+    .string "some other TRAINER.\p"
+    .string "Oh, and you can use CUT anytime\n"
+    .string "now, even outside of battle.\p"
+    .string "Perfect for slicing through small\n"
+    .string "trees blocking your path.\p"
+    .string "Here, take my favorite TM too.$"
 
 CeruleanCity_Gym_Text_ReceivedTM03FromMisty::
     .string "{PLAYER} received TM03\n"
     .string "from MISTY.$"
 
 CeruleanCity_Gym_Text_BetterMakeRoomForThis::
-    .string "You better make room for this!$"
+    .string "Hey! Go make some room for this!$"
 
 CeruleanCity_Gym_Text_MistyDefeat::
     .string "Wow!\n"
-    .string "You're too much!\p"
-    .string "All right!\p"
-    .string "You can have the CASCADEBADGE to\n"
-    .string "show you beat me.$"
+    .string "You're really something!\p"
+    .string "Fine, you win!\p"
+    .string "Take the CASCADEBADGE, proof you\n"
+    .string "battled me and came out on top.$"
 
 CeruleanCity_Gym_Text_DianaIntro::
     .string "What? You?\n"

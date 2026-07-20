@@ -1,14 +1,15 @@
 PalletTown_Text_OakDontGoOut::
-    .string "OAK: Hey! Wait!\n"
-    .string "Don't go out!$"
+    .string "OAK: Hold it right there!\n"
+    .string "Don't go wandering out yet!$"
 
 PalletTown_Text_OakGrassUnsafeNeedMon::
-    .string "OAK: It's unsafe!\n"
-    .string "Wild POKeMON live in tall grass!\p"
-    .string "You need your own POKeMON for\n"
-    .string "your protection.\p"
-    .string "I know!\n"
-    .string "Here, come with me!$"
+    .string "OAK: That tall grass isn't safe to\n"
+    .string "walk through empty-handed!\p"
+    .string "Wild POKeMON live in there, and\n"
+    .string "you've got nothing to protect\l"
+    .string "yourself with.\p"
+    .string "Tell you what, come with me a\n"
+    .string "moment. I'll sort you out.$"
 
 PalletTown_Text_RaisingMonsToo::
     .string "I'm raising POKeMON, too.\p"
@@ -34,36 +35,38 @@ PalletTown_Text_TownSign::
     .string "Shades of your journey await!$"
 
 PalletTown_Text_OakLetMeSeePokedex::
-    .string "OAK: Ah, {PLAYER}!\n"
-    .string "You're back, are you?\p"
-    .string "How much have you filled in your\n"
-    .string "POKeDEX?\p"
-    .string "May I see it?\p"
-    .string "Let's see...$"
+    .string "OAK: Ah, {PLAYER}! Back home\n"
+    .string "already, are you?\p"
+    .string "Come on, then, let's have a look.\n"
+    .string "How's that POKeDEX filling out?\p"
+    .string "May I take a peek?\p"
+    .string "Let's see here…$"
 
 PalletTown_Text_CaughtXPuttingInHonestEffort::
-    .string "You've caught {STR_VAR_2}...\p"
-    .string "Hm, it looks as if you're putting\n"
-    .string "in an honest effort.\p"
-    .string "When you manage to fill it some\n"
-    .string "more, come show me, please.$"
+    .string "You've caught {STR_VAR_2}…\p"
+    .string "Not bad at all. Looks like you're\n"
+    .string "putting in some honest effort.\p"
+    .string "Keep at it, and come show me\n"
+    .string "again once you've filled it out\l"
+    .string "some more.$"
 
 PalletTown_Text_CaughtXImpressiveFollowMe::
-    .string "You've caught... {STR_VAR_2}!?\n"
-    .string "Now, this is impressive!\p"
-    .string "There's something I wanted to ask\n"
-    .string "of you, {PLAYER}.\p"
-    .string "Come.\n"
-    .string "Follow me.$"
+    .string "You've caught… {STR_VAR_2}!?\n"
+    .string "Well, I'll be. That's genuinely\l"
+    .string "impressive!\p"
+    .string "Say, {PLAYER}, there's something\n"
+    .string "I'd like to ask of you.\p"
+    .string "Come along, follow me.$"
 
 PalletTown_Text_OakYouEnjoyingTraveling::
-    .string "OAK: Ah, {PLAYER}!\n"
-    .string "You seem to be enjoying traveling.\p"
-    .string "Knowing you, {PLAYER}, I can easily\n"
-    .string "imagine you going out to even more\l"
-    .string "exotic locales.\p"
-    .string "Good for you, good for you.\n"
-    .string "Hohoho.$"
+    .string "OAK: Ah, {PLAYER}! Good to see\n"
+    .string "you. Enjoying the open road, I\l"
+    .string "take it?\p"
+    .string "Knowing you, I imagine you'll end\n"
+    .string "up somewhere even more exotic\l"
+    .string "before long.\p"
+    .string "Good for you. Good for you\n"
+    .string "indeed. Hohoho.$"
 
 PalletTown_Text_Mom_Rest::
     .string "MOM: You should take a quick rest.\n"
@@ -76,25 +79,25 @@ PalletTown_Text_Mom_GiveShoes::
 PalletTown_Text_Mom_Repeat::
     .string "MOM: You're always welcome to rest here.$"
 PalletTown_Text_MomBeforeShoes::
-    .string "Hey there, young trainer!\n"
-    .string "You look like you're just getting\l"
-    .string "started on your POKéMON journey.\p"
-    .string "Here, I have something that might\n"
-    .string "help you! Take these RUNNING SHOES!\p"
-    .string "They'll help you travel much faster\n"
-    .string "around the world!$"
+    .string "Oh, look at you, all set for your\n"
+    .string "very first journey!\p"
+    .string "Hang on, wait right there, I've\n"
+    .string "got just the thing for you.\p"
+    .string "Here, take these RUNNING SHOES!\n"
+    .string "I had them ready and waiting.$"
 
 PalletTown_Text_MomAfterShoes::
-    .string "Remember, you can run by holding\n"
-    .string "the B button while you walk!\p"
-    .string "It'll save you so much time when\n"
-    .string "exploring the world. Good luck!$"
+    .string "Just hold down the B BUTTON\n"
+    .string "while you walk, and you'll run!\p"
+    .string "Trust me, it'll save you hours\n"
+    .string "out there. Now go on, be safe!$"
 
 PalletTown_Text_MomRepeat::
-    .string "Don't forget - hold B to run!\n"
-    .string "It makes traveling so much easier.$"
+    .string "Don't forget, dear, hold B to run!\n"
+    .string "It really does make things easier.$"
 
 PalletTown_Text_MomGotRunningShoes::
-    .string "Those RUNNING SHOES will be\n"
-    .string "invaluable on your adventure!\p"
-    .string "Every trainer should have a pair.$"
+    .string "Those RUNNING SHOES will serve\n"
+    .string "you well out there.\p"
+    .string "Honestly, every TRAINER ought\n"
+    .string "to have a pair.$"

@@ -1,43 +1,52 @@
 VermilionCity_Gym_Text_LtSurgeIntro::
-    .string "Hey, kid! What do you think you're\n"
-    .string "doing here?\p"
-    .string "You won't live long in combat!\n"
-    .string "Not with your puny power!\p"
-    .string "I tell you, kid, electric POKéMON\n"
-    .string "saved me during the war!\p"
-    .string "They zapped my enemies into\n"
-    .string "paralysis!\p"
-    .string "The same as I'll do to you!{PLAY_BGM}{MUS_ENCOUNTER_GYM_LEADER}$"
+    .string "Hey, squirt! What do you think\n"
+    .string "you're doing barging in here?\p"
+    .string "This ain't a playground, kid!\n"
+    .string "You won't last long against me!\p"
+    .string "Lemme tell you somethin', kid:\n"
+    .string "electric POKéMON saved my hide\l"
+    .string "back during the war!\p"
+    .string "They zapped every last enemy\n"
+    .string "stiff with paralysis!\p"
+    .string "That's exactly what I'm gonna\n"
+    .string "do to you now!{PLAY_BGM}{MUS_ENCOUNTER_GYM_LEADER}$"
 
 VermilionCity_Gym_Text_LtSurgePostBattle::
-    .string "A little word of advice, kid!\p"
-    .string "Electricity is sure powerful!\p"
-    .string "But, it's useless against GROUND-\n"
-    .string "type POKéMON!$"
+    .string "A little advice, free of charge,\n"
+    .string "kid!\p"
+    .string "Electricity's about as tough as\n"
+    .string "it gets!\p"
+    .string "But it's dead weight against\n"
+    .string "GROUND-type POKéMON. Don't forget it!$"
 
 VermilionCity_Gym_Text_ExplainThunderBadgeTakeThis::
-    .string "The THUNDERBADGE cranks up your\n"
-    .string "POKéMON's SPEED!\p"
-    .string "It also lets your POKéMON FLY\n"
-    .string "lightning-quick anytime, kid!\p"
-    .string "You're special, kid!\n"
-    .string "Take this!$"
+    .string "The THUNDERBADGE cranks your\n"
+    .string "POKéMON's SPEED into overdrive!\p"
+    .string "It'll also let your POKéMON FLY\n"
+    .string "anytime, anywhere, lightning fast!\p"
+    .string "You've got real grit, kid.\n"
+    .string "Not many make it this far!\p"
+    .string "Take it. You earned it!$"
 
 VermilionCity_Gym_Text_ReceivedTM34FromLtSurge::
     .string "{PLAYER} received TM34\n"
     .string "from LT. SURGE.$"
 
 VermilionCity_Gym_Text_ExplainTM34::
-    .string "TM34 contains SHOCK WAVE!\p"
-    .string "Teach it to an ELECTRIC POKéMON!$"
+    .string "TM34's got SHOCK WAVE packed\n"
+    .string "inside!\p"
+    .string "Teach it to an ELECTRIC POKéMON\n"
+    .string "and watch it light up the field!$"
 
 VermilionCity_Gym_Text_MakeRoomInYourBag::
-    .string "Yo, kid, make room in your BAG!$"
+    .string "Whoa there, kid, your BAG's\n"
+    .string "full! Make some room, squirt!$"
 
 VermilionCity_Gym_Text_LtSurgeDefeat::
-    .string "Now that's a shocker!\p"
-    .string "You're the real deal, kid!\p"
-    .string "Fine, then, take the THUNDERBADGE!$"
+    .string "Whoa, now THAT's a shocker!\p"
+    .string "You've got real firepower, kid!\p"
+    .string "Fine! Take the THUNDERBADGE,\n"
+    .string "you earned it fair and square!$"
 
 VermilionCity_Gym_Text_TuckerIntro::
     .string "When I was in the Army, LT. SURGE\n"

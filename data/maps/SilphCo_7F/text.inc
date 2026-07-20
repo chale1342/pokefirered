@@ -104,20 +104,24 @@ SilphCo_7F_Text_Grunt2PostBattle::
     .string "ticked off!$"
 
 SilphCo_7F_Text_RivalWhatKeptYou::
-    .string "{RIVAL}: What kept you, {PLAYER}?$"
+    .string "{RIVAL}: What kept you, {PLAYER}?\n"
+    .string "I was starting to worry.$"
 
 SilphCo_7F_Text_RivalIntro::
-    .string "{RIVAL}: Hahaha! I thought you'd\n"
-    .string "turn up if I waited here!\p"
-    .string "I guess TEAM ROCKET slowed you\n"
-    .string "down! Not that I care!\p"
-    .string "I saw you in SAFFRON, so I decided\n"
-    .string "to see if you got better!$"
+    .string "{RIVAL}: Hah! Knew you'd show up\n"
+    .string "eventually if I just waited here.\p"
+    .string "TEAM ROCKET giving you trouble\n"
+    .string "on the way up? Figured as much.\l"
+    .string "Not that I'm worried about them.\p"
+    .string "Saw you back in SAFFRON. Thought\n"
+    .string "I'd check whether you've actually\l"
+    .string "gotten any better since.$"
 
 SilphCo_7F_Text_RivalDefeat::
-    .string "Oh, man!\n"
-    .string "So, you are ready for BOSS\l"
-    .string "ROCKET!$"
+    .string "Oh, come on!\n"
+    .string "All right, all right, maybe you\l"
+    .string "are ready to take on BOSS\l"
+    .string "ROCKET after all!$"
 
 SilphCo_7F_Text_RivalVictory::
     .string "{RIVAL}“おまえなあ‥\p"
@@ -126,19 +130,21 @@ SilphCo_7F_Text_RivalVictory::
     .string "いちにんまえ　とは　いえないぜ$"
 
 SilphCo_7F_Text_RivalPostBattle::
-    .string "Well, {PLAYER}!\n"
-    .string "I'm moving on up and ahead!\p"
-    .string "By checking my POKéDEX, I'm\n"
-    .string "starting to see what's strong and\l"
-    .string "how they evolve!\p"
-    .string "Am I a genius or what?\p"
-    .string "I'm going to the POKéMON LEAGUE to\n"
-    .string "boot out the ELITE FOUR.\p"
-    .string "I'll become the world's most\n"
-    .string "powerful TRAINER!\p"
-    .string "{PLAYER}, well, good luck to you!\n"
-    .string "Don't sweat it!\l"
-    .string "Smell ya!$"
+    .string "Well, {PLAYER}, guess that settles\n"
+    .string "it. I'm still a step ahead of you.\p"
+    .string "Been studying my POKéDEX, too.\n"
+    .string "Really starting to click, what's\l"
+    .string "strong, how everything evolves.\p"
+    .string "Pretty much a genius, if you ask\n"
+    .string "me.\p"
+    .string "Once I'm done here, I'm marching\n"
+    .string "straight to the POKéMON LEAGUE\l"
+    .string "and knocking out the ELITE FOUR.\p"
+    .string "I'm going to be the strongest\n"
+    .string "TRAINER in the world, just watch.\p"
+    .string "You too, {PLAYER}. Good luck out\n"
+    .string "there, don't stress about it too\l"
+    .string "much. Smell ya!$"
 
 SilphCo_7F_Text_FloorSign::
     .string "SILPH CO. HEAD OFFICE\n"
