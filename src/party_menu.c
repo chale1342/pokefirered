@@ -1364,11 +1364,12 @@ static void HandleChooseMonCancel(u8 taskId, s8 *slotPtr)
 
 static void HandleChooseMonSelectButton(u8 taskId, s8 *slotPtr)
 {
-    // Only allow SELECT button for switching in normal party menu contexts
-    if (*slotPtr == SLOT_CANCEL || *slotPtr == SLOT_CONFIRM)
+    // Party order must not change while battle state refers to party slots.
+    if (gPartyMenu.menuType != PARTY_MENU_TYPE_FIELD
+        || *slotPtr == SLOT_CANCEL
+        || *slotPtr == SLOT_CONFIRM)
         return;
-        
-    // Check if we're in a context that allows switching
+
     switch (gPartyMenu.action)
     {
     case PARTY_ACTION_CHOOSE_MON:
